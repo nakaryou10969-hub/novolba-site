@@ -12,7 +12,7 @@ async function getBlogs(): Promise<MicroCMSListResponse<Blog>> {
 
 async function getServices(): Promise<MicroCMSListResponse<Service>> {
   return client.getList<Service>({
-    endpoint: "services",
+    endpoint: "service",
     queries: { limit: 10 },
   });
 }
@@ -36,6 +36,9 @@ export default async function Home() {
           <div className="mt-2 mx-auto w-24 h-px bg-teal-400" />
         </div>
 
+        {servicesData.contents.length === 0 && (
+          <p className="text-center text-gray-400 text-sm">サービス情報はまだありません。</p>
+        )}
         <div className="max-w-5xl mx-auto grid grid-cols-1 gap-8 sm:grid-cols-3">
           {servicesData.contents.map((service) => (
             <div
@@ -108,6 +111,9 @@ export default async function Home() {
           <div className="mt-2 mx-auto w-24 h-px bg-teal-400" />
         </div>
 
+        {blogsData.contents.length === 0 && (
+          <p className="text-center text-gray-400 text-sm">ブログ記事はまだありません。</p>
+        )}
         <div className="max-w-5xl mx-auto grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {blogsData.contents.map((blog) => (
             <article
