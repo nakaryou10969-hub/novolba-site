@@ -3,6 +3,7 @@ import Image from "next/image";
 
 const navLinks = [
   { label: "MESSAGE", href: "/message" },
+  { label: "RECRUIT", href: "/recruit" },
   { label: "NEWS", href: "/news" },
   { label: "MEDIA", href: "/media" },
   { label: "COMPANY", href: "/company" },
