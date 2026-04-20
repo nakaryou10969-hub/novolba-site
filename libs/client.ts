@@ -49,6 +49,15 @@ export type Service = {
   bullets?: string[];
 };
 
+export type Category = {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  revisedAt: string;
+  name: string;
+};
+
 export type MicroCMSListResponse<T> = {
   contents: T[];
   totalCount: number;
