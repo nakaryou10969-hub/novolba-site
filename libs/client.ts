@@ -22,6 +22,8 @@ export type Blog = {
   revisedAt: string;
   title: string;
   content: string;
+  slug?: string;
+  author?: string;
   eyecatch?: {
     url: string;
     height: number;
