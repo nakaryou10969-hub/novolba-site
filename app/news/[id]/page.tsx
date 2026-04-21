@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { client, type Blog, type MicroCMSListResponse } from "../../../libs/client";
+import { extractFirstImage } from "../../../libs/extractFirstImage";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -140,6 +141,14 @@ export default async function BlogDetailPage({ params }: Props) {
                         {latestBlog.eyecatch ? (
                           <Image
                             src={latestBlog.eyecatch.url}
+                            alt={latestBlog.title}
+                            fill
+                            className="object-cover"
+                            sizes="56px"
+                          />
+                        ) : extractFirstImage(latestBlog.content) ? (
+                          <Image
+                            src={extractFirstImage(latestBlog.content)!}
                             alt={latestBlog.title}
                             fill
                             className="object-cover"

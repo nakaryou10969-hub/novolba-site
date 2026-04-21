@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { client, type Blog, type Service, type MicroCMSListResponse } from "../libs/client";
+import { extractFirstImage } from "../libs/extractFirstImage";
 
 // ---- データ取得 ----
 
@@ -203,6 +204,16 @@ export default async function Home() {
                     <div className="relative w-full aspect-[16/9] bg-gray-100">
                       <Image
                         src={blog.eyecatch.url}
+                        alt={blog.title}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      />
+                    </div>
+                  ) : extractFirstImage(blog.content) ? (
+                    <div className="relative w-full aspect-[16/9] bg-gray-100">
+                      <Image
+                        src={extractFirstImage(blog.content)!}
                         alt={blog.title}
                         fill
                         className="object-cover"

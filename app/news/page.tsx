@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { client, type Blog, type Category, type MicroCMSListResponse } from "../../libs/client";
+import { extractFirstImage } from "../../libs/extractFirstImage";
 
 export const metadata: Metadata = {
   title: "NEWS | NovolBa",
@@ -67,6 +68,14 @@ export default async function NewsPage() {
                         {blog.eyecatch ? (
                           <Image
                             src={blog.eyecatch.url}
+                            alt={blog.title}
+                            fill
+                            className="object-cover"
+                            sizes="128px"
+                          />
+                        ) : extractFirstImage(blog.content) ? (
+                          <Image
+                            src={extractFirstImage(blog.content)!}
                             alt={blog.title}
                             fill
                             className="object-cover"
@@ -158,6 +167,14 @@ export default async function NewsPage() {
                         {blog.eyecatch ? (
                           <Image
                             src={blog.eyecatch.url}
+                            alt={blog.title}
+                            fill
+                            className="object-cover"
+                            sizes="56px"
+                          />
+                        ) : extractFirstImage(blog.content) ? (
+                          <Image
+                            src={extractFirstImage(blog.content)!}
                             alt={blog.title}
                             fill
                             className="object-cover"
