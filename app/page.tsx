@@ -1,7 +1,41 @@
 import Image from "next/image";
 import Link from "next/link";
-import { client, type Blog, type Service, type MicroCMSListResponse } from "../libs/client";
+import { client, type Blog, type MicroCMSListResponse } from "../libs/client";
 import { extractFirstImage } from "../libs/extractFirstImage";
+
+// ---- サービス定義（コードに直書き） ----
+const serviceCards = [
+  {
+    id: "kagu-hodai",
+    title: "家具ホーダイ!! Service",
+    description: "入替え可能な中古家具のサブスクリプション",
+    bullets: ["1年目 坪3,000円〜", "23区内、横浜", "月額費用内で、家具の入替え可能", "要件に合わせたレイアウト提案"],
+    imageSrc: "/service-kagu.jpg",
+    detailHref: "/service/kagu-hodai",
+    actionLabel: "家具を探す",
+    actionHref: "/service/kagu-hodai/furniture",
+  },
+  {
+    id: "basic-office",
+    title: "BASIC OFFICE Service",
+    description: "5〜30人用の一社占有家具付きオフィス",
+    bullets: ["10坪 5名利用で月額16万円〜", "渋谷、新宿、五反田、東日本橋 等", "最低6か月から契約", "入居人数分の家具、Wi-Fi、プリンター込"],
+    imageSrc: "/service-basic.jpg",
+    detailHref: "/service/basic-office",
+    actionLabel: "物件を探す",
+    actionHref: "/service/basic-office/offices",
+  },
+  {
+    id: "novolba-buddy",
+    title: "ノボルバディ Service",
+    description: "場づくりの右腕に、移転を丸ごとお任せ！",
+    bullets: ["移転プロジェクトマネジメント", "ワークショップ", "レイアウト設計", "移転PR戦略"],
+    imageSrc: "/service-buddy.jpg",
+    detailHref: "/service/novolba-buddy",
+    actionLabel: "相談する",
+    actionHref: "/inquiry",
+  },
+];
 
 // ---- データ取得 ----
 
@@ -12,20 +46,10 @@ async function getBlogs(): Promise<MicroCMSListResponse<Blog>> {
   });
 }
 
-async function getServices(): Promise<MicroCMSListResponse<Service>> {
-  return client.getList<Service>({
-    endpoint: "service",
-    queries: { limit: 10 },
-  });
-}
-
 // ---- ページ ----
 
 export default async function Home() {
-  const [blogsData, servicesData] = await Promise.all([
-    getBlogs(),
-    getServices(),
-  ]);
+  const blogsData = await getBlogs();
 
   return (
     <main className="bg-white">
@@ -89,94 +113,74 @@ export default async function Home() {
           <div className="mt-3 mx-auto w-12 h-0.5" style={{ backgroundColor: "#3dbdac" }} />
         </div>
 
-        {servicesData.contents.length === 0 ? (
-          <p className="text-center text-gray-400 text-sm">サービス情報はまだありません。</p>
-        ) : (
-          <div className="max-w-5xl mx-auto grid grid-cols-1 gap-8 sm:grid-cols-3">
-            {servicesData.contents.map((service) => (
-              <div
-                key={service.id}
-                className="flex flex-col rounded-2xl overflow-hidden shadow-lg bg-white hover:shadow-xl transition-shadow"
-              >
-                {/* カード画像 */}
-                {service.image ? (
-                  <div className="relative w-full aspect-[4/3] bg-gray-100">
-                    <Image
-                      src={service.image.url}
-                      alt={service.title}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 640px) 100vw, 33vw"
-                    />
-                  </div>
-                ) : (
-                  <div className="w-full aspect-[4/3] bg-gradient-to-br from-teal-50 to-teal-100 flex items-center justify-center">
-                    <span className="text-4xl">🏢</span>
-                  </div>
-                )}
-
-                {/* カード本文 */}
-                <div className="flex flex-col gap-3 px-6 py-6 flex-1">
-                  <h3 className="text-base font-bold text-gray-800 text-center">
-                    {service.title}
-                  </h3>
-                  <p className="text-sm text-gray-500 text-center leading-relaxed">
-                    {service.description}
-                  </p>
-
-                  {service.bullets && service.bullets.length > 0 && (
-                    <ul className="flex flex-col gap-2 mt-2">
-                      {service.bullets.map((bullet) => (
-                        <li
-                          key={bullet}
-                          className="flex items-start gap-2 text-sm text-gray-600"
-                        >
-                          <svg
-                            className="mt-0.5 shrink-0"
-                            style={{ color: "#3dbdac" }}
-                            width="16"
-                            height="16"
-                            viewBox="0 0 16 16"
-                            fill="none"
-                            aria-hidden="true"
-                          >
-                            <circle cx="8" cy="8" r="7.5" stroke="currentColor" />
-                            <path
-                              d="M4.5 8.5l2.5 2.5 4.5-5"
-                              stroke="currentColor"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                          <span>{bullet}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-
-                  <div className="mt-auto pt-4">
-                    <Link
-                      href="/inquiry"
-                      className="block text-center text-xs font-medium py-2 px-4 rounded-full border transition-colors hover:text-white"
-                      style={{ borderColor: "#3dbdac", color: "#3dbdac" }}
-                      onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLAnchorElement).style.backgroundColor = "#3dbdac";
-                        (e.currentTarget as HTMLAnchorElement).style.color = "#fff";
-                      }}
-                      onMouseLeave={(e) => {
-                        (e.currentTarget as HTMLAnchorElement).style.backgroundColor = "";
-                        (e.currentTarget as HTMLAnchorElement).style.color = "#3dbdac";
-                      }}
-                    >
-                      詳細を見る
-                    </Link>
-                  </div>
+        <div className="max-w-5xl mx-auto grid grid-cols-1 gap-8 sm:grid-cols-3">
+          {serviceCards.map((service) => (
+            <div
+              key={service.id}
+              className="flex flex-col rounded-2xl overflow-hidden shadow-lg bg-white hover:shadow-xl transition-shadow"
+            >
+              {/* カード画像 */}
+              <div className="relative w-full aspect-[4/3] bg-gradient-to-br from-teal-50 to-teal-100">
+                <div className="w-full h-full flex items-center justify-center">
+                  <span className="text-4xl">🏢</span>
                 </div>
               </div>
-            ))}
-          </div>
-        )}
+
+              {/* カード本文 */}
+              <div className="flex flex-col gap-3 px-6 py-6 flex-1">
+                <h3 className="text-base font-bold text-gray-800 text-center">
+                  {service.title}
+                </h3>
+                <p className="text-sm text-gray-500 text-center leading-relaxed">
+                  {service.description}
+                </p>
+                <ul className="flex flex-col gap-2 mt-2">
+                  {service.bullets.map((bullet) => (
+                    <li key={bullet} className="flex items-start gap-2 text-sm text-gray-600">
+                      <svg
+                        className="mt-0.5 shrink-0"
+                        style={{ color: "#3dbdac" }}
+                        width="16"
+                        height="16"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        aria-hidden="true"
+                      >
+                        <circle cx="8" cy="8" r="7.5" stroke="currentColor" />
+                        <path
+                          d="M4.5 8.5l2.5 2.5 4.5-5"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* ボタン2つ */}
+                <div className="mt-auto pt-4 flex gap-2">
+                  <Link
+                    href={service.detailHref}
+                    className="flex-1 text-center text-xs font-medium py-2 px-3 rounded-full text-white transition-opacity hover:opacity-90"
+                    style={{ backgroundColor: "#3dbdac" }}
+                  >
+                    詳細を見る
+                  </Link>
+                  <Link
+                    href={service.actionHref}
+                    className="flex-1 text-center text-xs font-medium py-2 px-3 rounded-full border-2 transition-colors hover:text-white hover:bg-yellow-400 hover:border-yellow-400"
+                    style={{ borderColor: "#d4a017", color: "#d4a017" }}
+                  >
+                    {service.actionLabel}
+                  </Link>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* ===== News / Blog ===== */}
