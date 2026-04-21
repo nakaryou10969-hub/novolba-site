@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "images.microcms-assets.io",
       },
-      // WordPress の既存画像
+      // WordPress の既存画像（本番）
       {
         protocol: "https",
         hostname: "novolba.com",
@@ -16,6 +16,20 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "www.novolba.com",
+      },
+      // WordPress の既存画像（開発環境）
+      {
+        protocol: "https",
+        hostname: "dev.novolba.com",
+      },
+      // Notion の画像
+      {
+        protocol: "https",
+        hostname: "novolba.notion.site",
+      },
+      {
+        protocol: "https",
+        hostname: "s3-us-west-2.amazonaws.com",
       },
     ],
   },
