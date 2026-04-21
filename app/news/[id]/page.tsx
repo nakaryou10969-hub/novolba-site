@@ -106,12 +106,8 @@ export default async function BlogDetailPage({ params }: Props) {
 
             {/* 本文 */}
             <div
-              className="prose prose-sm sm:prose max-w-none"
+              className="prose-content"
               dangerouslySetInnerHTML={{ __html: blog.content }}
-              style={{
-                lineHeight: "1.8",
-                color: "#374151",
-              }}
             />
 
             {/* 記事一覧に戻る */}
