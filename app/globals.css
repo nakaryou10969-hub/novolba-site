@@ -54,33 +54,105 @@ body {
   color: #1f2937;
 }
 
-.prose-content h2 { font-size: 1.3rem; border-left: 4px solid #3dbdac; padding-left: 0.75rem; }
+.prose-content h2 {
+  font-size: 1.3rem;
+  border-left: 4px solid #3dbdac;
+  padding-left: 0.75rem;
+}
 .prose-content h3 { font-size: 1.1rem; }
 
+/* 画像 */
 .prose-content img {
   max-width: 100%;
   height: auto;
   border-radius: 8px;
   margin: 1.5em auto;
   display: block;
+  border: 1px solid #e5e7eb;
 }
 
+/* 複数画像グリッド（wp-block-gallery） */
+.prose-content .wp-block-gallery,
+.prose-content .blocks-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+  margin: 1.5em 0;
+  padding: 0;
+  list-style: none;
+}
+
+.prose-content .wp-block-gallery figure,
+.prose-content .blocks-gallery-item {
+  margin: 0;
+}
+
+.prose-content .wp-block-gallery img,
+.prose-content .blocks-gallery-item img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin: 0;
+}
+
+/* figure / figcaption */
 .prose-content figure {
   margin: 1.5em 0;
   text-align: center;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f9fafb;
+}
+
+.prose-content figure img {
+  border: none;
+  border-radius: 0;
+  margin: 0;
 }
 
 .prose-content figcaption {
   font-size: 0.8rem;
   color: #9ca3af;
-  margin-top: 0.5em;
+  padding: 0.5em 1em;
+  background: #f9fafb;
 }
 
+/* リンク */
 .prose-content a {
   color: #3dbdac;
   text-decoration: underline;
 }
 
+/* ボタン風リンク（wp-block-button） */
+.prose-content .wp-block-button,
+.prose-content .wp-block-buttons {
+  margin: 1.5em 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.prose-content .wp-block-button__link,
+.prose-content .wp-element-button {
+  display: inline-block;
+  padding: 0.6em 1.5em;
+  background-color: #3dbdac;
+  color: #fff !important;
+  text-decoration: none !important;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.prose-content .wp-block-button__link:hover,
+.prose-content .wp-element-button:hover {
+  opacity: 0.85;
+}
+
+/* リスト */
 .prose-content ul,
 .prose-content ol {
   padding-left: 1.5em;
@@ -91,6 +163,7 @@ body {
   margin-bottom: 0.4em;
 }
 
+/* 引用 */
 .prose-content blockquote {
   border-left: 4px solid #3dbdac;
   padding-left: 1em;
@@ -99,11 +172,13 @@ body {
   font-style: italic;
 }
 
+/* 太字 */
 .prose-content strong {
   font-weight: 700;
   color: #1f2937;
 }
 
+/* テーブル */
 .prose-content table {
   width: 100%;
   border-collapse: collapse;
@@ -121,4 +196,37 @@ body {
 .prose-content th {
   background-color: #f3f4f6;
   font-weight: 600;
+}
+
+/* 区切り線 */
+.prose-content hr {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 2em 0;
+}
+
+/* WordPress カバーブロック */
+.prose-content .wp-block-cover {
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 1.5em 0;
+}
+
+/* コードブロック */
+.prose-content pre,
+.prose-content code {
+  background: #f3f4f6;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-family: monospace;
+}
+
+.prose-content pre {
+  padding: 1em;
+  overflow-x: auto;
+  margin: 1.5em 0;
+}
+
+.prose-content code {
+  padding: 0.1em 0.4em;
 }
