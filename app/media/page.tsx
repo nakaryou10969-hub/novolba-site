@@ -17,9 +17,16 @@ async function getPickupBlogs(): Promise<Blog[]> {
       endpoint: "blogs",
       queries: { limit: 3, filters: "pickup[equals]true", orders: "-publishedAt" },
     });
+    // フィルター結果が0件の場合は最新3件にフォールバック
+    if (data.contents.length === 0) {
+      const fallback = await client.getList<Blog>({
+        endpoint: "blogs",
+        queries: { limit: 3, orders: "-publishedAt" },
+      });
+      return fallback.contents;
+    }
     return data.contents;
   } catch {
-    // pickupフィールドが未設定の場合は最新3件を返す
     const data = await client.getList<Blog>({
       endpoint: "blogs",
       queries: { limit: 3, orders: "-publishedAt" },
