@@ -24,6 +24,7 @@ export type Blog = {
   content: string;
   slug?: string;
   author?: string;
+  pickup?: boolean;
   eyecatch?: {
     url: string;
     height: number;
