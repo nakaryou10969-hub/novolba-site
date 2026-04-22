@@ -12,11 +12,20 @@ export const metadata: Metadata = {
 // ---- データ取得 ----
 
 async function getPickupBlogs(): Promise<Blog[]> {
-  const data = await client.getList<Blog>({
-    endpoint: "blogs",
-    queries: { limit: 3, filters: "pickup[equals]true", orders: "-publishedAt" },
-  });
-  return data.contents;
+  try {
+    const data = await client.getList<Blog>({
+      endpoint: "blogs",
+      queries: { limit: 3, filters: "pickup[equals]true", orders: "-publishedAt" },
+    });
+    return data.contents;
+  } catch {
+    // pickupフィールドが未設定の場合は最新3件を返す
+    const data = await client.getList<Blog>({
+      endpoint: "blogs",
+      queries: { limit: 3, orders: "-publishedAt" },
+    });
+    return data.contents;
+  }
 }
 
 async function getLatestBlogs(): Promise<Blog[]> {
