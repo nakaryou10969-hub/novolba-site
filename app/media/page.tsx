@@ -13,19 +13,17 @@ export const metadata: Metadata = {
 
 async function getPickupBlogs(): Promise<Blog[]> {
   try {
+    // 全件取得してJS側でpickup=trueのものを抽出
     const data = await client.getList<Blog>({
       endpoint: "blogs",
-      queries: { limit: 3, filters: "pickup[equals]true", orders: "-publishedAt" },
+      queries: { limit: 100, orders: "-publishedAt" },
     });
-    // フィルター結果が0件の場合は最新3件にフォールバック
-    if (data.contents.length === 0) {
-      const fallback = await client.getList<Blog>({
-        endpoint: "blogs",
-        queries: { limit: 3, orders: "-publishedAt" },
-      });
-      return fallback.contents;
+    const picked = data.contents.filter((b) => b.pickup === true);
+    if (picked.length > 0) {
+      return picked.slice(0, 3);
     }
-    return data.contents;
+    // pickup設定がない場合は最新3件
+    return data.contents.slice(0, 3);
   } catch {
     const data = await client.getList<Blog>({
       endpoint: "blogs",
