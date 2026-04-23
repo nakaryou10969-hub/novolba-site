@@ -11,7 +11,6 @@ const navLinks = [
   { label: "MEDIA", href: "/media" },
   { label: "COMPANY", href: "/company" },
   { label: "FAQ", href: "/faq" },
-  { label: "CONTACT", href: "/inquiry" },
 ];
 
 export default function Header() {

@@ -117,10 +117,13 @@ export default async function Home() {
               className="flex flex-col rounded-2xl overflow-hidden shadow-lg bg-white hover:shadow-xl transition-shadow"
             >
               {/* カード画像 */}
-              <div className="relative w-full aspect-[4/3] bg-gradient-to-br from-teal-50 to-teal-100">
-                <div className="w-full h-full flex items-center justify-center">
-                  <span className="text-4xl">🏢</span>
-                </div>
+              <div className="relative w-full aspect-[4/3] overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={service.imageSrc}
+                  alt={service.title}
+                  className="w-full h-full object-cover"
+                />
               </div>
 
               {/* カード本文 */}
