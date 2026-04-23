@@ -45,9 +45,12 @@ export default function InquiryPage() {
     setErrorMsg("");
 
     try {
-      const res = await fetch("https://ps3oz2cvpdi5fel7635f47kfoa0iylus.lambda-url.us-east-1.on.aws/", {
+      const res = await fetch("https://formspree.io/f/xlgaoovr", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
         body: JSON.stringify(form),
       });
 
