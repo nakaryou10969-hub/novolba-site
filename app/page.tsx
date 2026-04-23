@@ -104,13 +104,13 @@ export default async function Home() {
 
           {/* 右：イラスト */}
           <div className="flex-1 flex items-center justify-center">
-            <Image
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src="/hero-illustration.png"
               alt="挑戦するスタートアップの昇る場を提供します"
               width={600}
               height={450}
               className="w-full max-w-lg object-contain"
-              priority
             />
           </div>
         </div>
