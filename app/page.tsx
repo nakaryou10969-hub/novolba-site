@@ -56,9 +56,9 @@ export default async function Home() {
 
       {/* ===== Hero ===== */}
       <section
-        className="relative flex flex-col items-center justify-center text-center min-h-[90vh] px-6"
+        className="relative flex items-center min-h-[90vh] px-6 overflow-hidden"
         style={{
-          background: "linear-gradient(135deg, #f0fdfb 0%, #e6f7f5 50%, #f8fafc 100%)",
+          background: "linear-gradient(135deg, #f0fdfb 0%, #e6f7f5 60%, #f8fafc 100%)",
         }}
       >
         {/* アクセントライン */}
@@ -67,39 +67,62 @@ export default async function Home() {
           style={{ backgroundColor: "#3dbdac" }}
         />
 
-        <p className="text-xs tracking-[0.3em] text-gray-400 mb-4 uppercase">
-          Office Service for Startups
-        </p>
-        <h1 className="text-3xl sm:text-5xl font-bold text-gray-800 leading-tight mb-6">
-          挑戦するスタートアップの
-          <br />
-          <span style={{ color: "#3dbdac" }}>"昇る場"</span>を提供します。
-        </h1>
-        <p className="text-sm sm:text-base text-gray-500 max-w-xl leading-relaxed mb-10">
-          オフィス移転もその後も。手軽に家具を入替えて、いつも最高の空間を！
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4">
-          <Link
-            href="/inquiry"
-            className="px-8 py-3 text-sm font-medium text-white rounded-full shadow-md hover:opacity-90 transition-opacity"
-            style={{ backgroundColor: "#3dbdac" }}
-          >
-            お問い合わせ
-          </Link>
-          <Link
-            href="#service"
-            className="px-8 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-full shadow-sm hover:bg-gray-50 transition-colors"
-          >
-            サービスを見る
-          </Link>
+        <div className="max-w-6xl mx-auto w-full flex flex-col md:flex-row items-center gap-8 py-24">
+
+          {/* 左：テキスト */}
+          <div className="flex-1 flex flex-col items-start">
+            <p className="text-xs tracking-[0.3em] text-gray-400 mb-4 uppercase">
+              Office Service for Startups
+            </p>
+            <h1 className="text-3xl sm:text-5xl font-bold text-gray-800 leading-tight mb-6">
+              挑戦するスタートアップの
+              <br />
+              <span style={{ color: "#3dbdac" }}>"昇る場"</span>を提供します。
+            </h1>
+            <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-2">
+              オフィス移転もその後も。
+            </p>
+            <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-10">
+              手軽に家具を入替えて、<span className="bg-yellow-200 px-1">いつも最高の空間を！</span>
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link
+                href="/inquiry"
+                className="px-8 py-3 text-sm font-medium text-white rounded-full shadow-md hover:opacity-90 transition-opacity"
+                style={{ backgroundColor: "#3dbdac" }}
+              >
+                お問い合わせ
+              </Link>
+              <Link
+                href="#service"
+                className="px-8 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-full shadow-sm hover:bg-gray-50 transition-colors"
+              >
+                サービスを見る
+              </Link>
+            </div>
+          </div>
+
+          {/* 右：イラスト */}
+          <div className="flex-1 flex items-center justify-center">
+            <Image
+              src="/hero-illustration.png"
+              alt="挑戦するスタートアップの昇る場を提供します"
+              width={600}
+              height={450}
+              className="w-full max-w-lg object-contain"
+              priority
+            />
+          </div>
         </div>
 
-        {/* スクロール矢印 */}
-        <div className="absolute bottom-8 flex flex-col items-center gap-1 text-gray-400">
-          <span className="text-xs tracking-widest">SCROLL</span>
-          <svg width="16" height="24" viewBox="0 0 16 24" fill="none" aria-hidden="true">
-            <path d="M8 0v20M1 13l7 7 7-7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+        {/* スクロール */}
+        <div className="absolute bottom-8 left-6 flex flex-col items-center gap-1 text-gray-400">
+          <span
+            className="text-xs tracking-widest"
+            style={{ writingMode: "vertical-rl", letterSpacing: "0.3em" }}
+          >
+            SCROLL
+          </span>
         </div>
       </section>
 
