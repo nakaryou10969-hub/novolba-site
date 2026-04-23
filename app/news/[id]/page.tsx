@@ -9,6 +9,14 @@ type Props = {
   params: Promise<{ id: string }>;
 };
 
+export async function generateStaticParams() {
+  const data = await client.getList<Blog>({
+    endpoint: "blogs",
+    queries: { limit: 100, fields: "id" },
+  });
+  return data.contents.map((blog) => ({ id: blog.id }));
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   try {
