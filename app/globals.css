@@ -29,10 +29,14 @@ img {
 /* コンテンツ幅を画面の90%に統一 */
 .max-w-5xl,
 .max-w-4xl,
-.max-w-3xl,
 .max-w-2xl,
 .max-w-xl {
   max-width: 90vw !important;
+}
+
+/* CTAセクションの文字を少し大きく */
+section .text-sm.text-white\/80 {
+  font-size: 1rem !important;
 }
 
 .line-clamp-2 {
