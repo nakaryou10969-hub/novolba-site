@@ -96,19 +96,14 @@ export default async function MediaPage() {
   const pickupBlogs = allBlogs.filter((b) => b.pickup === true).slice(0, 3);
   const featuredBlogs = pickupBlogs.length > 0 ? pickupBlogs : allBlogs.slice(0, 3);
 
-  // カテゴリーをCATEGORY_ORDERの順に並べ替え、残りは後ろに追加
-  const categoryMap = new Map(categories.map((c) => [c.name, c]));
+  // カテゴリーをCATEGORY_ORDERの順に並べ替え
+  // microCMSのカテゴリー名と完全一致するものだけを指定順で表示
   const orderedCategories: Category[] = [];
   for (const name of CATEGORY_ORDER) {
-    const cat = categoryMap.get(name);
+    const cat = categories.find((c) => c.name === name);
     if (cat) orderedCategories.push(cat);
   }
-  // CATEGORY_ORDERにないカテゴリーも追加
-  for (const cat of categories) {
-    if (!CATEGORY_ORDER.includes(cat.name)) {
-      orderedCategories.push(cat);
-    }
-  }
+  // CATEGORY_ORDERにないカテゴリーは表示しない（指定外は除外）
 
   // カテゴリー別に記事を振り分け（最新3件）
   const categoryBlogs = orderedCategories.map((cat) => ({
