@@ -16,9 +16,13 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto px-6 py-12">
         {/* ロゴ */}
         <div className="text-center mb-8">
-          <span className="text-2xl font-bold tracking-widest">
-            Novol<span style={{ color: "#3dbdac" }}>Ba</span>
-          </span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo.png"
+            alt="NovolBa"
+            style={{ height: "36px", width: "auto", filter: "brightness(0) invert(1)" }}
+            className="object-contain mx-auto"
+          />
           <p className="mt-2 text-xs text-gray-400 tracking-wide">
             挑戦するスタートアップの"昇る場"を提供します。
           </p>
