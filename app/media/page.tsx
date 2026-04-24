@@ -99,7 +99,7 @@ export default async function MediaPage() {
 
   // microCMSから取得した全カテゴリーをそのまま使用（名前照合なし）
   // カテゴリー別に記事を振り分け（最新3件）
-  const categoryBlogs = categories.map((cat) => ({
+  const categoryBlogs = [...categories].reverse().map((cat) => ({
     category: cat,
     blogs: allBlogs
       .filter((b) => b.category?.id === cat.id)
