@@ -97,7 +97,7 @@ export default function NovolBaBuddyPage() {
         <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-4">
           ノボルバディ Service
         </h1>
-        <p className="text-base text-gray-500 mb-2">場づくりの右腕に、移転を丸ごとお任せ！</p>
+        <p className="text-lg text-gray-500 mb-2">場づくりの右腕に、移転を丸ごとお任せ！</p>
         <div className="mt-4 w-12 h-0.5" style={{ backgroundColor: "#3dbdac" }} />
       </section>
 
@@ -109,7 +109,7 @@ export default function NovolBaBuddyPage() {
             挑戦するスタートアップの<br />
             「場創り」の<span style={{ color: "#3dbdac" }}>右腕</span>に
           </h2>
-          <div className="space-y-4 text-sm text-gray-600 leading-relaxed text-center">
+          <div className="space-y-4 text-base text-gray-600 leading-relaxed text-center">
             <p>場というものは、急成長するスタートアップにとって必要だ。</p>
             <p>仲間と共創し、想像力を掻き立て、強いチームを創る</p>
             <p>
@@ -135,7 +135,7 @@ export default function NovolBaBuddyPage() {
               移転という<mark className="bg-yellow-100 px-1">点</mark>でなく<br />
               先を見据え、<mark className="bg-yellow-100 px-1">線</mark>で捉える
             </h2>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-sm">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-base">
               <div className="bg-white rounded-xl px-6 py-3 shadow-sm">
                 <p className="text-xs text-gray-400 mb-1">現在</p>
                 <p className="font-bold text-gray-700">移転準備・構築</p>
@@ -154,7 +154,7 @@ export default function NovolBaBuddyPage() {
                 <p className="font-bold">成長を共にする</p>
               </div>
             </div>
-            <p className="mt-6 text-sm font-bold" style={{ color: "#3dbdac" }}>
+            <p className="mt-6 text-base font-bold" style={{ color: "#3dbdac" }}>
               ノボルバディ — 成長を共にする
             </p>
           </div>
@@ -173,13 +173,13 @@ export default function NovolBaBuddyPage() {
             {services.map((s) => (
               <div key={s.phase} className="rounded-2xl overflow-hidden shadow-md">
                 <div
-                  className="py-4 text-center text-white font-bold text-sm"
+                  className="py-4 text-center text-white font-bold text-base"
                   style={{ backgroundColor: "#3dbdac" }}
                 >
                   {s.phase}｜{s.label}
                 </div>
                 <div className="bg-white p-6">
-                  <p className="text-sm font-bold text-gray-800 mb-4 text-center">{s.theme}</p>
+                  <p className="text-base font-bold text-gray-800 mb-4 text-center">{s.theme}</p>
                   <ul className="flex flex-col gap-2 mb-4">
                     {s.items.map((item) => (
                       <li key={item} className="flex items-start gap-2 text-xs text-gray-600">
@@ -206,10 +206,10 @@ export default function NovolBaBuddyPage() {
 
           {/* 底部ラベル */}
           <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1 rounded-xl border-2 py-3 text-center text-sm font-bold text-gray-700" style={{ borderColor: "#3dbdac" }}>
+            <div className="flex-1 rounded-xl border-2 py-3 text-center text-base font-bold text-gray-700" style={{ borderColor: "#3dbdac" }}>
               プロジェクトマネジメント
             </div>
-            <div className="flex-1 rounded-xl border-2 py-3 text-center text-sm font-bold text-gray-700" style={{ borderColor: "#3dbdac" }}>
+            <div className="flex-1 rounded-xl border-2 py-3 text-center text-base font-bold text-gray-700" style={{ borderColor: "#3dbdac" }}>
               家具ホーダイ!!
             </div>
           </div>
@@ -234,7 +234,7 @@ export default function NovolBaBuddyPage() {
         </p>
         <Link
           href="/inquiry"
-          className="inline-block px-10 py-3 text-sm font-medium bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors"
+          className="inline-block px-10 py-3 text-base font-medium bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors"
           style={{ color: "#3dbdac" }}
         >
           相談する

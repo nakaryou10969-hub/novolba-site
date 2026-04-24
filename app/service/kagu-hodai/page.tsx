@@ -109,12 +109,12 @@ export default function KaguHodaiPage() {
         <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-3">
           家具ホーダイ!! Service
         </h1>
-        <p className="text-base text-gray-500 mb-2">椅子１脚から借りられて、入替え可能</p>
+        <p className="text-lg text-gray-500 mb-2">椅子１脚から借りられて、入替え可能</p>
         <p className="text-lg font-semibold" style={{ color: "#3dbdac" }}>
           家具のサブスクサービス『家具ホーダイ!!』
         </p>
         <div className="mt-4 w-12 h-0.5" style={{ backgroundColor: "#3dbdac" }} />
-        <p className="mt-6 text-sm text-gray-500 max-w-xl leading-relaxed">
+        <p className="mt-6 text-base text-gray-500 max-w-xl leading-relaxed">
           成長スピードが速いスタートアップは、増員に伴って空間の利用方法や働き方もどんどん変化します。<br />
           必要な家具をサブスクで借りることができ、<strong>月額費用内で入替えもできる</strong>サービスです。
         </p>
@@ -143,7 +143,7 @@ export default function KaguHodaiPage() {
                     {p.number}
                   </span>
                   <div>
-                    <p className="text-sm font-bold text-gray-800 mb-1">{p.title}</p>
+                    <p className="text-base font-bold text-gray-800 mb-1">{p.title}</p>
                     <span
                       className="text-xs px-2 py-0.5 rounded-full font-medium"
                       style={{ backgroundColor: "#e6f7f5", color: "#3dbdac" }}
@@ -178,7 +178,7 @@ export default function KaguHodaiPage() {
                 >
                   Point {point.number}
                 </span>
-                <p className="text-sm text-gray-700 font-medium leading-relaxed whitespace-pre-line">
+                <p className="text-base text-gray-700 font-medium leading-relaxed whitespace-pre-line">
                   {point.title}
                 </p>
               </div>
@@ -194,7 +194,7 @@ export default function KaguHodaiPage() {
             他社サブスク / 家具購入 との<span style={{ color: "#3dbdac" }}>違い</span>
           </h2>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-base">
               <thead>
                 <tr className="text-center">
                   <th className="py-3 px-4 text-left text-gray-500 font-medium"></th>
@@ -250,12 +250,12 @@ export default function KaguHodaiPage() {
                 空間レイアウトをご提案する<br />
                 <span style={{ color: "#3dbdac" }}>「丸ごとプラン」</span>
               </h3>
-              <p className="text-sm text-gray-500 mb-6 leading-relaxed">
+              <p className="text-base text-gray-500 mb-6 leading-relaxed">
                 坪3,000円/月〜で、オフィス全体の家具をサブスクで利用可能。増員や働き方の変化に合わせた入替えも、月額費用内で対応できます。
               </p>
-              <h4 className="text-sm font-bold text-gray-700 mb-3">■ 月額利用料金（税抜）</h4>
+              <h4 className="text-base font-bold text-gray-700 mb-3">■ 月額利用料金（税抜）</h4>
               <div className="rounded-xl overflow-hidden mb-4">
-                <table className="w-full text-sm">
+                <table className="w-full text-base">
                   <thead>
                     <tr style={{ backgroundColor: "#3dbdac" }} className="text-white">
                       <th className="py-2 px-3 text-left">期間</th>
@@ -305,12 +305,12 @@ export default function KaguHodaiPage() {
                 椅子１脚から借りられる<br />
                 <span style={{ color: "#3dbdac" }}>「単品プラン」</span>
               </h3>
-              <p className="text-sm text-gray-500 mb-4 leading-relaxed">
+              <p className="text-base text-gray-500 mb-4 leading-relaxed">
                 オカムラのリユース家具がリーズナブルな値段で利用できます。オフィスチェア1脚 1,100円/月より。
               </p>
-              <h4 className="text-sm font-bold text-gray-700 mb-3">■ 月額利用料金（税抜）</h4>
+              <h4 className="text-base font-bold text-gray-700 mb-3">■ 月額利用料金（税抜）</h4>
               <div className="rounded-xl overflow-hidden mb-4">
-                <table className="w-full text-sm">
+                <table className="w-full text-base">
                   <thead>
                     <tr style={{ backgroundColor: "#3dbdac" }} className="text-white">
                       <th className="py-2 px-3 text-left">期間</th>
@@ -370,7 +370,7 @@ export default function KaguHodaiPage() {
                 className="flex flex-col items-center text-center p-4 rounded-2xl border border-gray-100 shadow-sm"
                 style={{ backgroundColor: "#f0fdfb" }}
               >
-                <p className="text-sm font-bold text-gray-800 mb-1">{s.name}</p>
+                <p className="text-base font-bold text-gray-800 mb-1">{s.name}</p>
                 <p className="text-xs text-gray-500">{s.description}</p>
               </div>
             ))}
@@ -390,7 +390,7 @@ export default function KaguHodaiPage() {
                   style={{ backgroundColor: "#3dbdac" }}
                 >
                   <span className="text-xs font-bold mb-1">{s.step}</span>
-                  <span className="text-sm font-semibold">{s.label}</span>
+                  <span className="text-base font-semibold">{s.label}</span>
                 </div>
                 {i < steps.length - 1 && (
                   <span className="text-2xl text-gray-300 mx-2 hidden sm:block">→</span>
@@ -417,7 +417,7 @@ export default function KaguHodaiPage() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
             href="/inquiry"
-            className="px-8 py-3 text-sm font-medium bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors"
+            className="px-8 py-3 text-base font-medium bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors"
             style={{ color: "#3dbdac" }}
           >
             お問い合わせ
@@ -426,7 +426,7 @@ export default function KaguHodaiPage() {
             href="https://bit.ly/novolba_kagu"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-8 py-3 text-sm font-medium border-2 border-white text-white rounded-full hover:bg-white/10 transition-colors"
+            className="px-8 py-3 text-base font-medium border-2 border-white text-white rounded-full hover:bg-white/10 transition-colors"
           >
             家具を探す
           </a>
