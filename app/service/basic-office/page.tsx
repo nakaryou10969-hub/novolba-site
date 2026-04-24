@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import FaqList, { basicOfficeFaqs } from "../../components/FaqList";
 
 export const metadata: Metadata = {
   title: "BASIC OFFICE Service | NovolBa",
@@ -74,9 +75,9 @@ const phases = [
 ];
 
 const pricing = [
-  { members: "5名", size: "8〜10坪", price: "160,000円〜/月" },
-  { members: "10名", size: "〜20坪", price: "280,000円〜/月" },
-  { members: "20名", size: "〜30坪", price: "450,000円〜/月" },
+  { members: "5名", size: "8〜10坪", price: "230,000円〜/月" },
+  { members: "10名", size: "〜20坪", price: "380,000円〜/月" },
+  { members: "20名", size: "〜30坪", price: "550,000円〜/月" },
 ];
 
 export default function BasicOfficePage() {
@@ -300,6 +301,16 @@ export default function BasicOfficePage() {
           >
             物件を探す
           </a>
+        </div>
+      </section>
+
+      {/* ===== FAQ ===== */}
+      <section className="py-16 px-6">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-xl font-bold text-center text-gray-800 mb-10">
+            よくある質問
+          </h2>
+          <FaqList faqs={basicOfficeFaqs} />
         </div>
       </section>
 

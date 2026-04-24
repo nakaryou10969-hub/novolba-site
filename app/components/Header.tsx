@@ -10,7 +10,6 @@ const navLinks = [
   { label: "NEWS", href: "/news" },
   { label: "MEDIA", href: "/media" },
   { label: "COMPANY", href: "/company" },
-  { label: "FAQ", href: "/faq" },
 ];
 
 export default function Header() {
