@@ -16,13 +16,16 @@ const companyInfo = [
   { label: "設立", value: "2021年11月12日" },
   {
     label: "本社",
-    value: "東京都渋谷区渋谷2-24-12 渋谷スクランブルスクエア 44階",
+    value: "東京都渋谷区渋谷2-24-12  渋谷スクランブルスクエア 44階",
   },
   {
     label: "営業所",
-    value: "東京都千代田区神田錦町3-15-16 錦町ブンカイサン 2階",
+    value: "東京都千代田区神田錦町3-15-16  錦町ブンカイサン 2階",
   },
-  { label: "主要株主", value: "株式会社オカムラ／株式会社ボーンレックス" },
+  {
+    label: "主要株主",
+    value: ["株式会社オカムラ", "株式会社ボーンレックス"],
+  },
 ];
 
 export default function CompanyPage() {
@@ -48,25 +51,40 @@ export default function CompanyPage() {
       {/* ===== 会社概要テーブル ===== */}
       <section className="py-24 px-6">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-xl font-bold text-gray-800 mb-10 text-center tracking-wide">
+          <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center tracking-wide">
             会社概要
           </h2>
+          <div className="flex justify-center mb-10">
+            <svg width="120" height="20" viewBox="0 0 120 20" fill="none" aria-hidden="true">
+              <path d="M10 10 Q30 2 60 10 Q90 18 110 10" stroke="#3dbdac" strokeWidth="2" fill="none" strokeLinecap="round"/>
+              <path d="M20 14 Q40 6 60 14 Q80 22 100 14" stroke="#3dbdac" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+            </svg>
+          </div>
 
-          <dl className="divide-y divide-gray-100 border-t border-gray-100">
-            {companyInfo.map((item) => (
+          <div className="rounded-2xl overflow-hidden border border-gray-100">
+            {companyInfo.map((item, index) => (
               <div
                 key={item.label}
-                className="flex flex-col sm:flex-row py-5 gap-2 sm:gap-8"
+                className="flex flex-col sm:flex-row"
+                style={{ backgroundColor: index % 2 === 0 ? "#e6f7f5" : "#f0fdfb" }}
               >
-                <dt className="sm:w-32 shrink-0 text-sm font-semibold text-gray-500">
+                <dt className="sm:w-40 shrink-0 text-sm font-semibold text-gray-700 px-8 py-5">
                   {item.label}
                 </dt>
-                <dd className="text-sm text-gray-700 leading-relaxed">
-                  {item.value}
+                <dd className="text-sm text-gray-700 leading-relaxed px-8 py-5 sm:pl-0">
+                  {Array.isArray(item.value) ? (
+                    <div className="flex flex-col gap-2">
+                      {item.value.map((v) => (
+                        <span key={v}>{v}</span>
+                      ))}
+                    </div>
+                  ) : (
+                    item.value
+                  )}
                 </dd>
               </div>
             ))}
-          </dl>
+          </div>
         </div>
       </section>
 
