@@ -104,34 +104,13 @@ export default function BasicOfficePage() {
 
       {/* ===== 成長フェーズ ===== */}
       <section className="py-16 px-6">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-xl font-bold text-center text-gray-800 mb-10">
-            スタートアップの成長フェーズに合わせて
-          </h2>
-          <div className="flex flex-col sm:flex-row items-end justify-center gap-4">
-            {phases.map((phase, i) => (
-              <div
-                key={phase.label}
-                className="flex flex-col items-center"
-                style={{ flex: i + 1 }}
-              >
-                <div
-                  className="w-full rounded-t-2xl flex items-center justify-center font-bold text-white text-lg py-4"
-                  style={{
-                    backgroundColor: "#3dbdac",
-                    opacity: 0.5 + i * 0.25,
-                    minHeight: `${80 + i * 60}px`,
-                  }}
-                >
-                  {phase.label}
-                </div>
-                <div className="w-full bg-gray-50 rounded-b-2xl p-4 text-center border border-gray-100">
-                  <p className="text-xs text-gray-500 mb-1">{phase.range}</p>
-                  <p className="text-xs font-semibold text-gray-700">{phase.stage}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="max-w-4xl mx-auto text-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/basic-office-phases.png"
+            alt="スタートアップの成長フェーズに合わせて"
+            className="w-full h-auto mx-auto"
+          />
         </div>
       </section>
 
