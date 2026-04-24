@@ -64,13 +64,14 @@ export default async function Home() {
 
         {/* スマホ：画像をそのまま表示してボタンを下に配置 */}
         <div className="flex flex-col md:hidden">
-          {/* 画像 */}
-          <div className="w-full">
+          {/* 画像：画面幅にフィット、左右はみ出しなし */}
+          <div className="w-full overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/header.img.png"
               alt="挑戦するスタートアップの昇る場を提供します"
-              className="w-full object-contain"
+              className="w-full h-auto block"
+              style={{ maxWidth: "100%", display: "block" }}
             />
           </div>
           {/* ボタン */}
@@ -92,9 +93,7 @@ export default async function Home() {
         </div>
 
         {/* PC：背景画像全体レイアウト */}
-        <div
-          className="hidden md:flex items-end justify-start min-h-[90vh]"
-        >
+        <div className="hidden md:flex items-end justify-start min-h-[90vh] relative overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/hero-illustration.png"
