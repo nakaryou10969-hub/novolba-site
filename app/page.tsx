@@ -62,45 +62,32 @@ export default async function Home() {
           style={{ backgroundColor: "#3dbdac" }}
         />
 
-        {/* スマホ：上下分割レイアウト */}
+        {/* スマホ：画像をそのまま表示してボタンを下に配置 */}
         <div className="flex flex-col md:hidden">
-          {/* テキスト部分 */}
-          <div
-            className="flex flex-col items-center text-center px-6 pt-16 pb-8"
-            style={{ background: "linear-gradient(180deg, #f0fdfb 0%, #ffffff 100%)" }}
-          >
-            <h1 className="text-3xl font-bold text-gray-800 leading-tight mb-4">
-              挑戦するスタートアップの<br />
-              <span style={{ color: "#3dbdac" }}>"昇る場"</span>を提供します。
-            </h1>
-            <p className="text-sm text-gray-600 leading-relaxed mb-1">オフィス移転もその後も。</p>
-            <p className="text-sm text-gray-600 leading-relaxed mb-6">
-              手軽に家具を入替えて、<span className="bg-yellow-200 px-1">いつも最高の空間を！</span>
-            </p>
-            <div className="flex flex-col gap-3 w-full max-w-xs">
-              <Link
-                href="/inquiry"
-                className="px-8 py-3 text-sm font-medium text-white rounded-full shadow-md hover:opacity-90 transition-opacity text-center"
-                style={{ backgroundColor: "#3dbdac" }}
-              >
-                お問い合わせ
-              </Link>
-              <Link
-                href="#service"
-                className="px-8 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-full shadow-sm hover:bg-gray-50 transition-colors text-center"
-              >
-                サービスを見る
-              </Link>
-            </div>
-          </div>
-          {/* イラスト部分 */}
+          {/* 画像 */}
           <div className="w-full">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/hero-illustration.png"
+              src="/header.img.png"
               alt="挑戦するスタートアップの昇る場を提供します"
-              className="w-full object-cover"
+              className="w-full object-contain"
             />
+          </div>
+          {/* ボタン */}
+          <div className="flex flex-row gap-3 justify-center px-6 py-5">
+            <Link
+              href="/inquiry"
+              className="px-5 py-2 text-xs font-medium text-white rounded-full shadow-md hover:opacity-90 transition-opacity"
+              style={{ backgroundColor: "#3dbdac" }}
+            >
+              お問い合わせ
+            </Link>
+            <Link
+              href="#service"
+              className="px-5 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-full shadow-sm hover:bg-gray-50 transition-colors"
+            >
+              サービスを見る
+            </Link>
           </div>
         </div>
 
