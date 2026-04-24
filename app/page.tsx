@@ -55,48 +55,90 @@ export default async function Home() {
     <main className="bg-white">
 
       {/* ===== Hero ===== */}
-      <section
-        className="relative flex items-end justify-start min-h-[90vh] overflow-hidden"
-      >
-        {/* 背景画像 */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/hero-illustration.png"
-          alt="挑戦するスタートアップの昇る場を提供します"
-          className="absolute inset-0 w-full h-full object-cover object-center"
-        />
-
+      <section className="relative overflow-hidden">
         {/* アクセントライン */}
         <div
           className="absolute top-0 left-0 right-0 h-1 z-10"
           style={{ backgroundColor: "#3dbdac" }}
         />
 
-        {/* ボタン */}
-        <div className="relative z-10 px-10 pb-16 flex flex-col sm:flex-row gap-4">
-          <Link
-            href="/inquiry"
-            className="px-8 py-3 text-sm font-medium text-white rounded-full shadow-md hover:opacity-90 transition-opacity"
-            style={{ backgroundColor: "#3dbdac" }}
+        {/* スマホ：上下分割レイアウト */}
+        <div className="flex flex-col md:hidden">
+          {/* テキスト部分 */}
+          <div
+            className="flex flex-col items-center text-center px-6 pt-16 pb-8"
+            style={{ background: "linear-gradient(180deg, #f0fdfb 0%, #ffffff 100%)" }}
           >
-            お問い合わせ
-          </Link>
-          <Link
-            href="#service"
-            className="px-8 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-full shadow-sm hover:bg-gray-50 transition-colors"
-          >
-            サービスを見る
-          </Link>
+            <h1 className="text-3xl font-bold text-gray-800 leading-tight mb-4">
+              挑戦するスタートアップの<br />
+              <span style={{ color: "#3dbdac" }}>"昇る場"</span>を提供します。
+            </h1>
+            <p className="text-sm text-gray-600 leading-relaxed mb-1">オフィス移転もその後も。</p>
+            <p className="text-sm text-gray-600 leading-relaxed mb-6">
+              手軽に家具を入替えて、<span className="bg-yellow-200 px-1">いつも最高の空間を！</span>
+            </p>
+            <div className="flex flex-col gap-3 w-full max-w-xs">
+              <Link
+                href="/inquiry"
+                className="px-8 py-3 text-sm font-medium text-white rounded-full shadow-md hover:opacity-90 transition-opacity text-center"
+                style={{ backgroundColor: "#3dbdac" }}
+              >
+                お問い合わせ
+              </Link>
+              <Link
+                href="#service"
+                className="px-8 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-full shadow-sm hover:bg-gray-50 transition-colors text-center"
+              >
+                サービスを見る
+              </Link>
+            </div>
+          </div>
+          {/* イラスト部分 */}
+          <div className="w-full">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/hero-illustration.png"
+              alt="挑戦するスタートアップの昇る場を提供します"
+              className="w-full object-cover"
+            />
+          </div>
         </div>
 
-        {/* スクロール */}
-        <div className="absolute bottom-8 right-6 flex flex-col items-center gap-1 text-gray-500 z-10">
-          <span
-            className="text-xs tracking-widest"
-            style={{ writingMode: "vertical-rl", letterSpacing: "0.3em" }}
-          >
-            SCROLL
-          </span>
+        {/* PC：背景画像全体レイアウト */}
+        <div
+          className="hidden md:flex items-end justify-start min-h-[90vh]"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/hero-illustration.png"
+            alt="挑戦するスタートアップの昇る場を提供します"
+            className="absolute inset-0 w-full h-full object-cover object-center"
+          />
+          {/* ボタン */}
+          <div className="relative z-10 px-10 pb-16 flex flex-col sm:flex-row gap-4">
+            <Link
+              href="/inquiry"
+              className="px-8 py-3 text-sm font-medium text-white rounded-full shadow-md hover:opacity-90 transition-opacity"
+              style={{ backgroundColor: "#3dbdac" }}
+            >
+              お問い合わせ
+            </Link>
+            <Link
+              href="#service"
+              className="px-8 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-full shadow-sm hover:bg-gray-50 transition-colors"
+            >
+              サービスを見る
+            </Link>
+          </div>
+          {/* スクロール */}
+          <div className="absolute bottom-8 right-6 flex flex-col items-center gap-1 text-gray-500 z-10">
+            <span
+              className="text-xs tracking-widest"
+              style={{ writingMode: "vertical-rl", letterSpacing: "0.3em" }}
+            >
+              SCROLL
+            </span>
+          </div>
         </div>
       </section>
 
