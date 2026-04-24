@@ -145,12 +145,12 @@ export default function KaguHodaiPage() {
                   <div>
                     <p className="text-base font-bold text-gray-800 mb-1">{p.title}</p>
                     <span
-                      className="text-xs px-2 py-0.5 rounded-full font-medium"
+                      className="text-sm px-2 py-0.5 rounded-full font-medium"
                       style={{ backgroundColor: "#e6f7f5", color: "#3dbdac" }}
                     >
                       {p.type}
                     </span>
-                    <p className="text-xs text-gray-500 leading-relaxed mt-2">{p.description}</p>
+                    <p className="text-sm text-gray-500 leading-relaxed mt-2">{p.description}</p>
                   </div>
                 </div>
               </div>
@@ -204,8 +204,8 @@ export default function KaguHodaiPage() {
                   >
                     NovolBa
                   </th>
-                  <th className="py-3 px-4 text-gray-500 font-medium bg-gray-50">他社サブスク S社</th>
-                  <th className="py-3 px-4 text-gray-500 font-medium bg-gray-50">他社サブスク C社</th>
+                  <th className="py-3 px-4 text-gray-500 font-medium bg-gray-50">A社</th>
+                  <th className="py-3 px-4 text-gray-500 font-medium bg-gray-50">B社</th>
                   <th className="py-3 px-4 text-gray-500 font-medium bg-gray-50">EC家具購入</th>
                 </tr>
               </thead>
