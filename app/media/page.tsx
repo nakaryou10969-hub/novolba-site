@@ -14,10 +14,11 @@ const CATEGORY_ORDER = [
   "インタビュー",
   "コラム",
   "対談",
-  "checkレポート",
+  "レポート",
   "イベント",
-  "スタートアップ昇る場速報",
-  "インタビュー組織作りの問い",
+  "スタートアップ昇る場",
+  "速報インタビュー",
+  "組織作りの問い",
 ];
 
 async function getAllBlogs(): Promise<Blog[]> {
@@ -96,17 +97,9 @@ export default async function MediaPage() {
   const pickupBlogs = allBlogs.filter((b) => b.pickup === true).slice(0, 3);
   const featuredBlogs = pickupBlogs.length > 0 ? pickupBlogs : allBlogs.slice(0, 3);
 
-  // カテゴリーをCATEGORY_ORDERの順に並べ替え
-  // microCMSのカテゴリー名と完全一致するものだけを指定順で表示
-  const orderedCategories: Category[] = [];
-  for (const name of CATEGORY_ORDER) {
-    const cat = categories.find((c) => c.name === name);
-    if (cat) orderedCategories.push(cat);
-  }
-  // CATEGORY_ORDERにないカテゴリーは表示しない（指定外は除外）
-
+  // microCMSから取得した全カテゴリーをそのまま使用（名前照合なし）
   // カテゴリー別に記事を振り分け（最新3件）
-  const categoryBlogs = orderedCategories.map((cat) => ({
+  const categoryBlogs = categories.map((cat) => ({
     category: cat,
     blogs: allBlogs
       .filter((b) => b.category?.id === cat.id)
