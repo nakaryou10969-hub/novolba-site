@@ -3,46 +3,78 @@
 import { useState } from "react";
 import Link from "next/link";
 
-const serviceOptions = [
-  "家具ホーダイ!! Service",
-  "BASIC OFFICE Service",
-  "ノボルバディ Service",
-  "その他・複数のサービス",
+const inquiryOptions = [
+  "物件を探してほしい",
+  "オススメ物件について",
+  "家具のサブスク「家具ホーダイ!!」について",
+  "場づくりの右腕「ノボルバディ」",
+  "優待について",
+  "その他",
 ];
 
-type FormState = {
-  name: string;
-  company: string;
-  email: string;
-  phone: string;
-  service: string;
-  message: string;
-};
+const budgetOptions = [
+  "20万円", "25万円", "30万円", "40万円", "50万円",
+  "60万円", "70万円", "80万円", "90万円", "100万円", "それ以上",
+];
+
+const areaOptions = ["渋谷・新宿", "五反田・品川・芝浦", "神田・人形町", "その他"];
+
+const howOptions = [
+  "Google検索広告", "Facebook広告", "Twitter", "note",
+  "プレスリリース", "アメリカン・エキスプレス", "ダイレクトメール", "知人からの紹介", "その他",
+];
 
 type Status = "idle" | "loading" | "success" | "error";
 
 export default function InquiryPage() {
-  const [form, setForm] = useState<FormState>({
-    name: "",
-    company: "",
-    email: "",
-    phone: "",
-    service: "",
-    message: "",
-  });
+  const [inquiryType, setInquiryType] = useState("");
+  const [areas, setAreas] = useState<string[]>([]);
+  const [areaOther, setAreaOther] = useState("");
+  const [budget, setBudget] = useState("");
+  const [company, setCompany] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [howList, setHowList] = useState<string[]>([]);
+  const [howOther, setHowOther] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  const toggleCheck = (
+    value: string,
+    list: string[],
+    setList: (v: string[]) => void
   ) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setList(
+      list.includes(value) ? list.filter((v) => v !== value) : [...list, value]
+    );
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("loading");
     setErrorMsg("");
+
+    const areaValue = [
+      ...areas.filter((a) => a !== "その他"),
+      ...(areas.includes("その他") && areaOther ? [`その他: ${areaOther}`] : []),
+    ].join("、");
+
+    const howValue = [
+      ...howList.filter((h) => h !== "その他"),
+      ...(howList.includes("その他") && howOther ? [`その他: ${howOther}`] : []),
+    ].join("、");
+
+    const payload = {
+      お問い合わせ種別: inquiryType,
+      希望エリア: areaValue,
+      月額予算: budget,
+      会社名: company,
+      氏名: name,
+      メールアドレス: email,
+      電話番号: phone,
+      サービスを知ったきっかけ: howValue,
+    };
 
     try {
       const res = await fetch("https://formspree.io/f/xlgaoovr", {
@@ -51,22 +83,22 @@ export default function InquiryPage() {
           "Content-Type": "application/json",
           "Accept": "application/json",
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || "送信に失敗しました。");
-      }
+      if (!res.ok) throw new Error(data.error || "送信に失敗しました。");
 
       setStatus("success");
-      setForm({ name: "", company: "", email: "", phone: "", service: "", message: "" });
     } catch (err) {
       setStatus("error");
       setErrorMsg(err instanceof Error ? err.message : "送信に失敗しました。");
     }
   };
+
+  const inputClass = "w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:border-transparent bg-white";
+  const labelClass = "block text-sm font-semibold text-gray-700 mb-1";
+  const requiredMark = <span className="text-red-500 text-xs ml-1">※必須</span>;
 
   return (
     <main className="bg-white">
@@ -92,16 +124,10 @@ export default function InquiryPage() {
 
           {/* 送信成功 */}
           {status === "success" && (
-            <div
-              className="rounded-2xl p-8 text-center mb-8"
-              style={{ backgroundColor: "#e6f7f5" }}
-            >
+            <div className="rounded-2xl p-8 text-center mb-8" style={{ backgroundColor: "#e6f7f5" }}>
               <p className="text-2xl mb-3">✅</p>
-              <h2 className="text-lg font-bold text-gray-800 mb-2">
-                お問い合わせを受け付けました
-              </h2>
+              <h2 className="text-lg font-bold text-gray-800 mb-2">お問い合わせを受け付けました</h2>
               <p className="text-sm text-gray-600 leading-relaxed mb-6">
-                ご入力いただいたメールアドレスに確認メールをお送りしました。<br />
                 担当者より2営業日以内にご連絡いたします。
               </p>
               <Link
@@ -114,118 +140,174 @@ export default function InquiryPage() {
             </div>
           )}
 
-          {/* フォーム */}
           {status !== "success" && (
-            <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-8">
 
-              {/* エラーメッセージ */}
               {status === "error" && (
                 <div className="rounded-xl bg-red-50 border border-red-200 p-4 text-sm text-red-600">
                   {errorMsg}
                 </div>
               )}
 
-              {/* お名前 */}
+              {/* お問い合わせ種別 */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  お名前 <span className="text-red-500 ml-1">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  value={form.name}
-                  onChange={handleChange}
-                  required
-                  placeholder="山田 太郎"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:border-transparent"
-                  style={{ "--tw-ring-color": "#3dbdac" } as React.CSSProperties}
-                />
-              </div>
-
-              {/* 会社名 */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  会社名
-                </label>
-                <input
-                  type="text"
-                  name="company"
-                  value={form.company}
-                  onChange={handleChange}
-                  placeholder="株式会社〇〇"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:border-transparent"
-                />
-              </div>
-
-              {/* メールアドレス */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  メールアドレス <span className="text-red-500 ml-1">*</span>
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  required
-                  placeholder="example@company.com"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:border-transparent"
-                />
-              </div>
-
-              {/* 電話番号 */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  電話番号
-                </label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={form.phone}
-                  onChange={handleChange}
-                  placeholder="03-0000-0000"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:border-transparent"
-                />
-              </div>
-
-              {/* ご興味のサービス */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  ご興味のサービス
+                <label className={labelClass}>
+                  お問い合わせ種別{requiredMark}
                 </label>
                 <select
-                  name="service"
-                  value={form.service}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:border-transparent bg-white"
+                  value={inquiryType}
+                  onChange={(e) => setInquiryType(e.target.value)}
+                  required
+                  className={inputClass}
                 >
                   <option value="">選択してください</option>
-                  {serviceOptions.map((opt) => (
+                  {inquiryOptions.map((opt) => (
                     <option key={opt} value={opt}>{opt}</option>
                   ))}
                 </select>
               </div>
 
-              {/* お問い合わせ内容 */}
+              {/* 希望エリア */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  お問い合わせ内容 <span className="text-red-500 ml-1">*</span>
+                <label className={labelClass}>
+                  希望エリア{requiredMark}
                 </label>
-                <textarea
-                  name="message"
-                  value={form.message}
-                  onChange={handleChange}
+                <p className="text-xs text-red-500 mb-1">（複数選択可）</p>
+                <p className="text-xs text-gray-500 mb-3">エリアから選択</p>
+                <div className="flex flex-wrap gap-4">
+                  {areaOptions.map((area) => (
+                    <label key={area} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={areas.includes(area)}
+                        onChange={() => toggleCheck(area, areas, setAreas)}
+                        className="w-4 h-4"
+                      />
+                      {area}
+                    </label>
+                  ))}
+                  {areas.includes("その他") && (
+                    <input
+                      type="text"
+                      value={areaOther}
+                      onChange={(e) => setAreaOther(e.target.value)}
+                      placeholder="エリアを入力"
+                      className="px-3 py-1 border border-gray-200 rounded-lg text-sm focus:outline-none"
+                    />
+                  )}
+                </div>
+              </div>
+
+              {/* 月額予算 */}
+              <div>
+                <label className={labelClass}>
+                  月額予算{requiredMark}
+                </label>
+                <p className="text-xs text-gray-500 mb-1">（目安：坪単価2万円前後）</p>
+                <p className="text-xs text-gray-500 mb-3">※月額料金には、人数分の家具、Wi-Fi、プリンター、ホワイトボードが含まれます。</p>
+                <select
+                  value={budget}
+                  onChange={(e) => setBudget(e.target.value)}
                   required
-                  rows={6}
-                  placeholder="ご質問・ご相談内容をご記入ください"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:border-transparent resize-none"
+                  className={inputClass}
+                >
+                  <option value="">選択してください</option>
+                  {budgetOptions.map((opt) => (
+                    <option key={opt} value={opt}>{opt}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* 会社名 */}
+              <div>
+                <label className={labelClass}>
+                  会社名{requiredMark}
+                </label>
+                <input
+                  type="text"
+                  value={company}
+                  onChange={(e) => setCompany(e.target.value)}
+                  required
+                  placeholder="例) 株式会社ノボルバ"
+                  className={inputClass}
                 />
               </div>
 
-              {/* プライバシーポリシー */}
-              <p className="text-xs text-gray-400 leading-relaxed">
-                送信いただいた個人情報は、お問い合わせへの回答および関連するご連絡のみに使用いたします。
-              </p>
+              {/* 氏名 */}
+              <div>
+                <label className={labelClass}>
+                  氏名{requiredMark}
+                </label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  placeholder="例) 昇場 二郎"
+                  className={inputClass}
+                />
+              </div>
+
+              {/* メールアドレス */}
+              <div>
+                <label className={labelClass}>
+                  メールアドレス{requiredMark}
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  placeholder="例) example@company.com"
+                  className={inputClass}
+                />
+              </div>
+
+              {/* 電話番号 */}
+              <div>
+                <label className={labelClass}>
+                  電話番号{requiredMark}
+                </label>
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                  placeholder="例) 09012345678"
+                  className={inputClass}
+                />
+              </div>
+
+              {/* 何でこのサービスを知りましたか */}
+              <div>
+                <label className={labelClass}>
+                  何でこのサービスを知りましたか{requiredMark}
+                </label>
+                <p className="text-xs text-red-500 mb-1">（複数選択可）</p>
+                <p className="text-xs text-gray-500 mb-3">※その他を選ばれた方はテキストボックスへ詳細をご記載ください</p>
+                <div className="flex flex-wrap gap-4">
+                  {howOptions.map((opt) => (
+                    <label key={opt} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={howList.includes(opt)}
+                        onChange={() => toggleCheck(opt, howList, setHowList)}
+                        className="w-4 h-4"
+                      />
+                      {opt}
+                    </label>
+                  ))}
+                  {howList.includes("その他") && (
+                    <input
+                      type="text"
+                      value={howOther}
+                      onChange={(e) => setHowOther(e.target.value)}
+                      placeholder="詳細を入力"
+                      className="px-3 py-1 border border-gray-200 rounded-lg text-sm focus:outline-none w-full mt-1"
+                    />
+                  )}
+                </div>
+              </div>
 
               {/* 送信ボタン */}
               <button
