@@ -26,7 +26,7 @@ img {
   height: auto;
 }
 
-/* コンテンツ幅を画面の90%に統一 */
+/* コンテンツ幅を画面の90%に統一（max-w-3xlはcompanyページ用に除外） */
 .max-w-5xl,
 .max-w-4xl,
 .max-w-2xl,

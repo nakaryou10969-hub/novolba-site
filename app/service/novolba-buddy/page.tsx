@@ -222,66 +222,6 @@ export default function NovolBaBuddyPage() {
         </div>
       </section>
 
-      {/* ===== OUR STRONG POINT ===== */}
-      <section className="py-16 px-6">
-        <div className="max-w-4xl mx-auto">
-          <p className="text-xs tracking-[0.3em] text-gray-400 uppercase mb-6 text-center">OUR STRONG POINT</p>
-          <h2 className="text-xl font-bold text-center text-gray-800 mb-4">
-            移転を<span style={{ color: "#3dbdac" }}>「価値」</span>に変え、<br />
-            スタートアップの成長を共にする
-          </h2>
-          <p className="text-sm text-center text-gray-500 mb-10 leading-relaxed">
-            物件が決まり、その後をNovolBaが右腕となって行います。<br />
-            スタートアップの成長の場を3者で共に創り上げていく世界を。<br />
-            このサイクルの循環が生まれることで、より満足度の高い、<br />
-            スタートアップそれぞれにとって、居心地の良い「場創り」を実現します。
-          </p>
-
-          {/* エコシステム */}
-          <div
-            className="rounded-2xl p-8 mb-12"
-            style={{ backgroundColor: "#e6f7f5" }}
-          >
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center text-sm">
-              {[
-                { label: "ユーザー", sub: "SU の成長を出資・支援でサポート" },
-                { label: "オフィス仲介", sub: "物件紹介" },
-                { label: "VC", sub: "場からアプローチ・連携・報告" },
-                { label: "ノボルバディ", sub: "移転を全力サポート・移転PM" },
-              ].map((item) => (
-                <div key={item.label} className="bg-white rounded-xl p-4 shadow-sm">
-                  <p className="font-bold text-gray-800 mb-1">{item.label}</p>
-                  <p className="text-xs text-gray-500">{item.sub}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* 3つの強み */}
-          <div className="flex flex-col gap-8">
-            {strongPoints.map((point) => (
-              <div key={point.keyword} className="flex items-start gap-6 bg-white rounded-2xl p-6 shadow-md">
-                <span className="text-4xl shrink-0">{point.icon}</span>
-                <div>
-                  <p
-                    className="text-xs font-bold tracking-widest mb-2"
-                    style={{ color: "#3dbdac" }}
-                  >
-                    ■ {point.keyword}
-                  </p>
-                  <p className="text-sm font-bold text-gray-800 mb-2 leading-relaxed">
-                    {point.title}
-                  </p>
-                  <p className="text-sm text-gray-500 leading-relaxed border-l-4 pl-4" style={{ borderColor: "#3dbdac" }}>
-                    {point.description}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ===== CTA ===== */}
       <section
         className="py-20 px-6 text-center text-white"

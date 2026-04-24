@@ -195,45 +195,118 @@ export default function BasicOfficePage() {
             NovolBaならすべて<span style={{ color: "#3dbdac" }}>解決</span>
           </h2>
 
-          <div className="flex flex-col gap-16">
-            {points.map((point, i) => (
-              <div
-                key={point.number}
-                className={`flex flex-col ${i % 2 === 0 ? "sm:flex-row" : "sm:flex-row-reverse"} gap-8 items-center`}
-              >
-                {/* テキスト */}
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span
-                      className="text-xs font-bold px-2 py-1 rounded-full"
-                      style={{ backgroundColor: "#e6f7f5", color: "#3dbdac" }}
-                    >
-                      Point {point.number}
-                    </span>
-                    <span className="text-xs text-gray-400">{point.category}</span>
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-800 mb-4">{point.title}</h3>
-                  <p className="text-sm text-gray-600 leading-relaxed mb-4">
-                    {point.description}
-                  </p>
-                </div>
-
-                {/* 詳細カード */}
-                <div
-                  className="flex-1 rounded-2xl p-6"
-                  style={{ backgroundColor: "#e6f7f5" }}
-                >
-                  <ul className="flex flex-col gap-3">
-                    {point.detail.map((d) => (
+          {/* 費用について */}
+          <div className="mb-16">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="w-1 h-8 rounded-full" style={{ backgroundColor: "#3dbdac" }} />
+              <h3 className="text-lg font-bold text-gray-800">費用について</h3>
+              <span className="text-xs px-2 py-1 rounded-full font-bold" style={{ backgroundColor: "#e6f7f5", color: "#3dbdac" }}>Point 01</span>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-8 items-start">
+              <div className="flex-1">
+                <h4 className="text-xl font-bold text-gray-800 mb-3">安心の定額制</h4>
+                <p className="text-sm text-gray-600 leading-relaxed mb-4">
+                  入退去時にかかる高額な費用がかからず、支払いは毎月定額制。大切な資金を事業に有効活用でき、キャッシュフローが安定します。
+                </p>
+                <div className="rounded-2xl p-6" style={{ backgroundColor: "#e6f7f5" }}>
+                  <p className="text-sm font-bold text-gray-700 mb-3">NovolBaなら不要な費用</p>
+                  <ul className="flex flex-col gap-2">
+                    {["敷金・礼金・仲介手数料：不要", "家具・内装費：不要", "原状回復費：不要", "毎月のサービス利用料のみ"].map((d) => (
                       <li key={d} className="flex items-start gap-2 text-sm text-gray-700">
-                        <span style={{ color: "#3dbdac" }} className="mt-0.5 shrink-0">✓</span>
+                        <span style={{ color: "#3dbdac" }} className="shrink-0">✓</span>
                         <span>{d}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
               </div>
-            ))}
+              <div className="flex-1 rounded-2xl p-6 bg-white border border-gray-100 shadow-sm">
+                <p className="text-sm font-bold text-gray-700 mb-4 text-center">従来 vs NovolBa（30坪・1年間）</p>
+                <div className="flex gap-4 items-end justify-center mb-2">
+                  <div className="text-center">
+                    <div className="bg-gray-200 rounded-t-lg w-20 flex items-end justify-center" style={{ height: "120px" }}>
+                      <span className="text-xs text-gray-500 pb-2">従来</span>
+                    </div>
+                    <p className="text-sm font-bold text-gray-700 mt-1">870万円</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="rounded-t-lg w-20 flex items-end justify-center" style={{ height: "30px", backgroundColor: "#3dbdac" }}>
+                      <span className="text-xs text-white pb-1">NovolBa</span>
+                    </div>
+                    <p className="text-sm font-bold mt-1" style={{ color: "#3dbdac" }}>約97%削減</p>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-400 text-center">月額定額で低コスト運用</p>
+              </div>
+            </div>
+          </div>
+
+          {/* 期間について */}
+          <div className="mb-16">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="w-1 h-8 rounded-full" style={{ backgroundColor: "#3dbdac" }} />
+              <h3 className="text-lg font-bold text-gray-800">期間について</h3>
+              <span className="text-xs px-2 py-1 rounded-full font-bold" style={{ backgroundColor: "#e6f7f5", color: "#3dbdac" }}>Point 02</span>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-8 items-start">
+              <div className="flex-1">
+                <h4 className="text-xl font-bold text-gray-800 mb-3">入退去時期を柔軟に</h4>
+                <p className="text-sm text-gray-600 leading-relaxed mb-4">
+                  契約は6カ月毎更新、3か月前通知で退去できます。契約期間に縛られず、スピーディーな拡張移転が可能です。
+                </p>
+              </div>
+              <div className="flex-1 rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr style={{ backgroundColor: "#3dbdac" }} className="text-white">
+                      <th className="py-3 px-4 text-left"></th>
+                      <th className="py-3 px-4 text-left">契約期間</th>
+                      <th className="py-3 px-4 text-left">退去通知</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="bg-gray-50">
+                      <td className="py-3 px-4 text-gray-500 text-xs">通常の賃貸</td>
+                      <td className="py-3 px-4 text-gray-700">2年契約</td>
+                      <td className="py-3 px-4 text-gray-700">6か月前</td>
+                    </tr>
+                    <tr className="bg-white">
+                      <td className="py-3 px-4 font-bold text-xs" style={{ color: "#3dbdac" }}>NovolBa</td>
+                      <td className="py-3 px-4 font-bold" style={{ color: "#3dbdac" }}>6か月更新</td>
+                      <td className="py-3 px-4 font-bold" style={{ color: "#3dbdac" }}>3か月前</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          {/* 手間について */}
+          <div>
+            <div className="flex items-center gap-3 mb-6">
+              <span className="w-1 h-8 rounded-full" style={{ backgroundColor: "#3dbdac" }} />
+              <h3 className="text-lg font-bold text-gray-800">手間について</h3>
+              <span className="text-xs px-2 py-1 rounded-full font-bold" style={{ backgroundColor: "#e6f7f5", color: "#3dbdac" }}>Point 03</span>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-8 items-start">
+              <div className="flex-1">
+                <h4 className="text-xl font-bold text-gray-800 mb-3">移転の手間を最小化</h4>
+                <p className="text-sm text-gray-600 leading-relaxed mb-4">
+                  ご希望をヒアリングし、通常の賃貸オフィスを「家具付き占有オフィス」としてご用意します。面倒な契約や手続きがなく、身軽に移転できます。
+                </p>
+              </div>
+              <div className="flex-1 rounded-2xl p-6" style={{ backgroundColor: "#e6f7f5" }}>
+                <p className="text-sm font-bold text-gray-700 mb-3">NovolBaが代行するもの</p>
+                <ul className="flex flex-col gap-2">
+                  {["不動産・保証の手配", "内装・レイアウトの設計", "家具・備品の調達", "各種契約の代行"].map((d) => (
+                    <li key={d} className="flex items-start gap-2 text-sm text-gray-700">
+                      <span style={{ color: "#3dbdac" }} className="shrink-0">✓</span>
+                      <span>{d}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </section>
