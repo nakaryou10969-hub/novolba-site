@@ -18,11 +18,21 @@ body {
   color: var(--foreground);
   font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
   overflow-x: hidden;
+  font-size: 16px;
 }
 
 img {
   max-width: 100%;
   height: auto;
+}
+
+/* コンテンツ幅を画面の90%に統一 */
+.max-w-5xl,
+.max-w-4xl,
+.max-w-3xl,
+.max-w-2xl,
+.max-w-xl {
+  max-width: 90vw !important;
 }
 
 .line-clamp-2 {
