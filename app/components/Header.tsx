@@ -21,10 +21,13 @@ export default function Header() {
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
 
         {/* ロゴ */}
-        <Link href="/" className="flex items-center gap-2" onClick={() => setMenuOpen(false)}>
-          <span className="text-xl font-bold tracking-widest text-gray-800">
-            Novol<span style={{ color: "#3dbdac" }}>Ba</span>
-          </span>
+        <Link href="/" className="flex items-center" onClick={() => setMenuOpen(false)}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo.png"
+            alt="NovolBa"
+            className="h-10 w-auto object-contain"
+          />
         </Link>
 
         {/* デスクトップナビ */}
