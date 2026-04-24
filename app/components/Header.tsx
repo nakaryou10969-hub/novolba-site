@@ -26,7 +26,7 @@ export default function Header() {
           <img
             src="/logo.png"
             alt="NovolBa"
-            className="h-10 w-auto object-contain"
+            className="h-6 w-auto object-contain"
           />
         </Link>
 
