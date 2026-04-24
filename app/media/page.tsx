@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { client, type Blog, type Category, type MicroCMSListResponse } from "../../libs/client";
 import { extractFirstImage } from "../../libs/extractFirstImage";
+import MediaSearch from "./MediaSearch";
 
 export const metadata: Metadata = {
   title: "MEDIA | NovolBa",
@@ -119,6 +120,13 @@ export default async function MediaPage() {
         <h1 className="text-4xl font-bold tracking-widest text-gray-800 mb-2">WITH by NovolBa</h1>
         <p className="text-sm text-gray-500">スタートアップのリアルを届けるメディア</p>
         <div className="mt-4 w-12 h-0.5" style={{ backgroundColor: "#3dbdac" }} />
+      </section>
+
+      {/* ===== 検索 ===== */}
+      <section className="py-10 px-6 bg-white border-b border-gray-100">
+        <div className="max-w-5xl mx-auto">
+          <MediaSearch allBlogs={allBlogs} />
+        </div>
       </section>
 
       {/* ===== PICKUP ===== */}
