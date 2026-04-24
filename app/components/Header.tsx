@@ -36,14 +36,14 @@ export default function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-xs font-medium tracking-widest text-gray-600 hover:text-teal-500 transition-colors"
+              className="text-sm font-medium tracking-widest text-gray-600 hover:text-teal-500 transition-colors"
             >
               {link.label}
             </Link>
           ))}
           <Link
             href="/inquiry"
-            className="ml-2 px-4 py-2 text-xs font-medium tracking-widest text-white rounded-full transition-opacity hover:opacity-90"
+            className="ml-2 px-4 py-2 text-sm font-medium tracking-widest text-white rounded-full transition-opacity hover:opacity-90"
             style={{ backgroundColor: "#3dbdac" }}
           >
             お問い合わせ

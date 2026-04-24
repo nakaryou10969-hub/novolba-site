@@ -64,7 +64,7 @@ export default async function NewsPage() {
                       className="flex gap-4 py-6 group hover:opacity-80 transition-opacity"
                     >
                       {/* サムネイル */}
-                      <div className="shrink-0 w-24 h-16 sm:w-32 sm:h-20 relative rounded-lg overflow-hidden bg-gray-100">
+                      <div className="shrink-0 w-40 h-28 sm:w-52 sm:h-36 relative rounded-lg overflow-hidden bg-gray-100">
                         {blog.eyecatch ? (
                           <Image
                             src={blog.eyecatch.url}
@@ -113,7 +113,7 @@ export default async function NewsPage() {
                             </span>
                           )}
                         </div>
-                        <h2 className="text-sm font-semibold text-gray-800 leading-snug line-clamp-2 group-hover:underline">
+                        <h2 className="text-sm font-semibold text-gray-800 leading-snug truncate group-hover:underline">
                           {blog.title}
                         </h2>
                       </div>
