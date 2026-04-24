@@ -12,7 +12,7 @@ const footerLinks = [
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-800 text-white">
+    <footer className="bg-gray-100 text-gray-700">
       <div className="max-w-6xl mx-auto px-6 py-12">
         {/* ロゴ */}
         <div className="text-center mb-8">
@@ -20,10 +20,10 @@ export default function Footer() {
           <img
             src="/logo.png"
             alt="NovolBa"
-            style={{ height: "36px", width: "auto", filter: "brightness(0) invert(1)" }}
+            style={{ height: "36px", width: "auto" }}
             className="object-contain mx-auto"
           />
-          <p className="mt-2 text-xs text-gray-400 tracking-wide">
+          <p className="mt-2 text-xs text-gray-500 tracking-wide">
             挑戦するスタートアップの"昇る場"を提供します。
           </p>
         </div>
@@ -34,7 +34,7 @@ export default function Footer() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-xs tracking-widest text-gray-400 hover:text-white transition-colors"
+              className="text-xs tracking-widest text-gray-500 hover:text-gray-800 transition-colors"
             >
               {link.label}
             </Link>
@@ -42,7 +42,7 @@ export default function Footer() {
         </nav>
 
         {/* コピーライト */}
-        <p className="text-center text-xs text-gray-500">
+        <p className="text-center text-xs text-gray-400">
           Copyright ©{new Date().getFullYear()} All rights reserved | NovolBa
         </p>
       </div>

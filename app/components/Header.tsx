@@ -25,7 +25,7 @@ export default function Header() {
           <img
             src="/logo.png"
             alt="NovolBa"
-            style={{ height: "28px", width: "auto" }}
+            style={{ height: "32px", width: "auto" }}
             className="object-contain"
           />
         </Link>
