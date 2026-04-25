@@ -97,28 +97,6 @@ export default function BasicOfficePage() {
         <div className="mt-6 w-12 h-0.5" style={{ backgroundColor: "#3dbdac" }} />
       </section>
 
-      {/* ===== 成長フェーズ ===== */}
-      <section className="py-16 px-6">
-        <div className="max-w-4xl mx-auto">
-          {/* 画像の上に重ねるテキスト */}
-          <div className="text-center mb-8" style={{ width: "80vw", margin: "0 auto 2rem" }}>
-            <p className="text-2xl text-gray-600 leading-relaxed mb-2">
-              事業の成長には、それを支える<strong style={{ color: "#3dbdac" }}>メンバーの増員</strong>が不可欠です。
-            </p>
-            <p className="text-2xl text-gray-600 leading-relaxed">
-              メンバーが快適に働き、活躍できるオフィスが、
-              <mark className="bg-yellow-100 px-1">更に事業を加速させます。</mark>
-            </p>
-          </div>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/stepup.png"
-            alt="スタートアップの成長フェーズに合わせて"
-            style={{ width: "60%", height: "auto", margin: "0 auto", display: "block" }}
-          />
-        </div>
-      </section>
-
       {/* ===== 従来の課題 ===== */}
       <section className="py-16 px-6 bg-gray-50">
         <div className="max-w-4xl mx-auto">
@@ -126,9 +104,19 @@ export default function BasicOfficePage() {
             しかし、オフィス移転には<br />
             様々な<span style={{ color: "#3dbdac" }}>課題</span>が生じます。
           </h2>
-          <h3 className="text-lg font-bold text-center text-gray-700 mb-10">
+          <h3 className="text-lg font-bold text-center text-gray-700 mb-8">
             従来のオフィス移転の<span style={{ color: "#3dbdac" }}>課題</span>
           </h3>
+
+          {/* problem.png */}
+          <div className="flex justify-center mb-8">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/problem.png"
+              alt="従来のオフィス移転の課題"
+              style={{ width: "70%", height: "auto" }}
+            />
+          </div>
 
           {/* 費用の内訳 */}
           <div
@@ -159,16 +147,6 @@ export default function BasicOfficePage() {
             </p>
           </div>
 
-          {/* 3つの課題 */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {problems.map((problem) => (
-              <div key={problem.title} className="bg-white rounded-2xl p-6 shadow-md text-center">
-                <span className="text-3xl mb-3 block">{problem.icon}</span>
-                <h4 className="text-lg font-bold text-gray-800 mb-3">{problem.title}</h4>
-                <p className="text-base text-gray-500 leading-relaxed">{problem.description}</p>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
