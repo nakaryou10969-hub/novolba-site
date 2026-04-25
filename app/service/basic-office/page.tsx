@@ -94,17 +94,22 @@ export default function BasicOfficePage() {
         <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-4">
           BASIC OFFICE Service
         </h1>
-        <p className="text-lg text-gray-600 leading-relaxed max-w-xl">
-          事業の成長には、それを支える<strong style={{ color: "#3dbdac" }}>メンバーの増員</strong>が不可欠です。<br />
-          メンバーが快適に働き、活躍できるオフィスが、
-          <mark className="bg-yellow-100 px-1">更に事業を加速させます。</mark>
-        </p>
         <div className="mt-6 w-12 h-0.5" style={{ backgroundColor: "#3dbdac" }} />
       </section>
 
       {/* ===== 成長フェーズ ===== */}
       <section className="py-16 px-6">
-        <div className="max-w-4xl mx-auto text-center">
+        <div className="max-w-4xl mx-auto">
+          {/* 画像の上に重ねるテキスト */}
+          <div className="text-center mb-6">
+            <p className="text-lg text-gray-600 leading-relaxed">
+              事業の成長には、それを支える<strong style={{ color: "#3dbdac" }}>メンバーの増員</strong>が不可欠です。
+            </p>
+            <p className="text-lg text-gray-600 leading-relaxed">
+              メンバーが快適に働き、活躍できるオフィスが、
+              <mark className="bg-yellow-100 px-1">更に事業を加速させます。</mark>
+            </p>
+          </div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/basic-office-phases.png"
