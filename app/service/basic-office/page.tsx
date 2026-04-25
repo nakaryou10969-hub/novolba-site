@@ -101,11 +101,11 @@ export default function BasicOfficePage() {
       <section className="py-16 px-6">
         <div className="max-w-4xl mx-auto">
           {/* 画像の上に重ねるテキスト */}
-          <div className="text-center mb-6">
-            <p className="text-xl text-gray-600 leading-relaxed">
+          <div className="text-center mb-8" style={{ width: "80vw", margin: "0 auto 2rem" }}>
+            <p className="text-2xl text-gray-600 leading-relaxed mb-2">
               事業の成長には、それを支える<strong style={{ color: "#3dbdac" }}>メンバーの増員</strong>が不可欠です。
             </p>
-            <p className="text-xl text-gray-600 leading-relaxed">
+            <p className="text-2xl text-gray-600 leading-relaxed">
               メンバーが快適に働き、活躍できるオフィスが、
               <mark className="bg-yellow-100 px-1">更に事業を加速させます。</mark>
             </p>
@@ -114,7 +114,7 @@ export default function BasicOfficePage() {
           <img
             src="/stepup.png"
             alt="スタートアップの成長フェーズに合わせて"
-            className="w-full h-auto mx-auto"
+            style={{ width: "60%", height: "auto", margin: "0 auto", display: "block" }}
           />
         </div>
       </section>
