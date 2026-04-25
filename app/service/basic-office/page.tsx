@@ -102,17 +102,17 @@ export default function BasicOfficePage() {
         <div className="max-w-4xl mx-auto">
           {/* 画像の上に重ねるテキスト */}
           <div className="text-center mb-6">
-            <p className="text-lg text-gray-600 leading-relaxed">
+            <p className="text-xl text-gray-600 leading-relaxed">
               事業の成長には、それを支える<strong style={{ color: "#3dbdac" }}>メンバーの増員</strong>が不可欠です。
             </p>
-            <p className="text-lg text-gray-600 leading-relaxed">
+            <p className="text-xl text-gray-600 leading-relaxed">
               メンバーが快適に働き、活躍できるオフィスが、
               <mark className="bg-yellow-100 px-1">更に事業を加速させます。</mark>
             </p>
           </div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/basic-office-phases.png"
+            src="/stepup.png"
             alt="スタートアップの成長フェーズに合わせて"
             className="w-full h-auto mx-auto"
           />
