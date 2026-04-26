@@ -12,8 +12,24 @@ export const metadata: Metadata = {
 async function getBlogs(): Promise<MicroCMSListResponse<Blog>> {
   return client.getList<Blog>({
     endpoint: "blogs",
+    queries: {
+      limit: 100,
+      orders: "-publishedAt",
+      filters: "category[exists]",
+    },
+  });
+}
+
+async function getBlogsWithoutCategory(): Promise<MicroCMSListResponse<Blog>> {
+  // カテゴリーなしの記事を取得（全件取得してJS側でフィルタ）
+  const all = await client.getList<Blog>({
+    endpoint: "blogs",
     queries: { limit: 100, orders: "-publishedAt" },
   });
+  return {
+    ...all,
+    contents: all.contents.filter((b) => !b.category),
+  };
 }
 
 async function getCategories(): Promise<MicroCMSListResponse<Category>> {
@@ -25,7 +41,7 @@ async function getCategories(): Promise<MicroCMSListResponse<Category>> {
 
 export default async function NewsPage() {
   const [blogsData, categoriesData] = await Promise.all([
-    getBlogs(),
+    getBlogsWithoutCategory(),
     getCategories(),
   ]);
 
