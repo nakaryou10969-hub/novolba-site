@@ -316,8 +316,8 @@ export default function BasicOfficePage() {
         className="py-20 px-6 text-center text-white"
         style={{ backgroundColor: "#3dbdac" }}
       >
-        <h2 className="text-xl sm:text-2xl font-bold mb-4">まずはお気軽にご相談ください</h2>
-        <p className="text-sm text-white/80 mb-8 max-w-md mx-auto leading-relaxed">
+        <h2 className="text-2xl sm:text-3xl font-bold mb-4">まずはお気軽にご相談ください</h2>
+        <p className="text-lg text-white/90 mb-8 mx-auto leading-relaxed whitespace-nowrap">
           渋谷・新宿・人形町・五反田エリアを中心に「NovolBaオフィス」を展開しています。
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
