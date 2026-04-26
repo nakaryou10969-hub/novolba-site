@@ -12,14 +12,11 @@ export const metadata: Metadata = {
 
 // 表示するカテゴリーの順序を固定
 const CATEGORY_ORDER = [
-  "インタビュー",
-  "コラム",
-  "対談",
-  "レポート",
+  "user's VOICE",
   "イベント",
-  "スタートアップ昇る場",
-  "速報インタビュー",
-  "組織作りの問い",
+  "オフィスサービス",
+  "プレスリリース",
+  "メディア",
 ];
 
 async function getAllBlogs(): Promise<Blog[]> {
@@ -162,7 +159,13 @@ export default async function MediaPage() {
                   style={{ backgroundColor: "#3dbdac" }}
                 />
                 <h2 className="text-lg font-bold text-gray-800 tracking-wide">
-                  {cb.category.name}
+                  <Link
+                    href={`/news/category/${cb.category.id}`}
+                    className="hover:opacity-70 transition-opacity"
+                    style={{ color: "#3dbdac" }}
+                  >
+                    {cb.category.name}
+                  </Link>
                 </h2>
               </div>
               {cb.blogs.length >= 3 && (
