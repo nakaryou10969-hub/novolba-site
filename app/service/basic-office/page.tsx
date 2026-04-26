@@ -100,13 +100,10 @@ export default function BasicOfficePage() {
       {/* ===== 従来の課題 ===== */}
       <section className="py-16 px-6 bg-gray-50">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-xl font-bold text-center text-gray-800 mb-4">
+          <h2 className="text-xl font-bold text-center text-gray-800 mb-8">
             しかし、オフィス移転には<br />
             様々な<span style={{ color: "#3dbdac" }}>課題</span>が生じます。
           </h2>
-          <h3 className="text-lg font-bold text-center text-gray-700 mb-8">
-            従来のオフィス移転の<span style={{ color: "#3dbdac" }}>課題</span>
-          </h3>
 
           {/* problem.png */}
           <div className="flex justify-center mb-8">
