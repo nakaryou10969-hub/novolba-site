@@ -87,10 +87,20 @@ export default async function MediaPage() {
   const featuredArticles = pickupArticles.length > 0 ? pickupArticles : allArticles.slice(0, 3);
 
   // カテゴリーごとに振り分け（最新3件）
+  // セレクトフィールドは文字列またはオブジェクト形式で返る可能性があるため両対応
+  const getCategoryName = (article: WithArticle): string => {
+    if (!article.category) return "";
+    if (typeof article.category === "string") return article.category;
+    if (typeof article.category === "object" && "name" in (article.category as object)) {
+      return (article.category as { name: string }).name;
+    }
+    return String(article.category);
+  };
+
   const categoryGroups = CATEGORY_ORDER.map((cat) => ({
     name: cat,
     articles: allArticles
-      .filter((a) => a.category === cat)
+      .filter((a) => getCategoryName(a) === cat)
       .slice(0, 3),
   }));
 
