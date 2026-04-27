@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { client, type Blog, type Category, type MicroCMSListResponse } from "../../libs/client";
+import { client, type WithArticle } from "../../libs/client";
 import { extractFirstImage } from "../../libs/extractFirstImage";
 import MediaSearch from "./MediaSearch";
 
@@ -10,44 +10,38 @@ export const metadata: Metadata = {
   description: "WITH by NovolBa。スタートアップのリアルを届けるメディア。インタビュー・イベント・コラムなど。",
 };
 
-// 表示するカテゴリーの順序を固定
+// withAPIのカテゴリー順序
 const CATEGORY_ORDER = [
-  "user's VOICE",
+  "インタビュー",
+  "速報インタビュー",
+  "対談",
+  "スタートアップ昇る場",
   "イベント",
-  "オフィスサービス",
-  "プレスリリース",
-  "メディア",
+  "レポート",
+  "コラム",
 ];
 
-async function getAllBlogs(): Promise<Blog[]> {
-  const data = await client.getList<Blog>({
-    endpoint: "blogs",
+async function getAllWithArticles(): Promise<WithArticle[]> {
+  const data = await client.getList<WithArticle>({
+    endpoint: "with",
     queries: { limit: 100, orders: "-publishedAt" },
   });
   return data.contents;
 }
 
-async function getCategories(): Promise<Category[]> {
-  const data = await client.getList<Category>({
-    endpoint: "categories",
-    queries: { limit: 20 },
-  });
-  return data.contents;
-}
-
-function BlogCard({ blog }: { blog: Blog }) {
-  const thumb = blog.eyecatch?.url ?? extractFirstImage(blog.content) ?? null;
+function ArticleCard({ article }: { article: WithArticle }) {
+  const thumb = article.eyecatch?.url ?? extractFirstImage(article.content) ?? null;
 
   return (
     <Link
-      href={`/news/${blog.id}`}
+      href={`/with/${article.id}`}
       className="flex flex-col rounded-xl overflow-hidden bg-white hover:shadow-lg transition-shadow group border border-gray-100"
     >
       <div className="relative w-full aspect-[16/9] bg-gray-100">
         {thumb ? (
           <Image
             src={thumb}
-            alt={blog.title}
+            alt={article.title}
             fill
             className="object-cover"
             sizes="(max-width: 640px) 100vw, 33vw"
@@ -62,19 +56,19 @@ function BlogCard({ blog }: { blog: Blog }) {
         )}
       </div>
       <div className="flex flex-col gap-2 p-4 flex-1">
-        {blog.category && (
+        {article.category && (
           <span
             className="text-xs font-medium px-2 py-0.5 rounded-full w-fit"
             style={{ backgroundColor: "#e6f7f5", color: "#3dbdac" }}
           >
-            {blog.category.name}
+            {article.category}
           </span>
         )}
         <h3 className="text-sm font-semibold text-gray-800 leading-snug line-clamp-2 group-hover:underline">
-          {blog.title}
+          {article.title}
         </h3>
-        <time dateTime={blog.publishedAt} className="mt-auto text-xs text-gray-400">
-          {new Date(blog.publishedAt).toLocaleDateString("ja-JP", {
+        <time dateTime={article.publishedAt} className="mt-auto text-xs text-gray-400">
+          {new Date(article.publishedAt).toLocaleDateString("ja-JP", {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -86,21 +80,17 @@ function BlogCard({ blog }: { blog: Blog }) {
 }
 
 export default async function MediaPage() {
-  const [allBlogs, categories] = await Promise.all([
-    getAllBlogs(),
-    getCategories(),
-  ]);
+  const allArticles = await getAllWithArticles();
 
-  // ピックアップ記事（pickup=trueのもの、なければ最新3件）
-  const pickupBlogs = allBlogs.filter((b) => b.pickup === true).slice(0, 3);
-  const featuredBlogs = pickupBlogs.length > 0 ? pickupBlogs : allBlogs.slice(0, 3);
+  // ピックアップ（pickup=trueのもの、なければ最新3件）
+  const pickupArticles = allArticles.filter((a) => a.pickup === true).slice(0, 3);
+  const featuredArticles = pickupArticles.length > 0 ? pickupArticles : allArticles.slice(0, 3);
 
-  // microCMSから取得した全カテゴリーをそのまま使用（名前照合なし）
-  // カテゴリー別に記事を振り分け（最新3件）
-  const categoryBlogs = [...categories].reverse().map((cat) => ({
-    category: cat,
-    blogs: allBlogs
-      .filter((b) => b.category?.id === cat.id)
+  // カテゴリーごとに振り分け（最新3件）
+  const categoryGroups = CATEGORY_ORDER.map((cat) => ({
+    name: cat,
+    articles: allArticles
+      .filter((a) => a.category === cat)
       .slice(0, 3),
   }));
 
@@ -122,7 +112,7 @@ export default async function MediaPage() {
       {/* ===== 検索 ===== */}
       <section className="py-10 px-6 bg-white border-b border-gray-100">
         <div className="max-w-5xl mx-auto">
-          <MediaSearch allBlogs={allBlogs} />
+          <MediaSearch allBlogs={allArticles as any} />
         </div>
       </section>
 
@@ -130,66 +120,51 @@ export default async function MediaPage() {
       <section className="py-16 px-6">
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center gap-3 mb-8">
-            <span
-              className="w-1 h-6 rounded-full"
-              style={{ backgroundColor: "#3dbdac" }}
-            />
+            <span className="w-1 h-6 rounded-full" style={{ backgroundColor: "#3dbdac" }} />
             <h2 className="text-lg font-bold text-gray-800 tracking-wide">PICKUP</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {featuredBlogs.map((blog) => (
-              <BlogCard key={blog.id} blog={blog} />
+            {featuredArticles.map((article) => (
+              <ArticleCard key={article.id} article={article} />
             ))}
           </div>
         </div>
       </section>
 
       {/* ===== カテゴリー別 ===== */}
-      {categoryBlogs.map((cb, index) => (
+      {categoryGroups.map((group, index) => (
         <section
-          key={cb.category.id}
+          key={group.name}
           className={`py-16 px-6 ${index % 2 === 0 ? "bg-gray-50" : "bg-white"}`}
         >
           <div className="max-w-5xl mx-auto">
-            {/* カテゴリーヘッダー */}
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-3">
-                <span
-                  className="w-1 h-6 rounded-full"
-                  style={{ backgroundColor: "#3dbdac" }}
-                />
-                <h2 className="text-lg font-bold text-gray-800 tracking-wide">
-                  <Link
-                    href={`/news/category/${cb.category.id}`}
-                    className="hover:opacity-70 transition-opacity"
-                    style={{ color: "#3dbdac" }}
-                  >
-                    {cb.category.name}
-                  </Link>
+                <span className="w-1 h-6 rounded-full" style={{ backgroundColor: "#3dbdac" }} />
+                <h2 className="text-lg font-bold tracking-wide" style={{ color: "#3dbdac" }}>
+                  {group.name}
                 </h2>
               </div>
-              {cb.blogs.length >= 3 && (
+              {group.articles.length >= 3 && (
                 <Link
-                  href={`/news/category/${cb.category.id}`}
+                  href={`/with/category/${encodeURIComponent(group.name)}`}
                   className="text-xs font-medium hover:opacity-70 transition-opacity flex items-center gap-1"
                   style={{ color: "#3dbdac" }}
                 >
-                  もっと見る
-                  <span>→</span>
+                  もっと見る <span>→</span>
                 </Link>
               )}
             </div>
 
-            {/* 記事が3件未満の場合 */}
-            {cb.blogs.length < 3 ? (
+            {group.articles.length < 3 ? (
               <div className="flex flex-col items-center justify-center py-12 rounded-2xl border-2 border-dashed border-gray-200">
                 <p className="text-sm text-gray-400 mb-1">記事の更新をお待ちください</p>
                 <p className="text-xs text-gray-300">Coming Soon...</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                {cb.blogs.map((blog) => (
-                  <BlogCard key={blog.id} blog={blog} />
+                {group.articles.map((article) => (
+                  <ArticleCard key={article.id} article={article} />
                 ))}
               </div>
             )}
@@ -200,7 +175,7 @@ export default async function MediaPage() {
       {/* ===== 全記事へのリンク ===== */}
       <section className="py-12 px-6 text-center bg-white border-t border-gray-100">
         <Link
-          href="/news"
+          href="/with"
           className="inline-block px-10 py-3 text-sm font-medium border-2 rounded-full transition-colors hover:text-white hover:bg-teal-500"
           style={{ borderColor: "#3dbdac", color: "#3dbdac" }}
         >

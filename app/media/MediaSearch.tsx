@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { Blog } from "../../libs/client";
+// Blog型はMediaSearchの内部では使わないが互換性のため残す
 import { extractFirstImage } from "../../libs/extractFirstImage";
 
 function BlogCard({ blog }: { blog: Blog }) {
@@ -38,7 +39,7 @@ function BlogCard({ blog }: { blog: Blog }) {
             className="text-xs font-medium px-2 py-0.5 rounded-full w-fit"
             style={{ backgroundColor: "#e6f7f5", color: "#3dbdac" }}
           >
-            {blog.category.name}
+            {typeof blog.category === "string" ? blog.category : blog.category.name}
           </span>
         )}
         <h3 className="text-sm font-semibold text-gray-800 leading-snug line-clamp-2 group-hover:underline">
@@ -56,7 +57,7 @@ function BlogCard({ blog }: { blog: Blog }) {
   );
 }
 
-export default function MediaSearch({ allBlogs }: { allBlogs: Blog[] }) {
+export default function MediaSearch({ allBlogs }: { allBlogs: { id: string; title: string; content: string; publishedAt: string; category?: any; eyecatch?: { url: string } }[] }) {
   const [query, setQuery] = useState("");
 
   const results = useMemo(() => {

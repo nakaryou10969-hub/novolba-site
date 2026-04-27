@@ -36,6 +36,26 @@ export type Blog = {
   };
 };
 
+// with APIの記事型（categoryはセレクトフィールド=文字列）
+export type WithArticle = {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  revisedAt: string;
+  title: string;
+  content: string;
+  slug?: string;
+  author?: string;
+  pickup?: boolean;
+  category?: string;
+  eyecatch?: {
+    url: string;
+    height: number;
+    width: number;
+  };
+};
+
 export type Service = {
   id: string;
   createdAt: string;
