@@ -112,7 +112,7 @@ export default async function MediaPage() {
       {/* ===== 検索 ===== */}
       <section className="py-10 px-6 bg-white border-b border-gray-100">
         <div className="max-w-5xl mx-auto">
-          <MediaSearch allBlogs={allArticles as any} />
+          <MediaSearch allBlogs={allArticles} />
         </div>
       </section>
 

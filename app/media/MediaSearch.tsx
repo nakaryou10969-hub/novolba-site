@@ -3,23 +3,33 @@
 import { useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import type { Blog } from "../../libs/client";
-// Blog型はMediaSearchの内部では使わないが互換性のため残す
 import { extractFirstImage } from "../../libs/extractFirstImage";
 
-function BlogCard({ blog }: { blog: Blog }) {
-  const thumb = blog.eyecatch?.url ?? extractFirstImage(blog.content) ?? null;
+type Article = {
+  id: string;
+  title: string;
+  content: string;
+  publishedAt: string;
+  category?: string | { id: string; name: string };
+  eyecatch?: { url: string };
+};
+
+function ArticleCard({ article }: { article: Article }) {
+  const thumb = article.eyecatch?.url ?? extractFirstImage(article.content) ?? null;
+  const categoryName = typeof article.category === "string"
+    ? article.category
+    : article.category?.name;
 
   return (
     <Link
-      href={`/news/${blog.id}`}
+      href={`/with/${article.id}`}
       className="flex flex-col rounded-xl overflow-hidden bg-white hover:shadow-lg transition-shadow group border border-gray-100"
     >
       <div className="relative w-full aspect-[16/9] bg-gray-100">
         {thumb ? (
           <Image
             src={thumb}
-            alt={blog.title}
+            alt={article.title}
             fill
             className="object-cover"
             sizes="(max-width: 640px) 100vw, 33vw"
@@ -34,19 +44,19 @@ function BlogCard({ blog }: { blog: Blog }) {
         )}
       </div>
       <div className="flex flex-col gap-2 p-4 flex-1">
-        {blog.category && (
+        {categoryName && (
           <span
             className="text-xs font-medium px-2 py-0.5 rounded-full w-fit"
             style={{ backgroundColor: "#e6f7f5", color: "#3dbdac" }}
           >
-            {typeof blog.category === "string" ? blog.category : blog.category.name}
+            {categoryName}
           </span>
         )}
         <h3 className="text-sm font-semibold text-gray-800 leading-snug line-clamp-2 group-hover:underline">
-          {blog.title}
+          {article.title}
         </h3>
-        <time dateTime={blog.publishedAt} className="mt-auto text-xs text-gray-400">
-          {new Date(blog.publishedAt).toLocaleDateString("ja-JP", {
+        <time dateTime={article.publishedAt} className="mt-auto text-xs text-gray-400">
+          {new Date(article.publishedAt).toLocaleDateString("ja-JP", {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -57,17 +67,21 @@ function BlogCard({ blog }: { blog: Blog }) {
   );
 }
 
-export default function MediaSearch({ allBlogs }: { allBlogs: { id: string; title: string; content: string; publishedAt: string; category?: any; eyecatch?: { url: string } }[] }) {
+export default function MediaSearch({ allBlogs }: { allBlogs: Article[] }) {
   const [query, setQuery] = useState("");
 
   const results = useMemo(() => {
-    const q = query.trim();
+    const q = query.trim().toLowerCase();
     if (!q) return [];
-    return allBlogs.filter(
-      (b) =>
-        b.title.toLowerCase().includes(q.toLowerCase()) ||
-        b.category?.name.toLowerCase().includes(q.toLowerCase())
-    );
+    return allBlogs.filter((b) => {
+      const categoryName = typeof b.category === "string"
+        ? b.category
+        : b.category?.name ?? "";
+      return (
+        b.title.toLowerCase().includes(q) ||
+        categoryName.toLowerCase().includes(q)
+      );
+    });
   }, [query, allBlogs]);
 
   const isSearching = query.trim().length > 0;
@@ -109,8 +123,8 @@ export default function MediaSearch({ allBlogs }: { allBlogs: { id: string; titl
                 「{query}」の検索結果：{results.length}件
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                {results.map((blog) => (
-                  <BlogCard key={blog.id} blog={blog} />
+                {results.map((article) => (
+                  <ArticleCard key={article.id} article={article} />
                 ))}
               </div>
             </>
