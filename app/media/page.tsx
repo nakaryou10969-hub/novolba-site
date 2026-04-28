@@ -130,10 +130,9 @@ export default async function MediaPage() {
           <img
             src="/withlogo.png"
             alt="WITH by NovolBa"
-            style={{ height: "48px", width: "auto" }}
-            className="object-contain mb-2"
+            style={{ width: "50%", height: "auto" }}
+            className="object-contain"
           />
-          <p className="text-sm text-gray-500">スタートアップと共に</p>
         </div>
       </section>
 
