@@ -130,17 +130,18 @@ export default function OfficesPage() {
             ))}
           </div>
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div
-              className="rounded-2xl p-6 text-center text-white"
-              style={{ backgroundColor: "#3dbdac" }}
-            >
-              <p className="text-sm font-bold mb-2">NovolBaがオフィスに必要なものを揃えます</p>
-              <p className="text-xs text-white/80">家具・WiFi・レイアウト・各種契約をまとめてサポート</p>
-            </div>
-            <div className="rounded-2xl p-6 text-center bg-white border-2" style={{ borderColor: "#3dbdac" }}>
-              <p className="text-sm font-bold text-gray-800 mb-2">ずっと定額なのでキャッシュフローも読みやすい</p>
-              <p className="text-xs text-gray-500">毎月のサービス利用料のみ。予算管理が簡単です</p>
-            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/comparison1.png"
+              alt="NovolBaがオフィスに必要なものを揃えます"
+              className="w-full h-auto rounded-2xl"
+            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/comparison2.png"
+              alt="ずっと定額なのでキャッシュフローも読みやすい"
+              className="w-full h-auto rounded-2xl"
+            />
           </div>
         </div>
       </section>
