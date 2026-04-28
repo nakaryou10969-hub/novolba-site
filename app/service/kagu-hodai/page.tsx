@@ -215,14 +215,14 @@ export default function KaguHodaiPage() {
                   <tr key={row.item} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
                     <td className="py-3 px-4 text-gray-700 font-medium">{row.item}</td>
                     <td
-                      className="py-3 px-4 text-center font-bold text-xl"
+                      className="py-3 px-4 text-center font-bold text-3xl"
                       style={{ color: "#3dbdac", backgroundColor: "#f0fdfb" }}
                     >
                       {row.novolba}
                     </td>
-                    <td className="py-3 px-4 text-center text-gray-500 text-xl">{row.s}</td>
-                    <td className="py-3 px-4 text-center text-gray-500 text-xl">{row.c}</td>
-                    <td className="py-3 px-4 text-center text-gray-500 text-xl">{row.ec}</td>
+                    <td className="py-3 px-4 text-center text-gray-500 text-3xl font-bold">{row.s}</td>
+                    <td className="py-3 px-4 text-center text-gray-500 text-3xl font-bold">{row.c}</td>
+                    <td className="py-3 px-4 text-center text-gray-500 text-3xl font-bold">{row.ec}</td>
                   </tr>
                 ))}
               </tbody>
