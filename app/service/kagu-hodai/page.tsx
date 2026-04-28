@@ -37,22 +37,18 @@ const points = [
   {
     number: "01",
     title: "オフィス家具大手\nオカムラの\nリユース家具使用",
-    icon: "🪑",
   },
   {
     number: "02",
     title: "サブスク型で\n初期費用削減",
-    icon: "💰",
   },
   {
     number: "03",
     title: "オフィスのプロに\nいつでも相談可能",
-    icon: "💬",
   },
   {
     number: "04",
     title: "働き方の変化に\n対応して\n入れ替えできる",
-    icon: "🔄",
   },
 ];
 
@@ -169,16 +165,15 @@ export default function KaguHodaiPage() {
             {points.map((point) => (
               <div
                 key={point.number}
-                className="flex flex-col items-center text-center p-6 bg-white rounded-2xl shadow-md"
+                className="flex flex-col items-center text-center p-8 bg-white rounded-2xl shadow-md"
               >
-                <span className="text-3xl mb-2">{point.icon}</span>
                 <span
-                  className="text-xs font-bold px-2 py-0.5 rounded-full mb-3"
+                  className="text-sm font-bold px-3 py-1 rounded-full mb-4"
                   style={{ backgroundColor: "#e6f7f5", color: "#3dbdac" }}
                 >
                   Point {point.number}
                 </span>
-                <p className="text-base text-gray-700 font-medium leading-relaxed whitespace-pre-line">
+                <p className="text-lg text-gray-700 font-bold leading-relaxed whitespace-pre-line">
                   {point.title}
                 </p>
               </div>
