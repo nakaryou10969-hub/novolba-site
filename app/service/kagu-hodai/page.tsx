@@ -193,8 +193,9 @@ export default function KaguHodaiPage() {
           <h2 className="text-xl font-bold text-center text-gray-800 mb-10">
             他社サブスク / 家具購入 との<span style={{ color: "#3dbdac" }}>違い</span>
           </h2>
-          <div className="overflow-x-auto">
-            <table className="w-full text-base">
+          <div className="flex justify-center">
+            <div className="overflow-x-auto" style={{ width: "70%" }}>
+            <table className="w-full text-lg">
               <thead>
                 <tr className="text-center">
                   <th className="py-3 px-4 text-left text-gray-500 font-medium"></th>
@@ -214,18 +215,19 @@ export default function KaguHodaiPage() {
                   <tr key={row.item} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
                     <td className="py-3 px-4 text-gray-700 font-medium">{row.item}</td>
                     <td
-                      className="py-3 px-4 text-center font-bold text-lg"
+                      className="py-3 px-4 text-center font-bold text-xl"
                       style={{ color: "#3dbdac", backgroundColor: "#f0fdfb" }}
                     >
                       {row.novolba}
                     </td>
-                    <td className="py-3 px-4 text-center text-gray-500">{row.s}</td>
-                    <td className="py-3 px-4 text-center text-gray-500">{row.c}</td>
-                    <td className="py-3 px-4 text-center text-gray-500">{row.ec}</td>
+                    <td className="py-3 px-4 text-center text-gray-500 text-xl">{row.s}</td>
+                    <td className="py-3 px-4 text-center text-gray-500 text-xl">{row.c}</td>
+                    <td className="py-3 px-4 text-center text-gray-500 text-xl">{row.ec}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         </div>
       </section>

@@ -151,7 +151,7 @@ export default async function MediaPage() {
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-3">
                 <span className="w-1 h-6 rounded-full" style={{ backgroundColor: "#3dbdac" }} />
-                <h2 className="text-lg font-bold tracking-wide" style={{ color: "#3dbdac" }}>
+                <h2 className="text-xl font-bold tracking-wide" style={{ color: "#3dbdac" }}>
                   {group.name}
                 </h2>
               </div>
