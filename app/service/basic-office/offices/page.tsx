@@ -132,13 +132,13 @@ export default function OfficesPage() {
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/comparison1.png"
+              src="/comparison3.png"
               alt="NovolBaがオフィスに必要なものを揃えます"
               className="w-full h-auto rounded-2xl"
             />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/comparison2.png"
+              src="/comparison4.png"
               alt="ずっと定額なのでキャッシュフローも読みやすい"
               className="w-full h-auto rounded-2xl"
             />
