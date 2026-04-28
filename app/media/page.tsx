@@ -128,8 +128,8 @@ export default async function MediaPage() {
         <div className="max-w-5xl mx-auto flex flex-col items-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/logo.png"
-            alt="NovolBa"
+            src="/withlogo.png"
+            alt="WITH by NovolBa"
             style={{ height: "48px", width: "auto" }}
             className="object-contain mb-2"
           />
