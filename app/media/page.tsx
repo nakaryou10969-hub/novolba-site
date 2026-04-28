@@ -125,27 +125,91 @@ export default async function MediaPage() {
 
       {/* ===== ページヘッダー ===== */}
       <section className="py-10 px-6 text-center bg-white border-b-4" style={{ borderColor: "#3dbdac" }}>
-        <div className="max-w-5xl mx-auto">
-          <h1 className="text-5xl font-bold tracking-widest text-gray-900 mb-1" style={{ fontFamily: "serif" }}>
-            WiTH
-          </h1>
+        <div className="max-w-5xl mx-auto flex flex-col items-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo.png"
+            alt="NovolBa"
+            style={{ height: "48px", width: "auto" }}
+            className="object-contain mb-2"
+          />
           <p className="text-sm text-gray-500">スタートアップと共に</p>
         </div>
       </section>
 
       {/* ===== PICKUP ===== */}
-      <section className="px-6 py-0 bg-gray-800">
+      <section className="px-6 py-0" style={{ backgroundColor: "#3dbdac" }}>
         <div className="max-w-5xl mx-auto">
           {pickupArticles.length >= 3 ? (
             <div className="grid grid-cols-3 gap-1 py-1">
               {/* 左：大きいカード */}
               <div className="col-span-2">
-                <ArticleCard article={pickupArticles[0]} large={true} />
+                <Link
+                  href={`/with/${pickupArticles[0].id}/`}
+                  className="flex flex-col rounded-xl overflow-hidden bg-white hover:shadow-lg transition-shadow group border border-gray-100 h-full"
+                >
+                  <div className="relative w-full aspect-[16/9] bg-gray-100">
+                    {(() => {
+                      const thumb = pickupArticles[0].eyecatch?.url ?? extractFirstImage(pickupArticles[0].content) ?? null;
+                      return thumb ? (
+                        <Image src={thumb} alt={pickupArticles[0].title} fill className="object-cover" sizes="66vw" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center" style={{ backgroundColor: "#3dbdac" }}>
+                          <span className="text-white text-sm font-bold px-4 text-center">{pickupArticles[0].title}</span>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                  <div className="flex flex-col gap-2 p-4 flex-1">
+                    {pickupArticles[0].category && (
+                      <span className="text-xs font-medium px-2 py-0.5 rounded-full w-fit" style={{ backgroundColor: "#e6f7f5", color: "#3dbdac" }}>
+                        {getCategoryName(pickupArticles[0])}
+                      </span>
+                    )}
+                    <h3 className="text-base font-semibold text-gray-800 leading-snug line-clamp-2 group-hover:underline">
+                      {pickupArticles[0].title}
+                    </h3>
+                    <time dateTime={pickupArticles[0].publishedAt} className="mt-auto text-xs text-gray-400">
+                      {new Date(pickupArticles[0].publishedAt).toLocaleDateString("ja-JP", { year: "numeric", month: "long", day: "numeric" })}
+                    </time>
+                  </div>
+                </Link>
               </div>
-              {/* 右：小さい2枚 */}
+              {/* 右：小さい2枚（同じアスペクト比） */}
               <div className="flex flex-col gap-1">
-                <ArticleCard article={pickupArticles[1]} />
-                <ArticleCard article={pickupArticles[2]} />
+                {[pickupArticles[1], pickupArticles[2]].map((article) => {
+                  const thumb = article.eyecatch?.url ?? extractFirstImage(article.content) ?? null;
+                  return (
+                    <Link
+                      key={article.id}
+                      href={`/with/${article.id}/`}
+                      className="flex flex-col rounded-xl overflow-hidden bg-white hover:shadow-lg transition-shadow group border border-gray-100 flex-1"
+                    >
+                      <div className="relative w-full aspect-[16/9] bg-gray-100">
+                        {thumb ? (
+                          <Image src={thumb} alt={article.title} fill className="object-cover" sizes="33vw" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center" style={{ backgroundColor: "#3dbdac" }}>
+                            <span className="text-white text-xs font-bold px-2 text-center">{article.title}</span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex flex-col gap-1 p-3 flex-1">
+                        {article.category && (
+                          <span className="text-xs font-medium px-2 py-0.5 rounded-full w-fit" style={{ backgroundColor: "#e6f7f5", color: "#3dbdac" }}>
+                            {getCategoryName(article)}
+                          </span>
+                        )}
+                        <h3 className="text-xs font-semibold text-gray-800 leading-snug line-clamp-2 group-hover:underline">
+                          {article.title}
+                        </h3>
+                        <time dateTime={article.publishedAt} className="mt-auto text-xs text-gray-400">
+                          {new Date(article.publishedAt).toLocaleDateString("ja-JP", { year: "numeric", month: "short", day: "numeric" })}
+                        </time>
+                      </div>
+                    </Link>
+                  );
+                })}
               </div>
             </div>
           ) : (
