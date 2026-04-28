@@ -138,7 +138,7 @@ export default async function MediaPage() {
 
       {/* ===== PICKUP ===== */}
       <section className="px-6 py-0" style={{ backgroundColor: "#3dbdac" }}>
-        <div className="max-w-5xl mx-auto">
+        <div style={{ width: "70%", margin: "0 auto" }}>
           {pickupArticles.length >= 3 ? (
             <div className="grid grid-cols-3 gap-1 py-1">
               {/* 左：大きいカード */}
