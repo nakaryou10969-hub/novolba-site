@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "家具ホーダイ!! 製品ラインナップ | NovolBa",
   description: "NovolBa家具ホーダイ!!の製品ラインナップ。オカムラのリユース家具をリーズナブルな月額制でご提供します。",
 };
+
+const PDF_TOTAL_PAGES = 23;
 
 const furnitureCategories = [
   {
@@ -191,13 +194,43 @@ export default function FurniturePage() {
           <div className="text-center mt-10">
             <p className="text-sm text-gray-500 mb-4">全ラインナップの詳細はこちら</p>
             <a
-              href="https://bit.ly/novolba-kagu"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#catalog"
               className="inline-block px-8 py-3 text-sm font-medium text-white rounded-full hover:opacity-90 transition-opacity"
               style={{ backgroundColor: "#3dbdac" }}
             >
-              家具リストを見る →
+              カタログを見る ↓
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== PDF CATALOG ===== */}
+      <section id="catalog" className="py-16 px-6 bg-gray-50">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-lg font-bold text-gray-800 mb-2 text-center tracking-wide">CATALOG</h2>
+          <p className="text-xs text-center text-gray-400 mb-8">
+            【NovolBa】家具ホーダイ 製品カタログ
+          </p>
+          <div className="rounded-xl overflow-hidden shadow-lg bg-white">
+            {/* eslint-disable-next-line jsx-a11y/iframe-has-title */}
+            <iframe
+              src="/kagu-hodai-catalog.pdf#toolbar=0&navpanes=0&scrollbar=1&view=FitH"
+              title="家具ホーダイ 製品カタログ"
+              className="w-full border-0"
+              style={{ height: "85vh", minHeight: "600px" }}
+            />
+          </div>
+          <p className="text-xs text-center text-gray-400 mt-4">
+            ※ PDFが表示されない場合は下のボタンからダウンロードしてご覧ください
+          </p>
+          <div className="text-center mt-4">
+            <a
+              href="/kagu-hodai-catalog.pdf"
+              download
+              className="inline-block px-8 py-3 text-sm font-medium text-white rounded-full hover:opacity-90 transition-opacity"
+              style={{ backgroundColor: "#3dbdac" }}
+            >
+              PDFをダウンロード →
             </a>
           </div>
         </div>
