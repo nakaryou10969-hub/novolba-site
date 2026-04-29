@@ -73,7 +73,12 @@ export default function MessagePage() {
 
           {/* 署名 */}
           <div className="mt-16 pt-8 border-t border-gray-100 text-center">
-            <p className="text-sm text-gray-400 tracking-wide">NovolBa</p>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo.png"
+              alt="NovolBa"
+              className="inline-block h-12 w-auto opacity-60"
+            />
           </div>
         </div>
       </section>
