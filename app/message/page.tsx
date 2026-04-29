@@ -77,7 +77,7 @@ export default function MessagePage() {
             <img
               src="/logo.png"
               alt="NovolBa"
-              className="inline-block h-12 w-auto opacity-60"
+              className="inline-block h-8 w-auto opacity-60"
             />
           </div>
         </div>
