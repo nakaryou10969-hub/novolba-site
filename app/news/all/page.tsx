@@ -1,35 +1,22 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { client, type Blog, type Category, type MicroCMSListResponse } from "../../libs/client";
-import { extractFirstImage } from "../../libs/extractFirstImage";
+import { client, type Blog, type Category, type MicroCMSListResponse } from "../../../libs/client";
+import { extractFirstImage } from "../../../libs/extractFirstImage";
 
 export const metadata: Metadata = {
-  title: "NEWS | NovolBa",
-  description: "NovolBaの最新ニュース・イベント情報・メディア掲載情報をお届けします。",
+  title: "NEWS 記事一覧 | NovolBa",
+  description: "NovolBaのニュース・お知らせ・イベント情報の記事一覧です。",
 };
 
-async function getBlogs(): Promise<MicroCMSListResponse<Blog>> {
+async function getAllBlogs(): Promise<MicroCMSListResponse<Blog>> {
   return client.getList<Blog>({
     endpoint: "blogs",
     queries: {
       limit: 100,
       orders: "-publishedAt",
-      filters: "category[exists]",
     },
   });
-}
-
-async function getBlogsWithoutCategory(): Promise<MicroCMSListResponse<Blog>> {
-  // カテゴリーなしの記事を取得（全件取得してJS側でフィルタ）
-  const all = await client.getList<Blog>({
-    endpoint: "blogs",
-    queries: { limit: 100, orders: "-publishedAt" },
-  });
-  return {
-    ...all,
-    contents: all.contents.filter((b) => !b.category),
-  };
 }
 
 async function getCategories(): Promise<MicroCMSListResponse<Category>> {
@@ -39,13 +26,11 @@ async function getCategories(): Promise<MicroCMSListResponse<Category>> {
   });
 }
 
-export default async function NewsPage() {
+export default async function NewsAllPage() {
   const [blogsData, categoriesData] = await Promise.all([
-    getBlogsWithoutCategory(),
+    getAllBlogs(),
     getCategories(),
   ]);
-
-  const latestBlogs = blogsData.contents.slice(0, 5);
 
   return (
     <main className="bg-white">
@@ -58,8 +43,8 @@ export default async function NewsPage() {
         }}
       >
         <div className="absolute top-0 left-0 right-0 h-1" style={{ backgroundColor: "#3dbdac" }} />
-        <p className="text-xs tracking-[0.3em] text-gray-400 uppercase mb-3">Latest Information</p>
-        <h1 className="text-4xl font-bold tracking-widest text-gray-800">NEWS</h1>
+        <p className="text-xs tracking-[0.3em] text-gray-400 uppercase mb-3">All Articles</p>
+        <h1 className="text-4xl font-bold tracking-widest text-gray-800">NEWS 記事一覧</h1>
         <div className="mt-4 w-12 h-0.5" style={{ backgroundColor: "#3dbdac" }} />
       </section>
 
@@ -167,76 +152,19 @@ export default async function NewsPage() {
               )}
             </div>
 
-            {/* 最新の投稿 */}
+            {/* NEWSに戻る */}
             <div>
-              <h3 className="text-sm font-bold text-gray-700 tracking-widest mb-4 pb-2 border-b border-gray-200">
-                最新の投稿
-              </h3>
-              <ul className="flex flex-col gap-4">
-                {latestBlogs.map((blog) => (
-                  <li key={blog.id}>
-                    <Link
-                      href={`/news/${blog.id}`}
-                      className="flex gap-3 group hover:opacity-80 transition-opacity"
-                    >
-                      <div className="shrink-0 w-14 h-10 relative rounded overflow-hidden bg-gray-100">
-                        {blog.eyecatch ? (
-                          <Image
-                            src={blog.eyecatch.url}
-                            alt={blog.title}
-                            fill
-                            className="object-cover"
-                            sizes="56px"
-                          />
-                        ) : extractFirstImage(blog.content) ? (
-                          <Image
-                            src={extractFirstImage(blog.content)!}
-                            alt={blog.title}
-                            fill
-                            className="object-cover"
-                            sizes="56px"
-                          />
-                        ) : (
-                          <div
-                            className="w-full h-full flex items-center justify-center text-sm"
-                            style={{ backgroundColor: "#e6f7f5" }}
-                          >
-                            📝
-                          </div>
-                        )}
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-xs text-gray-400 mb-0.5">
-                          {new Date(blog.publishedAt).toLocaleDateString("ja-JP", {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          })}
-                        </p>
-                        <p className="text-xs text-gray-700 leading-snug line-clamp-2 group-hover:underline">
-                          {blog.title}
-                        </p>
-                      </div>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+              <Link
+                href="/news"
+                className="inline-flex items-center gap-2 text-sm font-medium hover:opacity-70 transition-opacity"
+                style={{ color: "#3dbdac" }}
+              >
+                <span>←</span>
+                NEWSに戻る
+              </Link>
             </div>
 
           </aside>
-        </div>
-      </section>
-
-      {/* ===== すべてのNEWSを見る ===== */}
-      <section className="pb-16 px-6">
-        <div className="text-center">
-          <Link
-            href="/news/all"
-            className="inline-block px-10 py-4 text-sm font-medium text-white rounded-full hover:opacity-90 transition-opacity"
-            style={{ backgroundColor: "#3dbdac" }}
-          >
-            すべてのNEWSを見る →
-          </Link>
         </div>
       </section>
 
