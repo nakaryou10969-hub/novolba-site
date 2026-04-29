@@ -130,19 +130,18 @@ export default async function MediaPage() {
           <img
             src="/withlogo.png"
             alt="WITH by NovolBa"
-            style={{ width: "50%", height: "auto" }}
-            className="object-contain"
+            className="w-3/4 sm:w-1/2 h-auto object-contain"
           />
         </div>
       </section>
 
       {/* ===== PICKUP ===== */}
-      <section className="px-6 py-0" style={{ backgroundColor: "#3dbdac" }}>
-        <div style={{ width: "70%", margin: "0 auto" }}>
+      <section className="px-4 sm:px-6 py-0" style={{ backgroundColor: "#3dbdac" }}>
+        <div className="w-full sm:w-[85%] lg:w-[70%] mx-auto">
           {pickupArticles.length >= 3 ? (
-            <div className="grid grid-cols-3 gap-1 py-1">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 py-1">
               {/* 左：大きいカード */}
-              <div className="col-span-2">
+              <div className="sm:col-span-2">
                 <Link
                   href={`/with/${pickupArticles[0].id}/`}
                   className="flex flex-col rounded-xl overflow-hidden bg-white hover:shadow-lg transition-shadow group border border-gray-100 h-full"

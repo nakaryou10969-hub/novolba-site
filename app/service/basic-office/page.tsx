@@ -111,7 +111,7 @@ export default function BasicOfficePage() {
             <img
               src="/problem.png"
               alt="従来のオフィス移転の課題"
-              style={{ width: "80%", height: "auto" }}
+              className="w-full sm:w-4/5 h-auto"
             />
           </div>
 
@@ -157,15 +157,15 @@ export default function BasicOfficePage() {
           {/* ===== 費用 01 ===== */}
           <div className="mb-16 rounded-3xl border-2 p-8" style={{ borderColor: "#3dbdac", backgroundColor: "#f0fdfb" }}>
             <div className="flex items-center gap-4 mb-6 justify-center">
-              <div className="rounded-full border-2 px-6 py-3 flex items-center gap-3" style={{ borderColor: "#3dbdac" }}>
-                <span className="text-3xl font-bold" style={{ color: "#3dbdac" }}>01</span>
-                <span className="text-xl font-bold text-gray-800">入退去月の出費を大幅カット</span>
+              <div className="rounded-full border-2 px-4 sm:px-6 py-3 flex items-center gap-3" style={{ borderColor: "#3dbdac" }}>
+                <span className="text-2xl sm:text-3xl font-bold" style={{ color: "#3dbdac" }}>01</span>
+                <span className="text-base sm:text-xl font-bold text-gray-800">入退去月の出費を大幅カット</span>
               </div>
             </div>
-            <p className="text-center text-lg text-gray-600 mb-2">
+            <p className="text-center text-sm sm:text-lg text-gray-600 mb-2">
               通常賃貸オフィスでかかる <span className="underline font-bold">契約時初期費用（敷金・礼金・仲介手数料）</span>や、
             </p>
-            <p className="text-center text-lg font-bold text-gray-800 mb-1">
+            <p className="text-center text-sm sm:text-lg font-bold text-gray-800 mb-1">
               入退去時工事費用、家具購入費用がかかりません。
             </p>
             <p className="text-center text-sm text-gray-400 mb-8">※初月のみ契約金が別途発生します。</p>
@@ -186,39 +186,39 @@ export default function BasicOfficePage() {
             </div>
 
             {/* コスト比較 */}
-            <div className="flex justify-center"><div className="bg-white rounded-2xl p-6 border border-gray-100" style={{ width: "50%" }}>
-              <h4 className="text-base font-bold text-gray-700 mb-4 border-l-4 pl-3" style={{ borderColor: "#3dbdac" }}>入居月コスト</h4>
+            <div className="flex justify-center"><div className="bg-white rounded-2xl p-4 sm:p-6 border border-gray-100 w-full sm:w-[70%] lg:w-1/2">
+              <h4 className="text-sm sm:text-base font-bold text-gray-700 mb-4 border-l-4 pl-3" style={{ borderColor: "#3dbdac" }}>入居月コスト</h4>
               <div className="flex flex-col gap-3 mb-6">
-                <div className="flex items-center gap-2">
-                  <span className="shrink-0 text-sm font-bold text-white px-3 py-1 rounded" style={{ backgroundColor: "#9ca3af" }}>通常賃貸</span>
-                  <div className="flex gap-1 flex-1">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                  <span className="shrink-0 text-xs sm:text-sm font-bold text-white px-3 py-1 rounded" style={{ backgroundColor: "#9ca3af" }}>通常賃貸</span>
+                  <div className="flex flex-wrap gap-1 flex-1">
                     <span className="bg-gray-200 text-gray-600 text-xs px-2 py-2 rounded">敷金・礼金・仲介手数料</span>
-                    <span className="bg-gray-300 text-gray-600 text-xs px-4 py-2 rounded flex-1 text-center">内装・家具</span>
+                    <span className="bg-gray-300 text-gray-600 text-xs px-2 sm:px-4 py-2 rounded flex-1 text-center">内装・家具</span>
                     <span className="bg-gray-400 text-gray-600 text-xs px-2 py-2 rounded">賃料</span>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="shrink-0 text-sm font-bold text-white px-3 py-1 rounded" style={{ backgroundColor: "#3dbdac" }}>NovolBa</span>
-                  <div className="flex gap-1">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                  <span className="shrink-0 text-xs sm:text-sm font-bold text-white px-3 py-1 rounded" style={{ backgroundColor: "#3dbdac" }}>NovolBa</span>
+                  <div className="flex flex-wrap gap-1">
                     <span className="text-white text-xs px-3 py-2 rounded font-bold" style={{ backgroundColor: "#3dbdac" }}>サービス利用料</span>
                     <span className="text-white text-xs px-3 py-2 rounded" style={{ backgroundColor: "#3dbdac" }}>契約金</span>
                     <span className="text-yellow-500 font-bold text-sm ml-2 flex items-center">← カット</span>
                   </div>
                 </div>
               </div>
-              <h4 className="text-base font-bold text-gray-700 mb-4 border-l-4 pl-3" style={{ borderColor: "#3dbdac" }}>退去月コスト</h4>
+              <h4 className="text-sm sm:text-base font-bold text-gray-700 mb-4 border-l-4 pl-3" style={{ borderColor: "#3dbdac" }}>退去月コスト</h4>
               <div className="flex flex-col gap-3">
-                <div className="flex items-center gap-2">
-                  <span className="shrink-0 text-sm font-bold text-white px-3 py-1 rounded" style={{ backgroundColor: "#9ca3af" }}>通常賃貸</span>
-                  <div className="flex gap-1 flex-1">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                  <span className="shrink-0 text-xs sm:text-sm font-bold text-white px-3 py-1 rounded" style={{ backgroundColor: "#9ca3af" }}>通常賃貸</span>
+                  <div className="flex flex-wrap gap-1 flex-1">
                     <span className="bg-gray-200 text-gray-600 text-xs px-2 py-2 rounded">原状回復費用</span>
                     <span className="bg-gray-300 text-gray-600 text-xs px-2 py-2 rounded">不要家具処分費</span>
                     <span className="bg-gray-400 text-gray-600 text-xs px-2 py-2 rounded">賃料</span>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="shrink-0 text-sm font-bold text-white px-3 py-1 rounded" style={{ backgroundColor: "#3dbdac" }}>NovolBa</span>
-                  <div className="flex gap-1">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                  <span className="shrink-0 text-xs sm:text-sm font-bold text-white px-3 py-1 rounded" style={{ backgroundColor: "#3dbdac" }}>NovolBa</span>
+                  <div className="flex flex-wrap gap-1">
                     <span className="text-white text-xs px-3 py-2 rounded font-bold" style={{ backgroundColor: "#3dbdac" }}>サービス利用料</span>
                     <span className="text-yellow-500 font-bold text-sm ml-2 flex items-center">← カット</span>
                   </div>
@@ -230,9 +230,9 @@ export default function BasicOfficePage() {
           {/* ===== 費用 02 ===== */}
           <div className="mb-16 rounded-3xl border-2 p-8" style={{ borderColor: "#3dbdac", backgroundColor: "#f0fdfb" }}>
             <div className="flex items-center gap-4 mb-6 justify-center">
-              <div className="rounded-full border-2 px-6 py-3 flex items-center gap-3" style={{ borderColor: "#3dbdac" }}>
-                <span className="text-3xl font-bold" style={{ color: "#3dbdac" }}>02</span>
-                <span className="text-xl font-bold text-gray-800">月額定額制</span>
+              <div className="rounded-full border-2 px-4 sm:px-6 py-3 flex items-center gap-3" style={{ borderColor: "#3dbdac" }}>
+                <span className="text-2xl sm:text-3xl font-bold" style={{ color: "#3dbdac" }}>02</span>
+                <span className="text-base sm:text-xl font-bold text-gray-800">月額定額制</span>
               </div>
             </div>
             <p className="text-center text-lg text-gray-600 mb-1">初月のみ契約金がかかりますが、</p>
@@ -243,16 +243,16 @@ export default function BasicOfficePage() {
 
             <div className="flex justify-center">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/subscription.png" alt="月額定額制の図解" style={{ width: "50%", height: "auto" }} />
+              <img src="/subscription.png" alt="月額定額制の図解" className="w-full sm:w-3/4 lg:w-1/2 h-auto" />
             </div>
           </div>
 
           {/* ===== 手間 01 ===== */}
           <div className="mb-16 rounded-3xl border-2 p-8" style={{ borderColor: "#3dbdac", backgroundColor: "#f0fdfb" }}>
             <div className="flex items-center gap-4 mb-6 justify-center">
-              <div className="rounded-full border-2 px-6 py-3 flex items-center gap-3" style={{ borderColor: "#3dbdac" }}>
-                <span className="text-3xl font-bold" style={{ color: "#3dbdac" }}>03</span>
-                <span className="text-xl font-bold text-gray-800">各種契約不要！契約・支払いを一本化</span>
+              <div className="rounded-full border-2 px-4 sm:px-6 py-3 flex items-center gap-3" style={{ borderColor: "#3dbdac" }}>
+                <span className="text-2xl sm:text-3xl font-bold" style={{ color: "#3dbdac" }}>03</span>
+                <span className="text-base sm:text-xl font-bold text-gray-800">各種契約不要！契約・支払いを一本化</span>
               </div>
             </div>
             <p className="text-center text-lg text-gray-600 mb-1">
@@ -262,16 +262,16 @@ export default function BasicOfficePage() {
 
             <div className="flex justify-center">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/remove.png" alt="契約・支払いを一本化の図解" style={{ width: "50%", height: "auto" }} />
+              <img src="/remove.png" alt="契約・支払いを一本化の図解" className="w-full sm:w-3/4 lg:w-1/2 h-auto" />
             </div>
           </div>
 
           {/* ===== 手間 02 ===== */}
           <div className="mb-16 rounded-3xl border-2 p-8" style={{ borderColor: "#3dbdac", backgroundColor: "#f0fdfb" }}>
             <div className="flex items-center gap-4 mb-6 justify-center">
-              <div className="rounded-full border-2 px-6 py-3 flex items-center gap-3" style={{ borderColor: "#3dbdac" }}>
-                <span className="text-3xl font-bold" style={{ color: "#3dbdac" }}>04</span>
-                <span className="text-xl font-bold text-gray-800">家具付き・一社占有オフィス</span>
+              <div className="rounded-full border-2 px-4 sm:px-6 py-3 flex items-center gap-3" style={{ borderColor: "#3dbdac" }}>
+                <span className="text-2xl sm:text-3xl font-bold" style={{ color: "#3dbdac" }}>04</span>
+                <span className="text-base sm:text-xl font-bold text-gray-800">家具付き・一社占有オフィス</span>
               </div>
             </div>
             <p className="text-center text-lg text-gray-600 mb-1">入居初日からすぐに働ける環境を完備！</p>
@@ -281,10 +281,10 @@ export default function BasicOfficePage() {
             <p className="text-center text-lg text-gray-600 mb-1">手軽に快適な環境が手に入ります。</p>
             <p className="text-center text-lg text-gray-600 mb-8">退去する際に、大型家具の移動や廃棄の心配も不要です。</p>
 
-            <div className="flex justify-center"><div className="bg-white rounded-2xl p-6 border border-gray-100" style={{ width: "50%" }}>
+            <div className="flex justify-center"><div className="bg-white rounded-2xl p-4 sm:p-6 border border-gray-100 w-full sm:w-[70%] lg:w-1/2">
               <div className="border-2 border-yellow-300 rounded-2xl p-4 mb-4">
                 <p className="text-center font-bold text-gray-700 bg-yellow-100 rounded-lg py-2 mb-4">基本サービス</p>
-                <div className="grid grid-cols-3 gap-4 text-center">
+                <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
                   {[
                     { icon: "🪑", label: "オカムラ社製執務家具" },
                     { icon: "📶", label: "Wi-fi" },
@@ -300,7 +300,7 @@ export default function BasicOfficePage() {
               {/* オプションサービス */}
               <div className="rounded-2xl p-4" style={{ backgroundColor: "#e6f7f5" }}>
                 <p className="text-center font-bold text-white rounded-lg py-2 mb-4" style={{ backgroundColor: "#3dbdac" }}>オプションサービス</p>
-                <div className="grid grid-cols-3 gap-4 text-center">
+                <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
                   {[
                     { icon: "👥", label: "MTGスペース" },
                     { icon: "🗄️", label: "キャビネット" },
@@ -319,9 +319,9 @@ export default function BasicOfficePage() {
           {/* ===== 手間 03 ===== */}
           <div className="mb-8 rounded-3xl border-2 p-8" style={{ borderColor: "#3dbdac", backgroundColor: "#f0fdfb" }}>
             <div className="flex items-center gap-4 mb-6 justify-center">
-              <div className="rounded-full border-2 px-6 py-3 flex items-center gap-3" style={{ borderColor: "#3dbdac" }}>
-                <span className="text-3xl font-bold" style={{ color: "#3dbdac" }}>05</span>
-                <span className="text-xl font-bold text-gray-800">用途に合わせたレイアウト</span>
+              <div className="rounded-full border-2 px-4 sm:px-6 py-3 flex items-center gap-3" style={{ borderColor: "#3dbdac" }}>
+                <span className="text-2xl sm:text-3xl font-bold" style={{ color: "#3dbdac" }}>05</span>
+                <span className="text-base sm:text-xl font-bold text-gray-800">用途に合わせたレイアウト</span>
               </div>
             </div>
             <p className="text-center text-lg text-gray-600 mb-1">
@@ -333,7 +333,7 @@ export default function BasicOfficePage() {
             </p>
             <div className="flex justify-center">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/layout.png" alt="レイアウトの一例" style={{ width: "50%", height: "auto" }} />
+              <img src="/layout.png" alt="レイアウトの一例" className="w-full sm:w-3/4 lg:w-1/2 h-auto" />
             </div>
             <p className="text-sm text-gray-400 mt-4 text-center">※レイアウトの一例です</p>
           </div>
@@ -385,7 +385,7 @@ export default function BasicOfficePage() {
         style={{ backgroundColor: "#3dbdac" }}
       >
         <h2 className="text-2xl sm:text-3xl font-bold mb-4">まずはお気軽にご相談ください</h2>
-        <p className="text-lg text-white/90 mb-8 mx-auto leading-relaxed whitespace-nowrap">
+        <p className="text-sm sm:text-lg text-white/90 mb-8 mx-auto leading-relaxed">
           渋谷・新宿・人形町・五反田エリアを中心に「NovolBaオフィス」を展開しています。
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">

@@ -189,8 +189,8 @@ export default function KaguHodaiPage() {
             他社サブスク / 家具購入 との<span style={{ color: "#3dbdac" }}>違い</span>
           </h2>
           <div className="flex justify-center">
-            <div className="overflow-x-auto" style={{ width: "70%" }}>
-            <table className="w-full text-lg">
+            <div className="overflow-x-auto w-full lg:w-[70%] mx-auto">
+            <table className="w-full text-sm sm:text-lg">
               <thead>
                 <tr className="text-center">
                   <th className="py-3 px-4 text-left text-gray-500 font-medium"></th>
@@ -208,16 +208,16 @@ export default function KaguHodaiPage() {
               <tbody>
                 {comparison.map((row, i) => (
                   <tr key={row.item} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                    <td className="py-3 px-4 text-gray-700 font-medium">{row.item}</td>
+                    <td className="py-3 px-2 sm:px-4 text-gray-700 font-medium text-xs sm:text-base">{row.item}</td>
                     <td
-                      className="py-3 px-4 text-center font-bold text-3xl"
+                      className="py-3 px-2 sm:px-4 text-center font-bold text-xl sm:text-3xl"
                       style={{ color: "#3dbdac", backgroundColor: "#f0fdfb" }}
                     >
                       {row.novolba}
                     </td>
-                    <td className="py-3 px-4 text-center text-gray-500 text-3xl font-bold">{row.s}</td>
-                    <td className="py-3 px-4 text-center text-gray-500 text-3xl font-bold">{row.c}</td>
-                    <td className="py-3 px-4 text-center text-gray-500 text-3xl font-bold">{row.ec}</td>
+                    <td className="py-3 px-2 sm:px-4 text-center text-gray-500 text-xl sm:text-3xl font-bold">{row.s}</td>
+                    <td className="py-3 px-2 sm:px-4 text-center text-gray-500 text-xl sm:text-3xl font-bold">{row.c}</td>
+                    <td className="py-3 px-2 sm:px-4 text-center text-gray-500 text-xl sm:text-3xl font-bold">{row.ec}</td>
                   </tr>
                 ))}
               </tbody>
