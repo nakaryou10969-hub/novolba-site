@@ -39,6 +39,10 @@ export const metadata: Metadata = {
       "スタートアップに特化したオフィスサービス。家具ホーダイ・BASIC OFFICE・ノボルバディの3サービスを展開。",
     images: ["/og-image.png"],
   },
+  icons: {
+    icon: "/NovolBa_logo_sq_wt-2.webp",
+    apple: "/NovolBa_logo_sq_wt-2.webp",
+  },
   robots: {
     index: true,
     follow: true,
