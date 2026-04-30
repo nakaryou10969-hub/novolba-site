@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { client, type WithArticle } from "../../../../libs/client";
 import { extractFirstImage } from "../../../../libs/extractFirstImage";
 
@@ -17,6 +18,28 @@ const CATEGORY_ORDER = [
   "レポート",
   "コラム",
 ];
+
+// スラッグ→カテゴリ名のマッピング
+const SLUG_TO_CATEGORY: Record<string, string> = {
+  "interview": "インタビュー",
+  "flash-interview": "速報インタビュー",
+  "talk": "対談",
+  "startup-novolba": "スタートアップ昇る場",
+  "event": "イベント",
+  "report": "レポート",
+  "column": "コラム",
+};
+
+// カテゴリ名→スラッグのマッピング
+const CATEGORY_TO_SLUG: Record<string, string> = {
+  "インタビュー": "interview",
+  "速報インタビュー": "flash-interview",
+  "対談": "talk",
+  "スタートアップ昇る場": "startup-novolba",
+  "イベント": "event",
+  "レポート": "report",
+  "コラム": "column",
+};
 
 async function getAllWithArticles(): Promise<WithArticle[]> {
   const first = await client.getList<WithArticle>({
@@ -42,14 +65,15 @@ const getCategoryName = (article: WithArticle): string => {
 };
 
 export async function generateStaticParams() {
-  return CATEGORY_ORDER.map((cat) => ({
-    name: encodeURIComponent(cat),
+  return Object.keys(SLUG_TO_CATEGORY).map((slug) => ({
+    name: slug,
   }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { name } = await params;
-  const categoryName = decodeURIComponent(name);
+  const categoryName = SLUG_TO_CATEGORY[name];
+  if (!categoryName) return { title: "カテゴリー | WITH by NovolBa" };
   return {
     title: `${categoryName} | WITH by NovolBa`,
     description: `WITH by NovolBaの「${categoryName}」カテゴリの記事一覧。`,
@@ -58,7 +82,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function WithCategoryPage({ params }: Props) {
   const { name } = await params;
-  const categoryName = decodeURIComponent(name);
+  const categoryName = SLUG_TO_CATEGORY[name];
+  if (!categoryName) notFound();
+
   const allArticles = await getAllWithArticles();
   const categoryArticles = allArticles.filter(
     (a) => getCategoryName(a) === categoryName
@@ -159,20 +185,23 @@ export default async function WithCategoryPage({ params }: Props) {
                 カテゴリー
               </h3>
               <div className="flex flex-wrap gap-2">
-                {CATEGORY_ORDER.map((cat) => (
-                  <Link
-                    key={cat}
-                    href={`/with/category/${encodeURIComponent(cat)}/`}
-                    className={`text-sm px-3 py-1 rounded hover:opacity-80 transition-opacity ${
-                      cat === categoryName
-                        ? "text-white font-bold"
-                        : "text-gray-600 bg-gray-100"
-                    }`}
-                    style={cat === categoryName ? { backgroundColor: "#3dbdac" } : {}}
-                  >
-                    {cat}
-                  </Link>
-                ))}
+                {CATEGORY_ORDER.map((cat) => {
+                  const slug = CATEGORY_TO_SLUG[cat];
+                  return (
+                    <Link
+                      key={cat}
+                      href={`/with/category/${slug}/`}
+                      className={`text-sm px-3 py-1 rounded hover:opacity-80 transition-opacity ${
+                        cat === categoryName
+                          ? "text-white font-bold"
+                          : "text-gray-600 bg-gray-100"
+                      }`}
+                      style={cat === categoryName ? { backgroundColor: "#3dbdac" } : {}}
+                    >
+                      {cat}
+                    </Link>
+                  );
+                })}
               </div>
             </div>
 

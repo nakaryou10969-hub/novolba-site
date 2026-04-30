@@ -19,6 +19,16 @@ const CATEGORY_ORDER = [
   "コラム",
 ];
 
+const CATEGORY_SLUG_MAP: Record<string, string> = {
+  "インタビュー": "interview",
+  "速報インタビュー": "flash-interview",
+  "対談": "talk",
+  "スタートアップ昇る場": "startup-novolba",
+  "イベント": "event",
+  "レポート": "report",
+  "コラム": "column",
+};
+
 async function getAllWithArticles(): Promise<WithArticle[]> {
   const first = await client.getList<WithArticle>({
     endpoint: "with",
@@ -146,7 +156,7 @@ export default async function WithAllPage() {
                 {CATEGORY_ORDER.map((cat) => (
                   <li key={cat}>
                     <Link
-                      href={`/with/category/${encodeURIComponent(cat)}/`}
+                      href={`/with/category/${CATEGORY_SLUG_MAP[cat]}/`}
                       className="flex items-center gap-2 text-sm text-gray-600 hover:text-teal-500 transition-colors"
                     >
                       <span style={{ color: "#3dbdac" }}>›</span>

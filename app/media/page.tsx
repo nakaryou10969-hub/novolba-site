@@ -21,6 +21,17 @@ const CATEGORY_ORDER = [
   "コラム",
 ];
 
+// カテゴリ名→URLスラッグのマッピング
+const CATEGORY_SLUG_MAP: Record<string, string> = {
+  "インタビュー": "interview",
+  "速報インタビュー": "flash-interview",
+  "対談": "talk",
+  "スタートアップ昇る場": "startup-novolba",
+  "イベント": "event",
+  "レポート": "report",
+  "コラム": "column",
+};
+
 // ピックアップ記事のID（固定）
 const PICKUP_IDS = [
   "ro-jkc4eqh",
@@ -257,7 +268,7 @@ export default async function MediaPage() {
                 </div>
                 <div className="mt-8 text-center">
                   <Link
-                    href={`/with/category/${encodeURIComponent(group.name)}/`}
+                    href={`/with/category/${CATEGORY_SLUG_MAP[group.name]}/`}
                     className="inline-block px-8 py-3 text-sm font-medium text-white rounded-full hover:opacity-90 transition-opacity"
                     style={{ backgroundColor: "#3dbdac" }}
                   >
