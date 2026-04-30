@@ -68,20 +68,16 @@ export default async function WithCategoryPage({ params }: Props) {
   return (
     <main className="bg-white">
 
-      {/* ===== ページヘッダー ===== */}
-      <section
-        className="relative flex flex-col items-center justify-center text-center py-24 px-6"
-        style={{ background: "linear-gradient(135deg, #f0fdfb 0%, #e6f7f5 50%, #f8fafc 100%)" }}
-      >
-        <div className="absolute top-0 left-0 right-0 h-1" style={{ backgroundColor: "#3dbdac" }} />
-        <p className="text-xs tracking-[0.3em] text-gray-400 uppercase mb-3">WITH by NovolBa</p>
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-widest text-gray-800">{categoryName}</h1>
-        <div className="mt-4 w-12 h-0.5" style={{ backgroundColor: "#3dbdac" }} />
-        <p className="mt-3 text-sm text-gray-400">{categoryArticles.length}件</p>
+      {/* ===== カテゴリーヘッダー ===== */}
+      <section className="py-8 px-6 bg-gray-50 border-b border-gray-200">
+        <div className="max-w-5xl mx-auto">
+          <p className="text-sm text-gray-400 mb-1">カテゴリー</p>
+          <h1 className="text-2xl font-bold text-gray-800">{categoryName}</h1>
+        </div>
       </section>
 
       {/* ===== コンテンツ ===== */}
-      <section className="py-16 px-6">
+      <section className="py-12 px-6">
         <div className="max-w-5xl mx-auto flex flex-col lg:flex-row gap-12">
 
           {/* ===== 記事一覧（左） ===== */}
@@ -92,55 +88,56 @@ export default async function WithCategoryPage({ params }: Props) {
                 <p className="text-xs text-gray-300">Coming Soon...</p>
               </div>
             ) : (
-              <ul className="divide-y divide-gray-100">
+              <ul className="flex flex-col gap-8">
                 {categoryArticles.map((article) => {
                   const thumb = article.eyecatch?.url ?? extractFirstImage(article.content) ?? null;
                   return (
                     <li key={article.id}>
                       <Link
                         href={`/with/${article.id}/`}
-                        className="flex gap-4 py-6 group hover:opacity-80 transition-opacity"
+                        className="flex gap-5 group hover:opacity-80 transition-opacity"
                       >
-                        <div className="shrink-0 w-40 h-28 sm:w-52 sm:h-36 relative rounded-lg overflow-hidden bg-gray-100">
+                        {/* サムネイル */}
+                        <div className="shrink-0 w-32 h-24 sm:w-48 sm:h-32 relative rounded-lg overflow-hidden bg-gray-100">
                           {thumb ? (
                             <Image
                               src={thumb}
                               alt={article.title}
                               fill
                               className="object-cover"
-                              sizes="208px"
+                              sizes="192px"
                             />
                           ) : (
                             <div
-                              className="w-full h-full flex items-center justify-center text-xl"
+                              className="w-full h-full flex items-center justify-center text-2xl"
                               style={{ backgroundColor: "#e6f7f5" }}
                             >
                               📝
                             </div>
                           )}
                         </div>
-                        <div className="flex flex-col gap-1 min-w-0">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <time
-                              dateTime={article.publishedAt}
-                              className="text-xs text-gray-400"
-                            >
-                              {new Date(article.publishedAt).toLocaleDateString("ja-JP", {
-                                year: "numeric",
-                                month: "long",
-                                day: "numeric",
-                              })}
-                            </time>
-                            <span
-                              className="text-xs px-2 py-0.5 rounded-full"
-                              style={{ backgroundColor: "#e6f7f5", color: "#3dbdac" }}
-                            >
-                              {categoryName}
-                            </span>
-                          </div>
-                          <h2 className="text-sm font-semibold text-gray-800 leading-snug truncate group-hover:underline">
+
+                        {/* テキスト */}
+                        <div className="flex flex-col gap-2 min-w-0">
+                          <span
+                            className="text-xs font-bold tracking-widest uppercase"
+                            style={{ color: "#3dbdac" }}
+                          >
+                            {categoryName}
+                          </span>
+                          <h2 className="text-base sm:text-lg font-bold text-gray-800 leading-snug group-hover:underline">
                             {article.title}
                           </h2>
+                          <p className="text-sm text-gray-500 leading-relaxed line-clamp-3 hidden sm:block">
+                            {article.content.replace(/<[^>]*>/g, "").slice(0, 100)}…
+                          </p>
+                          <time dateTime={article.publishedAt} className="text-xs text-gray-400 mt-auto">
+                            {new Date(article.publishedAt).toLocaleDateString("ja-JP", {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            })}
+                          </time>
                         </div>
                       </Link>
                     </li>
@@ -155,66 +152,49 @@ export default async function WithCategoryPage({ params }: Props) {
 
             {/* カテゴリー */}
             <div>
-              <h3 className="text-sm font-bold text-gray-700 tracking-widest mb-4 pb-2 border-b border-gray-200">
+              <h3
+                className="text-sm font-bold text-white px-3 py-2 rounded mb-4"
+                style={{ backgroundColor: "#3dbdac" }}
+              >
                 カテゴリー
               </h3>
-              <ul className="flex flex-col gap-2">
+              <div className="flex flex-wrap gap-2">
                 {CATEGORY_ORDER.map((cat) => (
-                  <li key={cat}>
-                    <Link
-                      href={`/with/category/${encodeURIComponent(cat)}/`}
-                      className={`flex items-center gap-2 text-sm transition-colors ${
-                        cat === categoryName
-                          ? "font-bold"
-                          : "text-gray-600 hover:text-teal-500"
-                      }`}
-                      style={cat === categoryName ? { color: "#3dbdac" } : undefined}
-                    >
-                      <span style={{ color: "#3dbdac" }}>›</span>
-                      {cat}
-                    </Link>
-                  </li>
+                  <Link
+                    key={cat}
+                    href={`/with/category/${encodeURIComponent(cat)}/`}
+                    className={`text-sm px-3 py-1 rounded hover:opacity-80 transition-opacity ${
+                      cat === categoryName
+                        ? "text-white font-bold"
+                        : "text-gray-600 bg-gray-100"
+                    }`}
+                    style={cat === categoryName ? { backgroundColor: "#3dbdac" } : {}}
+                  >
+                    {cat}
+                  </Link>
                 ))}
-              </ul>
+              </div>
             </div>
 
             {/* 最新の投稿 */}
             <div>
-              <h3 className="text-sm font-bold text-gray-700 tracking-widest mb-4 pb-2 border-b border-gray-200">
+              <h3
+                className="text-sm font-bold text-white px-3 py-2 rounded mb-4"
+                style={{ backgroundColor: "#3dbdac" }}
+              >
                 最新の投稿
               </h3>
-              <ul className="flex flex-col gap-4">
-                {latestArticles.map((article) => {
-                  const thumb = article.eyecatch?.url ?? extractFirstImage(article.content);
-                  return (
-                    <li key={article.id}>
-                      <Link
-                        href={`/with/${article.id}/`}
-                        className="flex gap-3 group hover:opacity-80 transition-opacity"
-                      >
-                        <div className="shrink-0 w-14 h-10 relative rounded overflow-hidden bg-gray-100">
-                          {thumb ? (
-                            <Image src={thumb} alt={article.title} fill className="object-cover" sizes="56px" />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center text-sm" style={{ backgroundColor: "#e6f7f5" }}>
-                              📝
-                            </div>
-                          )}
-                        </div>
-                        <div className="min-w-0">
-                          <p className="text-xs text-gray-400 mb-0.5">
-                            {new Date(article.publishedAt).toLocaleDateString("ja-JP", {
-                              year: "numeric", month: "short", day: "numeric",
-                            })}
-                          </p>
-                          <p className="text-xs text-gray-700 leading-snug line-clamp-2 group-hover:underline">
-                            {article.title}
-                          </p>
-                        </div>
-                      </Link>
-                    </li>
-                  );
-                })}
+              <ul className="flex flex-col gap-3">
+                {latestArticles.map((article) => (
+                  <li key={article.id}>
+                    <Link
+                      href={`/with/${article.id}/`}
+                      className="text-sm text-gray-700 hover:text-teal-500 transition-colors leading-snug line-clamp-2"
+                    >
+                      {article.title}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </div>
 
