@@ -77,7 +77,7 @@ export default function MessagePage() {
             <img
               src="/logo.png"
               alt="NovolBa"
-              style={{ height: "24px", width: "auto" }}
+              style={{ height: "32px", width: "auto" }}
               className="inline-block opacity-40"
             />
           </div>
