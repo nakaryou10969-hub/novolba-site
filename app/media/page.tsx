@@ -241,15 +241,6 @@ export default async function MediaPage() {
                   {group.name}
                 </h2>
               </div>
-              {group.articles.length >= 3 && (
-                <Link
-                  href={`/with/category/${encodeURIComponent(group.name)}/`}
-                  className="text-xs font-medium hover:opacity-70 transition-opacity flex items-center gap-1"
-                  style={{ color: "#3dbdac" }}
-                >
-                  もっと見る <span>→</span>
-                </Link>
-              )}
             </div>
 
             {group.articles.length < 3 ? (
@@ -258,11 +249,22 @@ export default async function MediaPage() {
                 <p className="text-xs text-gray-300">Coming Soon...</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                {group.articles.map((article) => (
-                  <ArticleCard key={article.id} article={article} />
-                ))}
-              </div>
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                  {group.articles.map((article) => (
+                    <ArticleCard key={article.id} article={article} />
+                  ))}
+                </div>
+                <div className="mt-8 text-center">
+                  <Link
+                    href={`/with/category/${encodeURIComponent(group.name)}/`}
+                    className="inline-block px-8 py-3 text-sm font-medium text-white rounded-full hover:opacity-90 transition-opacity"
+                    style={{ backgroundColor: "#3dbdac" }}
+                  >
+                    もっと見る →
+                  </Link>
+                </div>
+              </>
             )}
           </div>
         </section>
