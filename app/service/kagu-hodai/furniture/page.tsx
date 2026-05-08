@@ -213,7 +213,7 @@ export default function FurniturePage() {
           <div className="rounded-xl overflow-hidden shadow-lg bg-white">
             {/* eslint-disable-next-line jsx-a11y/iframe-has-title */}
             <iframe
-              src="/kagu-hodai-catalog.pdf#toolbar=0&navpanes=0&scrollbar=1&view=FitH"
+              src="/kagu-hodai-catalog-202405.pdf#toolbar=0&navpanes=0&scrollbar=1&view=FitH"
               title="家具ホーダイ 製品カタログ"
               className="w-full border-0"
               style={{ height: "85vh", minHeight: "600px" }}
@@ -224,7 +224,7 @@ export default function FurniturePage() {
           </p>
           <div className="text-center mt-4">
             <a
-              href="/kagu-hodai-catalog.pdf"
+              href="/kagu-hodai-catalog-202405.pdf"
               download
               className="inline-block px-8 py-3 text-sm font-medium text-white rounded-full hover:opacity-90 transition-opacity"
               style={{ backgroundColor: "#3dbdac" }}
