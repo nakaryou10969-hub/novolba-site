@@ -172,13 +172,12 @@ export default function BasicOfficePage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
               {[
-                { icon: "💰", label: "敷金", suffix: "不要" },
-                { icon: "🏢", label: "入居退去工事", suffix: "不要" },
-                { icon: "🪑", label: "家具購入・廃棄", suffix: "不要" },
+                { label: "敷金", suffix: "不要" },
+                { label: "入居退去工事", suffix: "不要" },
+                { label: "家具購入・廃棄", suffix: "不要" },
               ].map((item) => (
                 <div key={item.label} className="bg-white rounded-2xl p-6 text-center border border-gray-100 shadow-sm">
-                  <span className="text-4xl mb-3 block">{item.icon}</span>
-                  <p className="text-lg font-bold text-gray-800">
+                  <p className="text-2xl font-bold text-gray-800">
                     ✅ {item.label}<span style={{ color: "#3dbdac" }}>{item.suffix}</span>
                   </p>
                 </div>
