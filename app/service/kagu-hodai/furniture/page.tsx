@@ -78,9 +78,9 @@ const furnitureCategories = [
 ];
 
 const services = [
-  { icon: "🚀", text: "サブスクリプション型の家具サービスで、理想のオフィスを実現" },
-  { icon: "📦", text: "すぐにオフィス開設したい！在庫あれば来週にも届けます！" },
-  { icon: "💬", text: "レイアウトや移転などの丸ごと相談も！" },
+  { text: "サブスクリプション型の家具サービスで、理想のオフィスを実現" },
+  { text: "すぐにオフィス開設したい！在庫あれば来週にも届けます！" },
+  { text: "レイアウトや移転などの丸ごと相談も！" },
 ];
 
 export default function FurniturePage() {
@@ -118,9 +118,8 @@ export default function FurniturePage() {
           <h2 className="text-lg font-bold text-gray-800 mb-8 text-center tracking-wide">SERVICE</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
             {services.map((s) => (
-              <div key={s.text} className="bg-white rounded-2xl p-6 shadow-md text-center">
-                <span className="text-3xl mb-3 block">{s.icon}</span>
-                <p className="text-sm text-gray-600 leading-relaxed">{s.text}</p>
+              <div key={s.text} className="bg-white rounded-2xl p-6 shadow-md text-center flex items-center justify-center">
+                <p className="text-xl font-bold text-gray-700 leading-relaxed">{s.text}</p>
               </div>
             ))}
           </div>
