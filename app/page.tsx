@@ -117,13 +117,16 @@ export default async function Home() {
             </Link>
           </div>
           {/* スクロール */}
-          <div className="absolute bottom-8 right-6 flex flex-col items-center gap-1 text-gray-500 z-10">
+          <div className="absolute bottom-8 right-6 flex flex-col items-center gap-2 text-gray-500 z-10 animate-bounce">
             <span
               className="text-xs tracking-widest"
               style={{ writingMode: "vertical-rl", letterSpacing: "0.3em" }}
             >
               SCROLL
             </span>
+            <svg width="16" height="24" viewBox="0 0 16 24" fill="none" aria-hidden="true">
+              <path d="M8 0v20M1 13l7 7 7-7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </div>
         </div>
       </section>
