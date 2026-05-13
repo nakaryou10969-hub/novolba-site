@@ -233,10 +233,10 @@ export default function KaguHodaiPage() {
           <h2 className="text-xl font-bold text-center text-gray-800 mb-10">
             提供するのは<span style={{ color: "#3dbdac" }}>2つのプラン</span>
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 items-stretch">
 
             {/* 丸ごとプラン */}
-            <div className="rounded-2xl border-2 p-8 bg-white" style={{ borderColor: "#3dbdac" }}>
+            <div className="rounded-2xl border-2 p-8 bg-white flex flex-col" style={{ borderColor: "#3dbdac" }}>
               <div
                 className="inline-block text-xs font-bold px-3 py-1 rounded-full mb-3"
                 style={{ backgroundColor: "#3dbdac", color: "white" }}
@@ -279,7 +279,7 @@ export default function KaguHodaiPage() {
                   <li>✓ 家具メンテナンス ※都内</li>
                 </ul>
               </div>
-              <div className="bg-gray-50 rounded-xl p-4 text-xs text-gray-500">
+              <div className="bg-gray-50 rounded-xl p-4 text-xs text-gray-500 flex-1">
                 <p className="font-semibold text-gray-700 mb-2">【追加費用がかかるもの】</p>
                 <ul className="flex flex-col gap-1">
                   <li>＊ 初期費用：搬入・配送・施工</li>
@@ -291,7 +291,7 @@ export default function KaguHodaiPage() {
             </div>
 
             {/* 単品プラン */}
-            <div className="rounded-2xl border-2 p-8 bg-white" style={{ borderColor: "#3dbdac" }}>
+            <div className="rounded-2xl border-2 p-8 bg-white flex flex-col" style={{ borderColor: "#3dbdac" }}>
               <div
                 className="inline-block text-xs font-bold px-3 py-1 rounded-full mb-3"
                 style={{ backgroundColor: "#3dbdac", color: "white" }}
@@ -327,7 +327,7 @@ export default function KaguHodaiPage() {
                 </table>
               </div>
               <h4 className="text-sm font-bold text-gray-700 mb-2">■ 提供家具一例</h4>
-              <div className="grid grid-cols-2 gap-1.5 mb-4">
+              <div className="grid grid-cols-2 gap-1.5 flex-1 content-start">
                 {tanpinItems.map((item) => (
                   <div key={item.name} className="bg-gray-50 rounded-xl px-3 py-2">
                     <p className="text-xs font-semibold text-gray-700 mb-0.5">{item.name}</p>

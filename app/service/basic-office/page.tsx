@@ -290,7 +290,7 @@ export default function BasicOfficePage() {
                     { label: "プリンター" },
                   ].map((item) => (
                     <div key={item.label}>
-                      <div className="w-16 h-16 rounded-full border-2 border-gray-200 flex items-center justify-center mx-auto mb-2 bg-gray-50" />
+                      <div className="w-16 h-16 rounded-full border-2 flex items-center justify-center mx-auto mb-2 text-xl font-bold" style={{ borderColor: "#3dbdac", color: "#3dbdac", backgroundColor: "#f0fdfb" }}>✓</div>
                       <p className="text-sm text-gray-600">{item.label}</p>
                     </div>
                   ))}
@@ -306,7 +306,7 @@ export default function BasicOfficePage() {
                     { label: "リフレッシュスペース" },
                   ].map((item) => (
                     <div key={item.label}>
-                      <div className="w-16 h-16 rounded-full border-2 border-gray-200 bg-white flex items-center justify-center mx-auto mb-2" />
+                      <div className="w-16 h-16 rounded-full border-2 border-white bg-white flex items-center justify-center mx-auto mb-2 text-xl font-bold" style={{ color: "#3dbdac" }}>+</div>
                       <p className="text-sm text-gray-600">{item.label}</p>
                     </div>
                   ))}
