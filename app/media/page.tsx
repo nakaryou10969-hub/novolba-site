@@ -135,13 +135,13 @@ export default async function MediaPage() {
     <main className="bg-white">
 
       {/* ===== ページヘッダー ===== */}
-      <section className="py-10 px-6 text-center bg-white border-b-4" style={{ borderColor: "#3dbdac" }}>
+      <section className="py-5 px-6 text-center bg-white border-b-4" style={{ borderColor: "#3dbdac" }}>
         <div className="max-w-5xl mx-auto flex flex-col items-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/withlogo.png"
             alt="WITH by NovolBa"
-            className="w-3/4 sm:w-1/2 h-auto object-contain"
+            className="w-1/2 sm:w-1/3 h-auto object-contain"
           />
         </div>
       </section>
