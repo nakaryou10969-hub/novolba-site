@@ -168,7 +168,7 @@ export default function InquiryPage() {
       {/* ===== フォーム ===== */}
       <section className="py-24 px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="max-w-2xl mx-auto">
+          <div className="w-1/2 mx-auto">
 
           {/* 送信成功 */}
           {status === "success" && (
