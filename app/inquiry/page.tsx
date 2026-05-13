@@ -50,29 +50,76 @@ export default function InquiryPage() {
     );
   };
 
+  // --- バリデーション ---
+  const sanitize = (str: string) => str.replace(/<[^>]*>/g, "").trim();
+  const isValidEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  const isValidPhone = (v: string) => /^[0-9\-+() ]{8,20}$/.test(v);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("loading");
     setErrorMsg("");
 
+    // クライアント側バリデーション
+    if (!inquiryType) {
+      setStatus("error");
+      setErrorMsg("お問い合わせ種別を選択してください。");
+      return;
+    }
+    if (areas.length === 0) {
+      setStatus("error");
+      setErrorMsg("希望エリアを1つ以上選択してください。");
+      return;
+    }
+    if (!budget) {
+      setStatus("error");
+      setErrorMsg("月額予算を選択してください。");
+      return;
+    }
+    if (!sanitize(company)) {
+      setStatus("error");
+      setErrorMsg("会社名を入力してください。");
+      return;
+    }
+    if (!sanitize(name)) {
+      setStatus("error");
+      setErrorMsg("氏名を入力してください。");
+      return;
+    }
+    if (!isValidEmail(email)) {
+      setStatus("error");
+      setErrorMsg("正しいメールアドレスを入力してください。");
+      return;
+    }
+    if (!isValidPhone(phone)) {
+      setStatus("error");
+      setErrorMsg("正しい電話番号を入力してください。（半角数字・ハイフン）");
+      return;
+    }
+    if (howList.length === 0) {
+      setStatus("error");
+      setErrorMsg("サービスを知ったきっかけを1つ以上選択してください。");
+      return;
+    }
+
     const areaValue = [
       ...areas.filter((a) => a !== "その他"),
-      ...(areas.includes("その他") && areaOther ? [`その他: ${areaOther}`] : []),
+      ...(areas.includes("その他") && areaOther ? [`その他: ${sanitize(areaOther)}`] : []),
     ].join("、");
 
     const howValue = [
       ...howList.filter((h) => h !== "その他"),
-      ...(howList.includes("その他") && howOther ? [`その他: ${howOther}`] : []),
+      ...(howList.includes("その他") && howOther ? [`その他: ${sanitize(howOther)}`] : []),
     ].join("、");
 
     const payload = {
       お問い合わせ種別: inquiryType,
       希望エリア: areaValue,
       月額予算: budget,
-      会社名: company,
-      氏名: name,
-      メールアドレス: email,
-      電話番号: phone,
+      会社名: sanitize(company),
+      氏名: sanitize(name),
+      メールアドレス: email.trim(),
+      電話番号: phone.trim(),
       サービスを知ったきっかけ: howValue,
     };
 

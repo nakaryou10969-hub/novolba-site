@@ -65,7 +65,7 @@ export default async function NewsPage() {
 
       {/* ===== コンテンツ ===== */}
       <section className="py-16 px-6">
-        <div className="max-w-5xl mx-auto flex flex-col lg:flex-row gap-12">
+        <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-12">
 
           {/* ===== 記事一覧（左） ===== */}
           <div className="flex-1 min-w-0">

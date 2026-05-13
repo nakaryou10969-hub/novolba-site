@@ -123,7 +123,7 @@ export default async function BlogDetailPage({ params }: Props) {
 
       {/* ===== コンテンツ ===== */}
       <section className="py-16 px-6">
-        <div className="max-w-5xl mx-auto flex flex-col lg:flex-row gap-12">
+        <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-12">
 
           {/* ===== 記事本文（左） ===== */}
           <article className="flex-1 min-w-0">
@@ -246,7 +246,7 @@ export default async function BlogDetailPage({ params }: Props) {
       {/* ===== 関連記事 ===== */}
       {relatedBlogs.length > 0 && (
         <section className="py-16 px-6 bg-gray-50">
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-6xl mx-auto">
             <h2 className="text-lg font-bold text-gray-800 mb-8 text-center tracking-wide">
               関連記事
             </h2>

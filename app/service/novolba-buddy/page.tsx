@@ -125,7 +125,7 @@ export default function NovolBaBuddyPage() {
 
       {/* ===== WHAT WE MAKE ===== */}
       <section className="py-16 px-6 bg-gray-50">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <p className="text-xs tracking-[0.3em] text-gray-400 uppercase mb-6 text-center">WHAT WE MAKE</p>
           <div
             className="rounded-2xl p-8 text-center"
@@ -163,7 +163,7 @@ export default function NovolBaBuddyPage() {
 
       {/* ===== OUR SERVICE ===== */}
       <section className="py-16 px-6">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <p className="text-xs tracking-[0.3em] text-gray-400 uppercase mb-6 text-center">OUR SERVICE</p>
           <h2 className="text-xl font-bold text-center text-gray-800 mb-10">
             移転・構築・運用改善の<span style={{ color: "#3dbdac" }}>一括サポート</span>を行う
@@ -204,21 +204,7 @@ export default function NovolBaBuddyPage() {
             ))}
           </div>
 
-          {/* 底部ラベル */}
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1 rounded-xl border-2 py-3 text-center text-base font-bold text-gray-700" style={{ borderColor: "#3dbdac" }}>
-              プロジェクトマネジメント
-            </div>
-            <div className="flex-1 rounded-xl border-2 py-3 text-center text-base font-bold text-gray-700" style={{ borderColor: "#3dbdac" }}>
-              家具ホーダイ!!
-            </div>
-          </div>
-          <div
-            className="mt-4 rounded-xl py-4 text-center text-white text-xl font-bold"
-            style={{ backgroundColor: "#3dbdac" }}
-          >
-            ノボルバディ
-          </div>
+
         </div>
       </section>
 

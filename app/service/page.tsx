@@ -74,7 +74,7 @@ export default function ServicePage() {
 
       {/* ===== サービス一覧 ===== */}
       <section className="py-24 px-6">
-        <div className="max-w-5xl mx-auto grid grid-cols-1 gap-8 sm:grid-cols-3">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 gap-8 sm:grid-cols-3">
           {services.map((service) => (
             <div
               key={service.id}

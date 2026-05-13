@@ -99,7 +99,7 @@ export default function BasicOfficePage() {
 
       {/* ===== 従来の課題 ===== */}
       <section className="py-16 px-6 bg-gray-50">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <h2 className="text-xl font-bold text-center text-gray-800 mb-8">
             しかし、オフィス移転には<br />
             様々な<span style={{ color: "#3dbdac" }}>課題</span>が生じます。
@@ -149,7 +149,7 @@ export default function BasicOfficePage() {
 
       {/* ===== NovolBaならすべて解決 ===== */}
       <section className="py-16 px-6">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <h2 className="text-2xl font-bold text-center text-gray-800 mb-16">
             NovolBaならすべて<span style={{ color: "#3dbdac" }}>解決</span>
           </h2>

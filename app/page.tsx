@@ -141,7 +141,7 @@ export default async function Home() {
           <div className="mt-3 mx-auto w-12 h-0.5" style={{ backgroundColor: "#3dbdac" }} />
         </div>
 
-        <div className="max-w-5xl mx-auto grid grid-cols-1 gap-8 sm:grid-cols-3">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 gap-8 sm:grid-cols-3">
           {serviceCards.map((service) => (
             <div
               key={service.id}
@@ -228,7 +228,7 @@ export default async function Home() {
           <p className="text-center text-gray-400 text-sm">記事はまだありません。</p>
         ) : (
           <>
-            <div className="max-w-5xl mx-auto grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="max-w-6xl mx-auto grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {blogsData.contents.map((blog) => (
                 <article
                   key={blog.id}

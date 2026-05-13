@@ -118,7 +118,7 @@ export default function KaguHodaiPage() {
 
       {/* ===== こんなスタートアップにピッタリ ===== */}
       <section className="py-16 px-6">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <h2 className="text-xl font-bold text-center text-gray-800 mb-2">
             家具ホーダイ!! サービスは、こんなスタートアップに
             <span style={{ color: "#3dbdac" }}>ピッタリ</span>です。
@@ -157,7 +157,7 @@ export default function KaguHodaiPage() {
 
       {/* ===== 選ばれる4つのポイント ===== */}
       <section className="py-16 px-6 bg-gray-50">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <h2 className="text-xl font-bold text-center text-gray-800 mb-10">
             家具ホーダイ!! が<span style={{ color: "#3dbdac" }}>選ばれる理由</span>
           </h2>
@@ -184,7 +184,7 @@ export default function KaguHodaiPage() {
 
       {/* ===== 他社との比較 ===== */}
       <section className="py-16 px-6">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <h2 className="text-xl font-bold text-center text-gray-800 mb-10">
             他社サブスク / 家具購入 との<span style={{ color: "#3dbdac" }}>違い</span>
           </h2>
@@ -229,7 +229,7 @@ export default function KaguHodaiPage() {
 
       {/* ===== 2つのプラン ===== */}
       <section className="py-16 px-6 bg-gray-50">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <h2 className="text-xl font-bold text-center text-gray-800 mb-10">
             提供するのは<span style={{ color: "#3dbdac" }}>2つのプラン</span>
           </h2>
@@ -353,7 +353,7 @@ export default function KaguHodaiPage() {
 
       {/* ===== 一括サービス ===== */}
       <section className="py-16 px-6">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <h2 className="text-xl font-bold text-center text-gray-800 mb-2">
             スタートアップのオフィス移転の<span style={{ color: "#3dbdac" }}>一括サービス</span>
           </h2>
@@ -377,7 +377,7 @@ export default function KaguHodaiPage() {
 
       {/* ===== ご利用の流れ ===== */}
       <section className="py-16 px-6 bg-gray-50">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <h2 className="text-xl font-bold text-center text-gray-800 mb-10">ご利用の流れ</h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-0">
             {steps.map((s, i) => (
