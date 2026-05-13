@@ -178,7 +178,7 @@ export default function BasicOfficePage() {
               ].map((item) => (
                 <div key={item.label} className="bg-white rounded-2xl p-6 text-center border border-gray-100 shadow-sm">
                   <p className="text-2xl font-bold text-gray-800">
-                    ✅ {item.label}<span style={{ color: "#3dbdac" }}>{item.suffix}</span>
+                    {item.label}<span style={{ color: "#3dbdac" }}>{item.suffix}</span>
                   </p>
                 </div>
               ))}

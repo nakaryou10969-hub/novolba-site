@@ -114,7 +114,7 @@ export default function FurniturePage() {
 
       {/* ===== SERVICE ===== */}
       <section className="py-16 px-6 bg-gray-50">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <h2 className="text-lg font-bold text-gray-800 mb-8 text-center tracking-wide">SERVICE</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
             {services.map((s) => (
@@ -157,7 +157,7 @@ export default function FurniturePage() {
 
       {/* ===== FURNITURE LIST ===== */}
       <section className="py-16 px-6">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <h2 className="text-lg font-bold text-gray-800 mb-2 text-center tracking-wide">FURNITURE LIST</h2>
           <p className="text-xs text-center text-gray-400 mb-10">※ 表記はすべて月額・税別となります。</p>
 
@@ -205,7 +205,7 @@ export default function FurniturePage() {
 
       {/* ===== PDF CATALOG ===== */}
       <section id="catalog" className="py-16 px-6 bg-gray-50">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <h2 className="text-lg font-bold text-gray-800 mb-2 text-center tracking-wide">CATALOG</h2>
           <p className="text-xs text-center text-gray-400 mb-8">
             【NovolBa】家具ホーダイ 製品カタログ

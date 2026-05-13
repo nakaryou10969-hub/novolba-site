@@ -5,6 +5,17 @@ import { notFound } from "next/navigation";
 import { client, type WithArticle } from "../../../libs/client";
 import { extractFirstImage } from "../../../libs/extractFirstImage";
 
+// カテゴリ名→スラッグのマッピング
+const CATEGORY_TO_SLUG: Record<string, string> = {
+  "インタビュー": "interview",
+  "速報インタビュー": "flash-interview",
+  "対談": "talk",
+  "スタートアップ昇る場": "startup-novolba",
+  "イベント": "event",
+  "レポート": "report",
+  "コラム": "column",
+};
+
 type Props = {
   params: Promise<{ id: string }>;
 };
@@ -58,7 +69,7 @@ export default async function WithArticlePage({ params }: Props) {
         <div className="absolute top-0 left-0 right-0 h-1" style={{ backgroundColor: "#3dbdac" }} />
         {article.category && (
           <Link
-            href={`/with/category/${encodeURIComponent(article.category)}`}
+            href={`/with/category/${CATEGORY_TO_SLUG[article.category] ?? encodeURIComponent(article.category)}/`}
             className="inline-block text-xs px-3 py-1 rounded-full mb-4 hover:opacity-80 transition-opacity"
             style={{ backgroundColor: "#e6f7f5", color: "#3dbdac" }}
           >

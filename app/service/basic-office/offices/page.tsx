@@ -112,7 +112,7 @@ export default function OfficesPage() {
 
       {/* ===== オフィスの特徴 ===== */}
       <section className="py-16 px-6 bg-gray-50">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <h2 className="text-xl font-bold text-center text-gray-800 mb-10">
             NovolBa Officeの<span style={{ color: "#3dbdac" }}>特徴</span>
           </h2>
@@ -148,7 +148,7 @@ export default function OfficesPage() {
 
       {/* ===== 拠点一覧 ===== */}
       <section className="py-16 px-6">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <h2 className="text-xl font-bold text-center text-gray-800 mb-4">
             NovolBa Office 拠点一覧
           </h2>
@@ -202,7 +202,7 @@ export default function OfficesPage() {
 
       {/* ===== ここが違う ===== */}
       <section className="py-16 px-6 bg-gray-50">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <h2 className="text-xl font-bold text-center text-gray-800 mb-10">
             NovolBa Officeは<span style={{ color: "#3dbdac" }}>ここが違う</span>
           </h2>

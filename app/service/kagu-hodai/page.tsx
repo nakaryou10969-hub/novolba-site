@@ -335,17 +335,7 @@ export default function KaguHodaiPage() {
                   </div>
                 ))}
               </div>
-              <div className="text-center">
-                <a
-                  href="https://bit.ly/novolba_kagu"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs underline"
-                  style={{ color: "#3dbdac" }}
-                >
-                  最新の在庫は家具リストをご確認ください →
-                </a>
-              </div>
+
             </div>
           </div>
         </div>
