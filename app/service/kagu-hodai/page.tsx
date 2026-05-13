@@ -326,11 +326,11 @@ export default function KaguHodaiPage() {
                   </tbody>
                 </table>
               </div>
-              <h4 className="text-sm font-bold text-gray-700 mb-3">■ 提供家具一例</h4>
-              <div className="grid grid-cols-2 gap-2 mb-4">
+              <h4 className="text-sm font-bold text-gray-700 mb-2">■ 提供家具一例</h4>
+              <div className="grid grid-cols-2 gap-1.5 mb-4">
                 {tanpinItems.map((item) => (
-                  <div key={item.name} className="bg-gray-50 rounded-xl p-3">
-                    <p className="text-xs font-semibold text-gray-700 mb-1">{item.name}</p>
+                  <div key={item.name} className="bg-gray-50 rounded-xl px-3 py-2">
+                    <p className="text-xs font-semibold text-gray-700 mb-0.5">{item.name}</p>
                     <p className="text-xs font-bold" style={{ color: "#3dbdac" }}>{item.price}</p>
                   </div>
                 ))}
@@ -369,7 +369,27 @@ export default function KaguHodaiPage() {
       <section className="py-16 px-6 bg-gray-50">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-xl font-bold text-center text-gray-800 mb-10">ご利用の流れ</h2>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-0">
+
+          {/* モバイル：縦並び */}
+          <div className="flex flex-col items-center sm:hidden gap-0">
+            {steps.map((s, i) => (
+              <div key={s.step} className="flex flex-col items-center">
+                <div
+                  className="flex flex-col items-center justify-center text-center px-6 py-4 rounded-xl text-white min-w-[160px]"
+                  style={{ backgroundColor: "#3dbdac" }}
+                >
+                  <span className="text-xs font-bold mb-1">{s.step}</span>
+                  <span className="text-base font-semibold">{s.label}</span>
+                </div>
+                {i < steps.length - 1 && (
+                  <span className="text-2xl text-gray-300 my-2">↓</span>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* デスクトップ：横並び */}
+          <div className="hidden sm:flex items-center justify-center gap-0">
             {steps.map((s, i) => (
               <div key={s.step} className="flex items-center">
                 <div
@@ -380,10 +400,7 @@ export default function KaguHodaiPage() {
                   <span className="text-base font-semibold">{s.label}</span>
                 </div>
                 {i < steps.length - 1 && (
-                  <span className="text-2xl text-gray-300 mx-2 hidden sm:block">→</span>
-                )}
-                {i < steps.length - 1 && (
-                  <span className="text-2xl text-gray-300 my-2 sm:hidden">↓</span>
+                  <span className="text-2xl text-gray-300 mx-2">→</span>
                 )}
               </div>
             ))}

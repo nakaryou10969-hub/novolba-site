@@ -21,11 +21,20 @@ type Props = {
 };
 
 export async function generateStaticParams() {
-  const data = await client.getList<WithArticle>({
+  const first = await client.getList<WithArticle>({
     endpoint: "with",
-    queries: { limit: 100, fields: "id" },
+    queries: { limit: 100, offset: 0, fields: "id" },
   });
-  return data.contents.map((a) => ({ id: a.id }));
+  const total = first.totalCount;
+  let all = first.contents;
+  if (total > 100) {
+    const second = await client.getList<WithArticle>({
+      endpoint: "with",
+      queries: { limit: 100, offset: 100, fields: "id" },
+    });
+    all = [...all, ...second.contents];
+  }
+  return all.map((a) => ({ id: a.id }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

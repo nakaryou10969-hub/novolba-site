@@ -285,12 +285,12 @@ export default function BasicOfficePage() {
                 <p className="text-center font-bold text-gray-700 bg-yellow-100 rounded-lg py-2 mb-4">基本サービス</p>
                 <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
                   {[
-                    { icon: "🪑", label: "オカムラ社製執務家具" },
-                    { icon: "📶", label: "Wi-fi" },
-                    { icon: "🖨️", label: "プリンター" },
+                    { label: "オカムラ社製執務家具" },
+                    { label: "Wi-fi" },
+                    { label: "プリンター" },
                   ].map((item) => (
                     <div key={item.label}>
-                      <div className="w-16 h-16 rounded-full border-2 border-gray-200 flex items-center justify-center text-2xl mx-auto mb-2">{item.icon}</div>
+                      <div className="w-16 h-16 rounded-full border-2 border-gray-200 flex items-center justify-center mx-auto mb-2 bg-gray-50" />
                       <p className="text-sm text-gray-600">{item.label}</p>
                     </div>
                   ))}
@@ -301,12 +301,12 @@ export default function BasicOfficePage() {
                 <p className="text-center font-bold text-white rounded-lg py-2 mb-4" style={{ backgroundColor: "#3dbdac" }}>オプションサービス</p>
                 <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
                   {[
-                    { icon: "👥", label: "MTGスペース" },
-                    { icon: "🗄️", label: "キャビネット" },
-                    { icon: "🛋️", label: "リフレッシュスペース" },
+                    { label: "MTGスペース" },
+                    { label: "キャビネット" },
+                    { label: "リフレッシュスペース" },
                   ].map((item) => (
                     <div key={item.label}>
-                      <div className="w-16 h-16 rounded-full border-2 border-gray-200 bg-white flex items-center justify-center text-2xl mx-auto mb-2">{item.icon}</div>
+                      <div className="w-16 h-16 rounded-full border-2 border-gray-200 bg-white flex items-center justify-center mx-auto mb-2" />
                       <p className="text-sm text-gray-600">{item.label}</p>
                     </div>
                   ))}
