@@ -278,43 +278,8 @@ export default function BasicOfficePage() {
               オカムラ社製の高品質な執務家具、Wi-Fi、プリンター、ホワイトボードが設置済みで、
             </p>
             <p className="text-center text-lg text-gray-600 mb-1">手軽に快適な環境が手に入ります。</p>
-            <p className="text-center text-lg text-gray-600 mb-8">退去する際に、大型家具の移動や廃棄の心配も不要です。</p>
-
-            <div className="flex justify-center"><div className="bg-white rounded-2xl p-4 sm:p-6 border border-gray-100 w-full sm:w-[70%] lg:w-1/2">
-              <div className="border-2 border-yellow-300 rounded-2xl p-4 mb-4">
-                <p className="text-center font-bold text-gray-700 bg-yellow-100 rounded-lg py-2 mb-4">基本サービス</p>
-                <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
-                  {[
-                    { label: "オカムラ社製執務家具" },
-                    { label: "Wi-fi" },
-                    { label: "プリンター" },
-                  ].map((item) => (
-                    <div key={item.label}>
-                      <div className="w-16 h-16 rounded-full border-2 flex items-center justify-center mx-auto mb-2 text-xl font-bold" style={{ borderColor: "#3dbdac", color: "#3dbdac", backgroundColor: "#f0fdfb" }}>✓</div>
-                      <p className="text-sm text-gray-600">{item.label}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              {/* オプションサービス */}
-              <div className="rounded-2xl p-4" style={{ backgroundColor: "#e6f7f5" }}>
-                <p className="text-center font-bold text-white rounded-lg py-2 mb-4" style={{ backgroundColor: "#3dbdac" }}>オプションサービス</p>
-                <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
-                  {[
-                    { label: "MTGスペース" },
-                    { label: "キャビネット" },
-                    { label: "リフレッシュスペース" },
-                  ].map((item) => (
-                    <div key={item.label}>
-                      <div className="w-16 h-16 rounded-full border-2 border-white bg-white flex items-center justify-center mx-auto mb-2 text-xl font-bold" style={{ color: "#3dbdac" }}>+</div>
-                      <p className="text-sm text-gray-600">{item.label}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div></div>
+            <p className="text-center text-lg text-gray-600">退去する際に、大型家具の移動や廃棄の心配も不要です。</p>
           </div>
-
           {/* ===== 手間 03 ===== */}
           <div className="mb-8 rounded-3xl border-2 p-8" style={{ borderColor: "#3dbdac", backgroundColor: "#f0fdfb" }}>
             <div className="flex items-center gap-4 mb-6 justify-center">

@@ -72,9 +72,8 @@ export default function MessagePage() {
           </div>
 
           {/* 署名 */}
-          <div className="mt-16 pt-8 border-t border-gray-100 text-center">
-            <p className="text-sm text-gray-400 tracking-widest">NovolBa</p>
-          </div>
+          <div className="mt-16 pt-8 border-t border-gray-100" />
+
         </div>
       </section>
 
