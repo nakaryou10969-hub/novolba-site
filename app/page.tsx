@@ -93,15 +93,19 @@ export default async function Home() {
         </div>
 
         {/* PC：背景画像全体レイアウト */}
-        <div className="hidden md:flex items-end justify-start min-h-[90vh] relative overflow-hidden">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/hero-illustration.png"
-            alt="挑戦するスタートアップの昇る場を提供します"
-            className="absolute inset-0 w-full h-full object-cover object-center"
-          />
+        <div className="hidden md:flex flex-col">
+          {/* 画像 */}
+          <div className="w-full overflow-hidden relative">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/hero-illustration.png"
+              alt="挑戦するスタートアップの昇る場を提供します"
+              className="w-full h-auto block"
+              style={{ maxWidth: "100%", display: "block" }}
+            />
+          </div>
           {/* ボタン */}
-          <div className="relative z-10 px-10 pb-16 flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-row gap-4 justify-start px-10 py-6">
             <Link
               href="/inquiry"
               className="px-8 py-3 text-sm font-medium text-white rounded-full shadow-md hover:opacity-90 transition-opacity"
@@ -115,18 +119,6 @@ export default async function Home() {
             >
               サービスを見る
             </Link>
-          </div>
-          {/* スクロール */}
-          <div className="absolute bottom-8 right-6 flex flex-col items-center gap-2 text-gray-500 z-10 animate-bounce">
-            <span
-              className="text-xs tracking-widest"
-              style={{ writingMode: "vertical-rl", letterSpacing: "0.3em" }}
-            >
-              SCROLL
-            </span>
-            <svg width="16" height="24" viewBox="0 0 16 24" fill="none" aria-hidden="true">
-              <path d="M8 0v20M1 13l7 7 7-7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
           </div>
         </div>
       </section>
