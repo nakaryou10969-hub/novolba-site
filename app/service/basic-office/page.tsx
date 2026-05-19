@@ -111,7 +111,7 @@ export default function BasicOfficePage() {
             <img
               src="/problem.png"
               alt="従来のオフィス移転の課題"
-              className="w-full sm:w-4/5 h-auto"
+              className="w-full h-auto mx-auto"
             />
           </div>
 
