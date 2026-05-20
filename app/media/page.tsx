@@ -295,6 +295,22 @@ export default async function MediaPage() {
         </section>
       ))}
 
+      {/* ===== WITHとは？ボタン ===== */}
+      <section className="py-8 px-6 text-center bg-white">
+        <Link
+          href="/media/about"
+          className="inline-flex items-center gap-2 px-10 py-3 text-sm font-medium text-white rounded-full hover:opacity-90 transition-opacity shadow-sm"
+          style={{ backgroundColor: "#3dbdac" }}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+          WITHとは？
+        </Link>
+      </section>
+
       {/* ===== 全記事へのリンク ===== */}
       <section className="py-12 px-6 text-center bg-white border-t border-gray-100">
         <Link
