@@ -115,34 +115,7 @@ export default function BasicOfficePage() {
             />
           </div>
 
-          {/* 費用の内訳 */}
-          <div
-            className="rounded-2xl p-8 mb-8 text-center"
-            style={{ backgroundColor: "#e6f7f5" }}
-          >
-            <p className="text-base text-gray-600 mb-4">
-              30坪/坪単価1.4万円のオフィスに一年間入居した際の費用内訳
-            </p>
-            <p className="text-4xl font-bold mb-4" style={{ color: "#3dbdac" }}>
-              870<span className="text-2xl">万円</span>
-            </p>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-base">
-              {[
-                { label: "賃料（12ヶ月）", value: "504万" },
-                { label: "保証金・仲介手数料", value: "294万" },
-                { label: "家具・内装", value: "384万" },
-                { label: "原状回復", value: "192万" },
-              ].map((item) => (
-                <div key={item.label} className="bg-white rounded-xl p-3">
-                  <p className="text-xs text-gray-500 mb-1">{item.label}</p>
-                  <p className="font-bold text-gray-800">{item.value}</p>
-                </div>
-              ))}
-            </div>
-            <p className="text-xs text-gray-400 mt-3">
-              ※内装工事や原状回復工事費用には工事期間中空室料も含まれます。
-            </p>
-          </div>
+
 
         </div>
       </section>
@@ -185,45 +158,10 @@ export default function BasicOfficePage() {
             </div>
 
             {/* コスト比較 */}
-            <div className="flex justify-center"><div className="bg-white rounded-2xl p-4 sm:p-6 border border-gray-100 w-full sm:w-[70%] lg:w-1/2">
-              <h4 className="text-sm sm:text-base font-bold text-gray-700 mb-4 border-l-4 pl-3" style={{ borderColor: "#3dbdac" }}>入居月コスト</h4>
-              <div className="flex flex-col gap-3 mb-6">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
-                  <span className="shrink-0 text-xs sm:text-sm font-bold text-white px-3 py-1 rounded" style={{ backgroundColor: "#9ca3af" }}>通常賃貸</span>
-                  <div className="flex flex-wrap gap-1 flex-1">
-                    <span className="bg-gray-200 text-gray-600 text-xs px-2 py-2 rounded">敷金・礼金・仲介手数料</span>
-                    <span className="bg-gray-300 text-gray-600 text-xs px-2 sm:px-4 py-2 rounded flex-1 text-center">内装・家具</span>
-                    <span className="bg-gray-400 text-gray-600 text-xs px-2 py-2 rounded">賃料</span>
-                  </div>
-                </div>
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
-                  <span className="shrink-0 text-xs sm:text-sm font-bold text-white px-3 py-1 rounded" style={{ backgroundColor: "#3dbdac" }}>NovolBa</span>
-                  <div className="flex flex-wrap gap-1">
-                    <span className="text-white text-xs px-3 py-2 rounded font-bold" style={{ backgroundColor: "#3dbdac" }}>サービス利用料</span>
-                    <span className="text-white text-xs px-3 py-2 rounded" style={{ backgroundColor: "#3dbdac" }}>契約金</span>
-                    <span className="text-yellow-500 font-bold text-sm ml-2 flex items-center">← カット</span>
-                  </div>
-                </div>
-              </div>
-              <h4 className="text-sm sm:text-base font-bold text-gray-700 mb-4 border-l-4 pl-3" style={{ borderColor: "#3dbdac" }}>退去月コスト</h4>
-              <div className="flex flex-col gap-3">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
-                  <span className="shrink-0 text-xs sm:text-sm font-bold text-white px-3 py-1 rounded" style={{ backgroundColor: "#9ca3af" }}>通常賃貸</span>
-                  <div className="flex flex-wrap gap-1 flex-1">
-                    <span className="bg-gray-200 text-gray-600 text-xs px-2 py-2 rounded">原状回復費用</span>
-                    <span className="bg-gray-300 text-gray-600 text-xs px-2 py-2 rounded">不要家具処分費</span>
-                    <span className="bg-gray-400 text-gray-600 text-xs px-2 py-2 rounded">賃料</span>
-                  </div>
-                </div>
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
-                  <span className="shrink-0 text-xs sm:text-sm font-bold text-white px-3 py-1 rounded" style={{ backgroundColor: "#3dbdac" }}>NovolBa</span>
-                  <div className="flex flex-wrap gap-1">
-                    <span className="text-white text-xs px-3 py-2 rounded font-bold" style={{ backgroundColor: "#3dbdac" }}>サービス利用料</span>
-                    <span className="text-yellow-500 font-bold text-sm ml-2 flex items-center">← カット</span>
-                  </div>
-                </div>
-              </div>
-            </div></div>
+            <div className="flex justify-center">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/chart.png" alt="入居月・退去月コスト比較" className="w-full sm:w-3/4 lg:w-1/2 h-auto" />
+            </div>
           </div>
 
           {/* ===== 費用 02 ===== */}
