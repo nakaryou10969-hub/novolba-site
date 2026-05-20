@@ -49,7 +49,7 @@ async function getBlogs(): Promise<MicroCMSListResponse<Blog>> {
 async function getUsersVoiceBlogs(): Promise<MicroCMSListResponse<Blog>> {
   return client.getList<Blog>({
     endpoint: "blogs",
-    queries: { limit: 3, orders: "-publishedAt", filters: "category[contains]User's VOICE" },
+    queries: { limit: 3, orders: "-publishedAt", filters: "category[contains]user's VOICE" },
   });
 }
 
@@ -300,7 +300,7 @@ export default async function Home() {
                 <div className="flex items-center gap-3 mb-8">
                   <span className="w-1 h-6 rounded-full" style={{ backgroundColor: "#3dbdac" }} />
                   <h3 className="text-xl font-bold tracking-wide text-gray-800">
-                    User&apos;s VOICE
+                    user&apos;s VOICE
                   </h3>
                 </div>
                 <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
