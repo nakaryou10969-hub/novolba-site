@@ -14,11 +14,11 @@ export const metadata: Metadata = {
 // withAPIのカテゴリー順序
 const CATEGORY_ORDER = [
   "インタビュー",
+  "イベント",
+  "レポート",
   "速報インタビュー",
   "対談",
   "スタートアップ昇る場",
-  "イベント",
-  "レポート",
   "コラム",
 ];
 
