@@ -4,6 +4,7 @@ import Link from "next/link";
 import { client, type WithArticle } from "../../libs/client";
 import { extractFirstImage } from "../../libs/extractFirstImage";
 import MediaSearch from "./MediaSearch";
+import LatestSlider from "./LatestSlider";
 
 export const metadata: Metadata = {
   title: "MEDIA | NovolBa",
@@ -235,6 +236,19 @@ export default async function MediaPage() {
       <section className="py-10 px-6 bg-white border-b border-gray-100">
         <div className="max-w-5xl mx-auto">
           <MediaSearch allBlogs={allArticles} />
+        </div>
+      </section>
+
+      {/* ===== 最新記事スライダー ===== */}
+      <section className="py-16 px-6 bg-white">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-center gap-3 mb-8">
+            <span className="w-1 h-6 rounded-full" style={{ backgroundColor: "#3dbdac" }} />
+            <h2 className="text-xl font-bold tracking-wide" style={{ color: "#3dbdac" }}>
+              最新記事
+            </h2>
+          </div>
+          <LatestSlider articles={allArticles.slice(0, 10)} />
         </div>
       </section>
 
