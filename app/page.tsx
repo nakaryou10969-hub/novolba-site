@@ -42,14 +42,24 @@ const serviceCards = [
 async function getBlogs(): Promise<MicroCMSListResponse<Blog>> {
   return client.getList<Blog>({
     endpoint: "blogs",
-    queries: { limit: 6, orders: "-publishedAt" },
+    queries: { limit: 3, orders: "-publishedAt" },
+  });
+}
+
+async function getUsersVoiceBlogs(): Promise<MicroCMSListResponse<Blog>> {
+  return client.getList<Blog>({
+    endpoint: "blogs",
+    queries: { limit: 3, orders: "-publishedAt", filters: "category[contains]User's VOICE" },
   });
 }
 
 // ---- ページ ----
 
 export default async function Home() {
-  const blogsData = await getBlogs();
+  const [blogsData, usersVoiceData] = await Promise.all([
+    getBlogs(),
+    getUsersVoiceBlogs(),
+  ]);
 
   return (
     <main className="bg-white">
@@ -220,7 +230,8 @@ export default async function Home() {
           <p className="text-center text-gray-400 text-sm">記事はまだありません。</p>
         ) : (
           <>
-            <div className="max-w-6xl mx-auto grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {/* 最新記事 3件（1行） */}
+            <div className="max-w-6xl mx-auto grid grid-cols-1 gap-8 sm:grid-cols-3">
               {blogsData.contents.map((blog) => (
                 <article
                   key={blog.id}
@@ -255,8 +266,6 @@ export default async function Home() {
                       <span className="text-3xl">📝</span>
                     </div>
                   )}
-
-                  {/* 記事情報 */}
                   <div className="flex flex-col gap-2 px-5 py-5 flex-1">
                     {blog.category && (
                       <span
@@ -284,6 +293,80 @@ export default async function Home() {
               ))}
             </div>
 
+            {/* User's VOICE セクション */}
+            {usersVoiceData.contents.length > 0 && (
+              <div className="max-w-6xl mx-auto mt-16">
+                {/* 見出し */}
+                <div className="flex items-center gap-3 mb-8">
+                  <span className="w-1 h-6 rounded-full" style={{ backgroundColor: "#3dbdac" }} />
+                  <h3 className="text-xl font-bold tracking-wide text-gray-800">
+                    User&apos;s VOICE
+                  </h3>
+                </div>
+                <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
+                  {usersVoiceData.contents.map((blog) => (
+                    <article
+                      key={blog.id}
+                      className="flex flex-col rounded-2xl overflow-hidden shadow-md bg-white hover:shadow-xl transition-shadow"
+                    >
+                      {blog.eyecatch ? (
+                        <div className="relative w-full aspect-[16/9] bg-gray-100">
+                          <Image
+                            src={blog.eyecatch.url}
+                            alt={blog.title}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          />
+                        </div>
+                      ) : extractFirstImage(blog.content) ? (
+                        <div className="relative w-full aspect-[16/9] bg-gray-100">
+                          <Image
+                            src={extractFirstImage(blog.content)!}
+                            alt={blog.title}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          />
+                        </div>
+                      ) : (
+                        <div
+                          className="w-full aspect-[16/9] flex items-center justify-center"
+                          style={{ backgroundColor: "#e6f7f5" }}
+                        >
+                          <span className="text-3xl">📝</span>
+                        </div>
+                      )}
+                      <div className="flex flex-col gap-2 px-5 py-5 flex-1">
+                        {blog.category && (
+                          <span
+                            className="text-xs font-medium uppercase tracking-wide"
+                            style={{ color: "#3dbdac" }}
+                          >
+                            {blog.category.name}
+                          </span>
+                        )}
+                        <h3 className="text-sm font-semibold text-gray-800 leading-snug line-clamp-2">
+                          {blog.title}
+                        </h3>
+                        <time
+                          dateTime={blog.publishedAt}
+                          className="mt-auto pt-2 text-xs text-gray-400"
+                        >
+                          {new Date(blog.publishedAt).toLocaleDateString("ja-JP", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}
+                        </time>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* もっと見るボタン */}
             <div className="text-center mt-10">
               <Link
                 href="/news"
