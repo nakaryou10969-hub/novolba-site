@@ -47,10 +47,16 @@ async function getBlogs(): Promise<MicroCMSListResponse<Blog>> {
 }
 
 async function getUsersVoiceBlogs(): Promise<MicroCMSListResponse<Blog>> {
-  return client.getList<Blog>({
+  const res = await client.getList<Blog>({
     endpoint: "blogs",
-    queries: { limit: 3, orders: "-publishedAt", filters: "category[contains]user's VOICE" },
+    queries: { limit: 100, orders: "-publishedAt", filters: "category[exists]" },
   });
+  return {
+    ...res,
+    contents: res.contents
+      .filter((b) => b.category?.name?.toLowerCase() === "user's voice")
+      .slice(0, 3),
+  };
 }
 
 // ---- ページ ----
