@@ -239,8 +239,9 @@ export default async function Home() {
             {/* 最新記事 3件（1行） */}
             <div className="max-w-6xl mx-auto grid grid-cols-1 gap-8 sm:grid-cols-3">
               {blogsData.contents.map((blog) => (
-                <article
+                <Link
                   key={blog.id}
+                  href={`/news/${blog.id}`}
                   className="flex flex-col rounded-2xl overflow-hidden shadow-md bg-white hover:shadow-xl transition-shadow"
                 >
                   {/* サムネイル */}
@@ -281,7 +282,7 @@ export default async function Home() {
                         {blog.category.name}
                       </span>
                     )}
-                    <h3 className="text-sm font-semibold text-gray-800 leading-snug line-clamp-2">
+                    <h3 className="text-sm font-semibold text-gray-800 leading-snug line-clamp-2 group-hover:underline">
                       {blog.title}
                     </h3>
                     <time
@@ -295,7 +296,7 @@ export default async function Home() {
                       })}
                     </time>
                   </div>
-                </article>
+                </Link>
               ))}
             </div>
 
@@ -311,8 +312,9 @@ export default async function Home() {
                 </div>
                 <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
                   {usersVoiceData.contents.map((blog) => (
-                    <article
+                    <Link
                       key={blog.id}
+                      href={`/news/${blog.id}`}
                       className="flex flex-col rounded-2xl overflow-hidden shadow-md bg-white hover:shadow-xl transition-shadow"
                     >
                       {blog.eyecatch ? (
@@ -352,7 +354,7 @@ export default async function Home() {
                             {blog.category.name}
                           </span>
                         )}
-                        <h3 className="text-sm font-semibold text-gray-800 leading-snug line-clamp-2">
+                        <h3 className="text-sm font-semibold text-gray-800 leading-snug line-clamp-2 group-hover:underline">
                           {blog.title}
                         </h3>
                         <time
@@ -366,7 +368,7 @@ export default async function Home() {
                           })}
                         </time>
                       </div>
-                    </article>
+                    </Link>
                   ))}
                 </div>
               </div>
