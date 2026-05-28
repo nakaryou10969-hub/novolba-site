@@ -183,7 +183,7 @@ export default async function MediaPage() {
           <div className="flex items-center gap-3 mb-8">
             <span className="w-1 h-6 rounded-full" style={{ backgroundColor: "#3dbdac" }} />
             <h2 className="text-xl font-bold tracking-wide" style={{ color: "#3dbdac" }}>
-              Latest Articles
+              新着記事
             </h2>
           </div>
           <LatestSlider articles={allArticles.slice(0, 10)} />
