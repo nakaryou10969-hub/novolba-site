@@ -131,12 +131,12 @@ export default function BasicOfficePage() {
           <div className="mb-16 rounded-3xl border-2 p-8" style={{ borderColor: "#3dbdac", backgroundColor: "#f0fdfb" }}>
             <div className="flex items-center gap-4 mb-6 justify-center">
               <div className="rounded-full border-2 px-4 sm:px-6 py-3 flex items-center gap-3" style={{ borderColor: "#3dbdac" }}>
-                <span className="text-2xl sm:text-3xl font-bold" style={{ color: "#3dbdac" }}>01</span>
-                <span className="text-base sm:text-xl font-bold text-gray-800">入退去月の出費を大幅カット</span>
+                <span className="text-2xl sm:text-3xl font-bold shrink-0" style={{ color: "#3dbdac" }}>01</span>
+                <span className="text-base sm:text-xl font-bold text-gray-800 whitespace-nowrap">入退去月の出費を大幅カット</span>
               </div>
             </div>
             <p className="text-center text-sm sm:text-lg text-gray-600 mb-2">
-              通常賃貸オフィスでかかる <span className="underline font-bold">契約時初期費用（敷金・礼金・仲介手数料）</span>や、
+              通常賃貸オフィスでかかる <span className="underline font-bold whitespace-nowrap">契約時初期費用（敷金・礼金・仲介手数料）</span>や、
             </p>
             <p className="text-center text-sm sm:text-lg font-bold text-gray-800 mb-1">
               入退去時工事費用、家具購入費用がかかりません。
@@ -150,7 +150,7 @@ export default function BasicOfficePage() {
                 { label: "家具購入・廃棄", suffix: "不要" },
               ].map((item) => (
                 <div key={item.label} className="bg-white rounded-2xl p-6 text-center border border-gray-100 shadow-sm">
-                  <p className="text-2xl font-bold text-gray-800">
+                  <p className="text-2xl font-bold text-gray-800 whitespace-nowrap">
                     {item.label}<span style={{ color: "#3dbdac" }}>{item.suffix}</span>
                   </p>
                 </div>
@@ -160,7 +160,7 @@ export default function BasicOfficePage() {
             {/* コスト比較 */}
             <div className="flex justify-center">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/chart.png" alt="入居月・退去月コスト比較" className="w-full sm:w-3/4 lg:w-1/2 h-auto" />
+              <img src="/chart.png" alt="入居月・退去月コスト比較" className="w-full h-auto" />
             </div>
           </div>
 
@@ -168,8 +168,8 @@ export default function BasicOfficePage() {
           <div className="mb-16 rounded-3xl border-2 p-8" style={{ borderColor: "#3dbdac", backgroundColor: "#f0fdfb" }}>
             <div className="flex items-center gap-4 mb-6 justify-center">
               <div className="rounded-full border-2 px-4 sm:px-6 py-3 flex items-center gap-3" style={{ borderColor: "#3dbdac" }}>
-                <span className="text-2xl sm:text-3xl font-bold" style={{ color: "#3dbdac" }}>02</span>
-                <span className="text-base sm:text-xl font-bold text-gray-800">月額定額制</span>
+                <span className="text-2xl sm:text-3xl font-bold shrink-0" style={{ color: "#3dbdac" }}>02</span>
+                <span className="text-base sm:text-xl font-bold text-gray-800 whitespace-nowrap">月額定額制</span>
               </div>
             </div>
             <p className="text-center text-lg text-gray-600 mb-1">初月のみ契約金がかかりますが、</p>
@@ -188,8 +188,8 @@ export default function BasicOfficePage() {
           <div className="mb-16 rounded-3xl border-2 p-8" style={{ borderColor: "#3dbdac", backgroundColor: "#f0fdfb" }}>
             <div className="flex items-center gap-4 mb-6 justify-center">
               <div className="rounded-full border-2 px-4 sm:px-6 py-3 flex items-center gap-3" style={{ borderColor: "#3dbdac" }}>
-                <span className="text-2xl sm:text-3xl font-bold" style={{ color: "#3dbdac" }}>03</span>
-                <span className="text-base sm:text-xl font-bold text-gray-800">各種契約不要！契約・支払いを一本化</span>
+                <span className="text-2xl sm:text-3xl font-bold shrink-0" style={{ color: "#3dbdac" }}>03</span>
+                <span className="text-base sm:text-xl font-bold text-gray-800 whitespace-nowrap">各種契約不要！契約・支払いを一本化</span>
               </div>
             </div>
             <p className="text-center text-lg text-gray-600 mb-1">
@@ -207,8 +207,8 @@ export default function BasicOfficePage() {
           <div className="mb-16 rounded-3xl border-2 p-8" style={{ borderColor: "#3dbdac", backgroundColor: "#f0fdfb" }}>
             <div className="flex items-center gap-4 mb-6 justify-center">
               <div className="rounded-full border-2 px-4 sm:px-6 py-3 flex items-center gap-3" style={{ borderColor: "#3dbdac" }}>
-                <span className="text-2xl sm:text-3xl font-bold" style={{ color: "#3dbdac" }}>04</span>
-                <span className="text-base sm:text-xl font-bold text-gray-800">家具付き・一社占有オフィス</span>
+                <span className="text-2xl sm:text-3xl font-bold shrink-0" style={{ color: "#3dbdac" }}>04</span>
+                <span className="text-base sm:text-xl font-bold text-gray-800 whitespace-nowrap">家具付き・一社占有オフィス</span>
               </div>
             </div>
             <p className="text-center text-lg text-gray-600 mb-1">入居初日からすぐに働ける環境を完備！</p>
@@ -222,8 +222,8 @@ export default function BasicOfficePage() {
           <div className="mb-8 rounded-3xl border-2 p-8" style={{ borderColor: "#3dbdac", backgroundColor: "#f0fdfb" }}>
             <div className="flex items-center gap-4 mb-6 justify-center">
               <div className="rounded-full border-2 px-4 sm:px-6 py-3 flex items-center gap-3" style={{ borderColor: "#3dbdac" }}>
-                <span className="text-2xl sm:text-3xl font-bold" style={{ color: "#3dbdac" }}>05</span>
-                <span className="text-base sm:text-xl font-bold text-gray-800">用途に合わせたレイアウト</span>
+                <span className="text-2xl sm:text-3xl font-bold shrink-0" style={{ color: "#3dbdac" }}>05</span>
+                <span className="text-base sm:text-xl font-bold text-gray-800 whitespace-nowrap">用途に合わせたレイアウト</span>
               </div>
             </div>
             <p className="text-center text-lg text-gray-600 mb-1">

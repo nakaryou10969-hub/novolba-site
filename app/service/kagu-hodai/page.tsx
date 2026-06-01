@@ -161,20 +161,20 @@ export default function KaguHodaiPage() {
           <h2 className="text-xl font-bold text-center text-gray-800 mb-10">
             家具ホーダイ!! が<span style={{ color: "#3dbdac" }}>選ばれる理由</span>
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+          <div className="flex flex-col sm:grid sm:grid-cols-4 gap-4">
             {points.map((point) => (
               <div
                 key={point.number}
-                className="flex flex-col items-center text-center p-8 bg-white rounded-2xl shadow-md"
+                className="flex sm:flex-col items-center sm:justify-start text-left sm:text-center p-5 sm:p-8 bg-white rounded-2xl shadow-md gap-4 sm:gap-0"
               >
                 <span
-                  className="text-sm font-bold px-3 py-1 rounded-full mb-4"
+                  className="text-sm font-bold px-3 py-1 rounded-full shrink-0 sm:mb-4"
                   style={{ backgroundColor: "#e6f7f5", color: "#3dbdac" }}
                 >
                   Point {point.number}
                 </span>
-                <p className="text-lg text-gray-700 font-bold leading-relaxed whitespace-pre-line">
-                  {point.title}
+                <p className="text-base sm:text-lg text-gray-700 font-bold leading-relaxed whitespace-pre-line">
+                  {point.title.replace(/\n/g, ' ')}
                 </p>
               </div>
             ))}
@@ -350,14 +350,14 @@ export default function KaguHodaiPage() {
           <p className="text-center text-sm text-gray-400 mb-10">
             家具サブスク以外の工事・販売もワンストップで対応します
           </p>
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
             {additionalServices.map((s) => (
               <div
                 key={s.name}
-                className="flex flex-col items-center text-center p-4 rounded-2xl border border-gray-100 shadow-sm"
+                className="flex sm:flex-col items-center sm:justify-start text-left sm:text-center p-4 rounded-2xl border border-gray-100 shadow-sm gap-3 sm:gap-0"
                 style={{ backgroundColor: "#f0fdfb" }}
               >
-                <p className="text-base font-bold text-gray-800 mb-1">{s.name}</p>
+                <p className="text-base font-bold text-gray-800 sm:mb-1 whitespace-nowrap">{s.name}</p>
                 <p className="text-xs text-gray-500">{s.description}</p>
               </div>
             ))}
