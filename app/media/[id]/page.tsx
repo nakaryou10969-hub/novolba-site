@@ -23,35 +23,24 @@ type Props = {
 export async function generateStaticParams() {
   const first = await client.getList<WithArticle>({
     endpoint: "with",
-    queries: { limit: 100, offset: 0, fields: "id,slug" },
+    queries: { limit: 100, offset: 0, fields: "id" },
   });
   const total = first.totalCount;
   let all = first.contents;
   if (total > 100) {
     const second = await client.getList<WithArticle>({
       endpoint: "with",
-      queries: { limit: 100, offset: 100, fields: "id,slug" },
+      queries: { limit: 100, offset: 100, fields: "id" },
     });
     all = [...all, ...second.contents];
   }
-  // slugがあればslugを、なければidをURLパラメータとして使う
-  return all.map((a) => ({ id: a.slug ?? a.id }));
+  return all.map((a) => ({ id: a.id }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   try {
-    // slugで検索、なければidで検索
-    let article: WithArticle | null = null;
-    const bySlug = await client.getList<WithArticle>({
-      endpoint: "with",
-      queries: { limit: 1, filters: `slug[equals]${id}` },
-    });
-    if (bySlug.contents.length > 0) {
-      article = bySlug.contents[0];
-    } else {
-      article = await client.get<WithArticle>({ endpoint: "with", contentId: id });
-    }
+    const article = await client.get<WithArticle>({ endpoint: "with", contentId: id });
     return {
       title: `${article.title} | WITH by NovolBa`,
       description: article.title,
@@ -66,16 +55,7 @@ export default async function MediaArticlePage({ params }: Props) {
 
   let article: WithArticle;
   try {
-    // slugで検索、なければidで検索
-    const bySlug = await client.getList<WithArticle>({
-      endpoint: "with",
-      queries: { limit: 1, filters: `slug[equals]${id}` },
-    });
-    if (bySlug.contents.length > 0) {
-      article = bySlug.contents[0];
-    } else {
-      article = await client.get<WithArticle>({ endpoint: "with", contentId: id });
-    }
+    article = await client.get<WithArticle>({ endpoint: "with", contentId: id });
   } catch {
     notFound();
   }

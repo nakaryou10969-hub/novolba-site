@@ -87,7 +87,7 @@ export default async function MediaAllPage() {
                   return (
                     <li key={article.id}>
                       <Link
-                        href={`/media/${article.slug ?? article.id}/`}
+                        href={`/media/${article.id}/`}
                         className="flex gap-4 py-6 group hover:opacity-80 transition-opacity"
                       >
                         <div className="shrink-0 w-40 h-28 sm:w-52 sm:h-36 relative rounded-lg overflow-hidden bg-gray-100">

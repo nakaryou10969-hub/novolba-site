@@ -40,13 +40,13 @@ export default function MessagePage() {
           </h2>
 
           {/* 本文 */}
-          <div className="space-y-6 text-gray-600 leading-[2] text-base">
+          <div className="space-y-6 text-gray-600 leading-[2] text-base text-center">
             <p>
               未来を創る挑戦者たち——<br />
               汗をかき、知恵を絞り、仲間を集め、前を向き…
             </p>
             <p>
-              ただ、今の日本では仲間と集まる場所を作ることに、<br className="hidden sm:block" />労力とコストがかかる。
+              ただ、今の日本では仲間と集まる場所を作ることに、<br />労力とコストがかかる。
             </p>
             <p>
               仲間たちと語り合いたい未来を創ることに全力を注ぎたい。<br />
@@ -62,7 +62,7 @@ export default function MessagePage() {
               立ち止まるな。<br className="sm:hidden" />KEEP MOVING FORWARD!
             </p>
             <p>
-              NovolBaは、挑戦し続けるスタートアップのための<br className="hidden sm:block" />最適なワークプレイスを提供します。
+              NovolBaは、挑戦し続けるスタートアップのための<br />最適なワークプレイスを提供します。
             </p>
             <p className="font-semibold text-gray-800">
               昇りたい企業に、昇る場を。
