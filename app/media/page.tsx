@@ -238,7 +238,7 @@ export default async function MediaPage() {
             <line x1="12" y1="8" x2="12" y2="12" />
             <line x1="12" y1="16" x2="12.01" y2="16" />
           </svg>
-          WITH?
+          WITHとは？
         </Link>
       </section>
 
@@ -248,7 +248,7 @@ export default async function MediaPage() {
           className="inline-block px-10 py-3 text-sm font-medium border-2 rounded-full transition-colors hover:text-white hover:bg-teal-500"
           style={{ borderColor: "#3dbdac", color: "#3dbdac" }}
         >
-          All Articles
+          すべての記事を見る
         </Link>
       </section>
 
