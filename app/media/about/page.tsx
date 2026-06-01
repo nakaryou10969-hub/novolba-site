@@ -35,12 +35,13 @@ export default function WithAboutPage() {
           </div>
 
           {/* メイン画像 */}
-          <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden mb-12 shadow-md">
+          <div className="w-full rounded-2xl overflow-hidden mb-12 shadow-md bg-gray-50">
             <Image
               src="/with.png"
               alt="WITH by NovolBa"
-              fill
-              className="object-cover"
+              width={1200}
+              height={800}
+              className="w-full h-auto"
               sizes="(max-width: 768px) 100vw, 768px"
               priority
             />
