@@ -23,24 +23,35 @@ type Props = {
 export async function generateStaticParams() {
   const first = await client.getList<WithArticle>({
     endpoint: "with",
-    queries: { limit: 100, offset: 0, fields: "id" },
+    queries: { limit: 100, offset: 0, fields: "id,slug" },
   });
   const total = first.totalCount;
   let all = first.contents;
   if (total > 100) {
     const second = await client.getList<WithArticle>({
       endpoint: "with",
-      queries: { limit: 100, offset: 100, fields: "id" },
+      queries: { limit: 100, offset: 100, fields: "id,slug" },
     });
     all = [...all, ...second.contents];
   }
-  return all.map((a) => ({ id: a.id }));
+  // slugがあればslugを、なければidをURLパラメータとして使う
+  return all.map((a) => ({ id: a.slug ?? a.id }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   try {
-    const article = await client.get<WithArticle>({ endpoint: "with", contentId: id });
+    // slugで検索、なければidで検索
+    let article: WithArticle | null = null;
+    const bySlug = await client.getList<WithArticle>({
+      endpoint: "with",
+      queries: { limit: 1, filters: `slug[equals]${id}` },
+    });
+    if (bySlug.contents.length > 0) {
+      article = bySlug.contents[0];
+    } else {
+      article = await client.get<WithArticle>({ endpoint: "with", contentId: id });
+    }
     return {
       title: `${article.title} | WITH by NovolBa`,
       description: article.title,
@@ -55,7 +66,16 @@ export default async function MediaArticlePage({ params }: Props) {
 
   let article: WithArticle;
   try {
-    article = await client.get<WithArticle>({ endpoint: "with", contentId: id });
+    // slugで検索、なければidで検索
+    const bySlug = await client.getList<WithArticle>({
+      endpoint: "with",
+      queries: { limit: 1, filters: `slug[equals]${id}` },
+    });
+    if (bySlug.contents.length > 0) {
+      article = bySlug.contents[0];
+    } else {
+      article = await client.get<WithArticle>({ endpoint: "with", contentId: id });
+    }
   } catch {
     notFound();
   }
@@ -129,7 +149,7 @@ export default async function MediaArticlePage({ params }: Props) {
                   const t = a.eyecatch?.url ?? extractFirstImage(a.content);
                   return (
                     <li key={a.id}>
-                      <Link href={`/media/${a.id}/`} className="flex gap-3 group hover:opacity-80 transition-opacity">
+                      <Link href={`/media/${a.slug ?? a.id}/`} className="flex gap-3 group hover:opacity-80 transition-opacity">
                         <div className="shrink-0 w-14 h-10 relative rounded overflow-hidden bg-gray-100">
                           {t ? (
                             <Image src={t} alt={a.title} fill className="object-cover" sizes="56px" />

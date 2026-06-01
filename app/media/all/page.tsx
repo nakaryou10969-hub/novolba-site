@@ -87,7 +87,7 @@ export default async function MediaAllPage() {
                   return (
                     <li key={article.id}>
                       <Link
-                        href={`/media/${article.id}/`}
+                        href={`/media/${article.slug ?? article.id}/`}
                         className="flex gap-4 py-6 group hover:opacity-80 transition-opacity"
                       >
                         <div className="shrink-0 w-40 h-28 sm:w-52 sm:h-36 relative rounded-lg overflow-hidden bg-gray-100">
@@ -142,7 +142,7 @@ export default async function MediaAllPage() {
                   const thumb = article.eyecatch?.url ?? extractFirstImage(article.content);
                   return (
                     <li key={article.id}>
-                      <Link href={`/media/${article.id}/`} className="flex gap-3 group hover:opacity-80 transition-opacity">
+                      <Link href={`/media/${article.slug ?? article.id}/`} className="flex gap-3 group hover:opacity-80 transition-opacity">
                         <div className="shrink-0 w-14 h-10 relative rounded overflow-hidden bg-gray-100">
                           {thumb ? (
                             <Image src={thumb} alt={article.title} fill className="object-cover" sizes="56px" />
