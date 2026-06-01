@@ -140,12 +140,14 @@ export default function NovolBaBuddyPage() {
                 <p className="text-xs text-gray-400 mb-1">現在</p>
                 <p className="font-bold text-gray-700">移転準備・構築</p>
               </div>
-              <span className="text-2xl" style={{ color: "#3dbdac" }}>→</span>
+              <span className="text-2xl sm:hidden" style={{ color: "#3dbdac" }}>↓</span>
+              <span className="text-2xl hidden sm:inline" style={{ color: "#3dbdac" }}>→</span>
               <div className="bg-white rounded-xl px-6 py-3 shadow-sm">
                 <p className="text-xs text-gray-400 mb-1">数年後</p>
                 <p className="font-bold text-gray-700">移転後・増員計画</p>
               </div>
-              <span className="text-2xl" style={{ color: "#3dbdac" }}>→</span>
+              <span className="text-2xl sm:hidden" style={{ color: "#3dbdac" }}>↓</span>
+              <span className="text-2xl hidden sm:inline" style={{ color: "#3dbdac" }}>→</span>
               <div
                 className="rounded-xl px-6 py-3 shadow-sm text-white"
                 style={{ backgroundColor: "#3dbdac" }}
