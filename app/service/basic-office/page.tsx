@@ -187,15 +187,15 @@ export default function BasicOfficePage() {
           {/* ===== 手間 01 ===== */}
           <div className="mb-16 rounded-3xl border-2 p-8" style={{ borderColor: "#3dbdac", backgroundColor: "#f0fdfb" }}>
             <div className="flex items-center gap-4 mb-6 justify-center">
-              <div className="rounded-full border-2 px-4 sm:px-6 py-3 flex items-center gap-3" style={{ borderColor: "#3dbdac" }}>
+              <div className="rounded-full border-2 px-4 sm:px-6 py-3 flex items-center gap-3 max-w-full" style={{ borderColor: "#3dbdac" }}>
                 <span className="text-2xl sm:text-3xl font-bold shrink-0" style={{ color: "#3dbdac" }}>03</span>
-                <span className="text-base sm:text-xl font-bold text-gray-800 whitespace-nowrap">各種契約不要！契約・支払いを一本化</span>
+                <span className="text-sm sm:text-xl font-bold text-gray-800">各種契約不要！契約・支払いを一本化</span>
               </div>
             </div>
             <p className="text-center text-lg text-gray-600 mb-1">
-              ご希望をヒアリングし、通常の賃貸オフィスを <span className="underline font-bold">「家具付き占有オフィス」</span> としてご用意します。
+              ご希望をヒアリングし、<br className="sm:hidden" />通常の賃貸オフィスを <span className="underline font-bold whitespace-nowrap">「家具付き占有オフィス」</span> <br className="sm:hidden" />としてご用意します。
             </p>
-            <p className="text-center text-lg text-gray-600 mb-8">面倒な契約や手続きがなく、身軽に移転できます。</p>
+            <p className="text-center text-lg text-gray-600 mb-8">面倒な契約や手続きがなく、<br className="sm:hidden" />身軽に移転できます。</p>
 
             <div className="flex justify-center">
               {/* eslint-disable-next-line @next/next/no-img-element */}
