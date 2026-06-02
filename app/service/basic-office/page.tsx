@@ -213,7 +213,7 @@ export default function BasicOfficePage() {
             </div>
             <p className="text-center text-lg text-gray-600 mb-1">入居初日からすぐに働ける環境を完備！</p>
             <p className="text-center text-lg font-bold text-gray-800 mb-1">
-              オカムラ社製の高品質な執務家具、Wi-Fi、プリンター、ホワイトボードが設置済みで、
+              オカムラ社製の高品質な執務家具、<br className="sm:hidden" />Wi-Fi、プリンター、<br className="sm:hidden" />ホワイトボードが設置済みで、
             </p>
             <p className="text-center text-lg text-gray-600 mb-1">手軽に快適な環境が手に入ります。</p>
             <p className="text-center text-lg text-gray-600">退去する際に、大型家具の移動や廃棄の心配も不要です。</p>
