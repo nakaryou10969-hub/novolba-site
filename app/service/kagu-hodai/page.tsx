@@ -346,7 +346,8 @@ export default function KaguHodaiPage() {
       <section className="py-16 px-6">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-xl font-bold text-center text-gray-800 mb-2">
-            スタートアップのオフィス移転の<span style={{ color: "#3dbdac" }}>一括サービス</span>
+            <span className="sm:hidden">スタートアップのオフィス移転の<br /><span style={{ color: "#3dbdac" }}>一括サービス</span></span>
+            <span className="hidden sm:inline">スタートアップのオフィス移転の<span style={{ color: "#3dbdac" }}>一括サービス</span></span>
           </h2>
           <p className="text-center text-sm text-gray-400 mb-10">
             家具サブスク以外の工事・販売もワンストップで対応します
