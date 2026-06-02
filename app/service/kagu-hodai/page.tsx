@@ -107,7 +107,8 @@ export default function KaguHodaiPage() {
         </h1>
         <p className="text-lg text-gray-500 mb-2">椅子１脚から借りられて、入替え可能</p>
         <p className="text-lg font-semibold" style={{ color: "#3dbdac" }}>
-          家具のサブスクサービス『家具ホーダイ!!』
+          <span className="sm:hidden">家具のサブスクサービス<br />『家具ホーダイ!!』</span>
+          <span className="hidden sm:inline">家具のサブスクサービス『家具ホーダイ!!』</span>
         </p>
         <div className="mt-4 w-12 h-0.5" style={{ backgroundColor: "#3dbdac" }} />
         <p className="mt-6 text-base text-gray-500 max-w-xl leading-relaxed">
