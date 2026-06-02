@@ -130,14 +130,12 @@ export default async function BlogDetailPage({ params }: Props) {
 
             {/* アイキャッチ */}
             {thumbnailUrl && (
-              <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden mb-8 bg-gray-100">
-                <Image
+              <div className="w-full rounded-2xl overflow-hidden mb-8 bg-gray-100">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
                   src={thumbnailUrl}
                   alt={blog.title}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 800px"
-                  priority
+                  className="w-full h-auto block"
                 />
               </div>
             )}
@@ -203,12 +201,11 @@ export default async function BlogDetailPage({ params }: Props) {
                         >
                           <div className="shrink-0 w-14 h-10 relative rounded overflow-hidden bg-gray-100">
                             {thumb ? (
-                              <Image
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img
                                 src={thumb}
                                 alt={latestBlog.title}
-                                fill
-                                className="object-cover"
-                                sizes="56px"
+                                className="w-full h-full object-cover"
                               />
                             ) : (
                               <div
@@ -259,14 +256,13 @@ export default async function BlogDetailPage({ params }: Props) {
                     href={`/news/${related.id}`}
                     className="flex flex-col rounded-xl overflow-hidden shadow-md bg-white hover:shadow-lg transition-shadow group"
                   >
-                    <div className="relative w-full aspect-[16/9] bg-gray-100">
+                    <div className="w-full aspect-[16/9] bg-gray-100 overflow-hidden rounded-t-xl">
                       {thumb ? (
-                        <Image
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
                           src={thumb}
                           alt={related.title}
-                          fill
-                          className="object-cover"
-                          sizes="(max-width: 640px) 100vw, 33vw"
+                          className="w-full h-full object-cover"
                         />
                       ) : (
                         <div

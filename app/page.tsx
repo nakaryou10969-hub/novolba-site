@@ -246,7 +246,7 @@ export default async function Home() {
                 >
                   {/* サムネイル */}
                   {blog.eyecatch ? (
-                    <div className="relative w-full aspect-[16/9] bg-gray-100">
+                    <div className="relative w-full aspect-[16/9] bg-gray-100 overflow-hidden">
                       <Image
                         src={blog.eyecatch.url}
                         alt={blog.title}
@@ -256,13 +256,12 @@ export default async function Home() {
                       />
                     </div>
                   ) : extractFirstImage(blog.content) ? (
-                    <div className="relative w-full aspect-[16/9] bg-gray-100">
-                      <Image
+                    <div className="w-full aspect-[16/9] bg-gray-100 overflow-hidden">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
                         src={extractFirstImage(blog.content)!}
                         alt={blog.title}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        className="w-full h-full object-cover"
                       />
                     </div>
                   ) : (
@@ -318,7 +317,7 @@ export default async function Home() {
                       className="flex flex-col rounded-2xl overflow-hidden shadow-md bg-white hover:shadow-xl transition-shadow"
                     >
                       {blog.eyecatch ? (
-                        <div className="relative w-full aspect-[16/9] bg-gray-100">
+                        <div className="relative w-full aspect-[16/9] bg-gray-100 overflow-hidden">
                           <Image
                             src={blog.eyecatch.url}
                             alt={blog.title}
@@ -328,13 +327,12 @@ export default async function Home() {
                           />
                         </div>
                       ) : extractFirstImage(blog.content) ? (
-                        <div className="relative w-full aspect-[16/9] bg-gray-100">
-                          <Image
+                        <div className="w-full aspect-[16/9] bg-gray-100 overflow-hidden">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
                             src={extractFirstImage(blog.content)!}
                             alt={blog.title}
-                            fill
-                            className="object-cover"
-                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                            className="w-full h-full object-cover"
                           />
                         </div>
                       ) : (
