@@ -36,11 +36,11 @@ const personas = [
 const points = [
   {
     number: "01",
-    title: "オフィス家具大手\nオカムラの\nリユース家具使用",
+    title: "オフィス家具大手オカムラの\nリユース家具使用",
   },
   {
     number: "02",
-    title: "サブスク型で\n初期費用削減",
+    title: "サブスク型で初期費用削減",
   },
   {
     number: "03",
