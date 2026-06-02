@@ -104,19 +104,16 @@ export default function BasicOfficePage() {
             しかし、オフィス移転には<br />
             様々な<span style={{ color: "#3dbdac" }}>課題</span>が生じます。
           </h2>
+        </div>
 
-          {/* problem.png */}
-          <div className="flex justify-center mb-8 -mx-6 sm:mx-0">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/problem.png"
-              alt="従来のオフィス移転の課題"
-              className="w-[90%] h-auto mx-auto"
-            />
-          </div>
-
-
-
+        {/* problem.png：コンテナ外に出して90vw表示 */}
+        <div className="flex justify-center mb-8">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/problem.png"
+            alt="従来のオフィス移転の課題"
+            style={{ width: "90vw", maxWidth: "800px", height: "auto" }}
+          />
         </div>
       </section>
 
