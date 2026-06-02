@@ -172,9 +172,9 @@ export default function BasicOfficePage() {
                 <span className="text-base sm:text-xl font-bold text-gray-800 whitespace-nowrap">月額定額制</span>
               </div>
             </div>
-            <p className="text-center text-lg text-gray-600 mb-1">初月のみ契約金がかかりますが、</p>
+            <p className="text-center text-lg text-gray-600 mb-1">初月のみ契約金が<br className="sm:hidden" />かかりますが、</p>
             <p className="text-center text-lg text-gray-800 mb-1">
-              毎月お支払い頂くのは<strong>サービス利用料</strong>と <span className="underline font-bold">水道光熱費等の実費のみ。</span>
+              毎月お支払い頂くのは<strong>サービス利用料</strong>と <span className="underline font-bold whitespace-nowrap">水道光熱費等の実費のみ。</span>
             </p>
             <p className="text-center text-lg text-gray-600 mb-8">キャッシュフローが安定し、資金計画が容易になります。</p>
 
