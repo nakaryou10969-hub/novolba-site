@@ -106,12 +106,12 @@ export default function BasicOfficePage() {
           </h2>
 
           {/* problem.png */}
-          <div className="flex justify-center mb-8">
+          <div className="flex justify-center mb-8 -mx-6 sm:mx-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/problem.png"
               alt="従来のオフィス移転の課題"
-              className="w-full h-auto mx-auto"
+              className="w-[90%] h-auto mx-auto"
             />
           </div>
 
