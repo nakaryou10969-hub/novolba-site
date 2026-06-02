@@ -97,7 +97,7 @@ export default function NovolBaBuddyPage() {
         <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-4">
           ノボルバディ Service
         </h1>
-        <p className="text-lg text-gray-500 mb-2">場づくりの右腕に、移転を丸ごとお任せ！</p>
+        <p className="text-lg text-gray-500 mb-2">場づくりの右腕に、<br className="sm:hidden" />移転を丸ごとお任せ！</p>
         <div className="mt-4 w-12 h-0.5" style={{ backgroundColor: "#3dbdac" }} />
       </section>
 
@@ -111,13 +111,13 @@ export default function NovolBaBuddyPage() {
           </h2>
           <div className="space-y-4 text-base text-gray-600 leading-relaxed text-center">
             <p>場というものは、急成長するスタートアップにとって必要だ。</p>
-            <p>仲間と共創し、想像力を掻き立て、強いチームを創る</p>
+            <p>仲間と共創し、想像力を掻き立て、<br className="sm:hidden" />強いチームを創る</p>
             <p>
-              「場創り」＝「移転」という<strong>"手間"</strong>と捉えられている機会を<br />
+              「場創り」＝「移転」という<strong>"手間"</strong>と<br className="sm:hidden" />捉えられている機会を<br />
               <strong style={{ color: "#3dbdac" }}>"価値"に変えること</strong>が、スタートアップの挑戦を加速させることになる。
             </p>
             <p className="font-semibold text-gray-800">
-              NovolBaはそれを実現するパートナー＝右腕となる。
+              NovolBaはそれを実現するパートナー<br className="sm:hidden" />＝右腕となる。
             </p>
           </div>
         </div>
@@ -168,7 +168,7 @@ export default function NovolBaBuddyPage() {
         <div className="max-w-6xl mx-auto">
           <p className="text-xs tracking-[0.3em] text-gray-400 uppercase mb-6 text-center">OUR SERVICE</p>
           <h2 className="text-xl font-bold text-center text-gray-800 mb-10">
-            移転・構築・運用改善の<span style={{ color: "#3dbdac" }}>一括サポート</span>を行う
+            移転・構築・運用改善の<span style={{ color: "#3dbdac" }}>一括サポート</span><br className="sm:hidden" />を行う
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
