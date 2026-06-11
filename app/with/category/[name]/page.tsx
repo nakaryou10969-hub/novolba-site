@@ -120,7 +120,7 @@ export default async function WithCategoryPage({ params }: Props) {
                   return (
                     <li key={article.id}>
                       <Link
-                        href={`/with/${article.slug ?? article.id}/`}
+                        href={`/with/${article.id}/`}
                         className="flex gap-5 group hover:opacity-80 transition-opacity"
                       >
                         {/* サムネイル */}
@@ -217,7 +217,7 @@ export default async function WithCategoryPage({ params }: Props) {
                 {latestArticles.map((article) => (
                   <li key={article.id}>
                     <Link
-                      href={`/with/${article.slug ?? article.id}/`}
+                      href={`/with/${article.id}/`}
                       className="text-sm text-gray-700 hover:text-teal-500 transition-colors leading-snug line-clamp-2"
                     >
                       {article.title}

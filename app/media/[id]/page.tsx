@@ -17,43 +17,30 @@ const CATEGORY_TO_SLUG: Record<string, string> = {
 };
 
 type Props = {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ id: string }>;
 };
 
 export async function generateStaticParams() {
   const first = await client.getList<WithArticle>({
     endpoint: "with",
-    queries: { limit: 100, offset: 0, fields: "id,slug" },
+    queries: { limit: 100, offset: 0, fields: "id" },
   });
   const total = first.totalCount;
   let all = first.contents;
   if (total > 100) {
     const second = await client.getList<WithArticle>({
       endpoint: "with",
-      queries: { limit: 100, offset: 100, fields: "id,slug" },
+      queries: { limit: 100, offset: 100, fields: "id" },
     });
     all = [...all, ...second.contents];
   }
-  return all.map((a) => ({ slug: a.slug || a.id }));
+  return all.map((a) => ({ id: a.id }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+  const { id } = await params;
   try {
-    // slugフィールドで検索
-    const data = await client.getList<WithArticle>({
-      endpoint: "with",
-      queries: { filters: `slug[equals]${slug}`, limit: 1 },
-    });
-    if (data.contents.length > 0) {
-      const article = data.contents[0];
-      return {
-        title: `${article.title} | WITH by NovolBa`,
-        description: article.title,
-      };
-    }
-    // slugで見つからない場合はIDとして試す（後方互換）
-    const article = await client.get<WithArticle>({ endpoint: "with", contentId: slug });
+    const article = await client.get<WithArticle>({ endpoint: "with", contentId: id });
     return {
       title: `${article.title} | WITH by NovolBa`,
       description: article.title,
@@ -64,21 +51,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function MediaArticlePage({ params }: Props) {
-  const { slug } = await params;
+  const { id } = await params;
 
   let article: WithArticle;
   try {
-    // slugフィールドで検索
-    const data = await client.getList<WithArticle>({
-      endpoint: "with",
-      queries: { filters: `slug[equals]${slug}`, limit: 1 },
-    });
-    if (data.contents.length > 0) {
-      article = data.contents[0];
-    } else {
-      // slugで見つからない場合はIDとして試す（後方互換）
-      article = await client.get<WithArticle>({ endpoint: "with", contentId: slug });
-    }
+    article = await client.get<WithArticle>({ endpoint: "with", contentId: id });
   } catch {
     notFound();
   }
@@ -87,7 +64,7 @@ export default async function MediaArticlePage({ params }: Props) {
     endpoint: "with",
     queries: { limit: 5, orders: "-publishedAt" },
   });
-  const latestArticles = latestData.contents.filter((a) => a.id !== article.id);
+  const latestArticles = latestData.contents.filter((a) => a.id !== id);
   const thumb = article.eyecatch?.url ?? extractFirstImage(article.content) ?? null;
 
   return (

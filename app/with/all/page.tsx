@@ -87,7 +87,7 @@ export default async function WithAllPage() {
                   return (
                     <li key={article.id}>
                       <Link
-                        href={`/with/${article.slug ?? article.id}/`}
+                        href={`/with/${article.id}/`}
                         className="flex gap-4 py-6 group hover:opacity-80 transition-opacity"
                       >
                         {/* サムネイル */}
@@ -178,7 +178,7 @@ export default async function WithAllPage() {
                   return (
                     <li key={article.id}>
                       <Link
-                        href={`/with/${article.slug ?? article.id}/`}
+                        href={`/with/${article.id}/`}
                         className="flex gap-3 group hover:opacity-80 transition-opacity"
                       >
                         <div className="shrink-0 w-14 h-10 relative rounded overflow-hidden bg-gray-100">

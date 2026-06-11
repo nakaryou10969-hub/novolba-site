@@ -23,7 +23,7 @@ function ArticleCard({ article }: { article: Article }) {
 
   return (
     <Link
-      href={`/media/${article.slug ?? article.id}/`}
+      href={`/media/${article.id}/`}
       className="flex flex-col rounded-xl overflow-hidden bg-white hover:shadow-lg transition-shadow group border border-gray-100"
     >
       <div className="relative w-full aspect-[16/9] bg-gray-100">
