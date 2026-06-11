@@ -17,30 +17,41 @@ const CATEGORY_TO_SLUG: Record<string, string> = {
 };
 
 type Props = {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 };
 
 export async function generateStaticParams() {
   const first = await client.getList<WithArticle>({
     endpoint: "with",
-    queries: { limit: 100, offset: 0, fields: "id" },
+    queries: { limit: 100, offset: 0, fields: "id,slug" },
   });
   const total = first.totalCount;
   let all = first.contents;
   if (total > 100) {
     const second = await client.getList<WithArticle>({
       endpoint: "with",
-      queries: { limit: 100, offset: 100, fields: "id" },
+      queries: { limit: 100, offset: 100, fields: "id,slug" },
     });
     all = [...all, ...second.contents];
   }
-  return all.map((a) => ({ id: a.id }));
+  return all.map((a) => ({ slug: a.slug || a.id }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
+  const { slug } = await params;
   try {
-    const article = await client.get<WithArticle>({ endpoint: "with", contentId: id });
+    const data = await client.getList<WithArticle>({
+      endpoint: "with",
+      queries: { filters: `slug[equals]${slug}`, limit: 1 },
+    });
+    if (data.contents.length > 0) {
+      const article = data.contents[0];
+      return {
+        title: `${article.title} | WITH by NovolBa`,
+        description: article.title,
+      };
+    }
+    const article = await client.get<WithArticle>({ endpoint: "with", contentId: slug });
     return {
       title: `${article.title} | WITH by NovolBa`,
       description: article.title,
@@ -51,11 +62,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function WithArticlePage({ params }: Props) {
-  const { id } = await params;
+  const { slug } = await params;
 
   let article: WithArticle;
   try {
-    article = await client.get<WithArticle>({ endpoint: "with", contentId: id });
+    const data = await client.getList<WithArticle>({
+      endpoint: "with",
+      queries: { filters: `slug[equals]${slug}`, limit: 1 },
+    });
+    if (data.contents.length > 0) {
+      article = data.contents[0];
+    } else {
+      article = await client.get<WithArticle>({ endpoint: "with", contentId: slug });
+    }
   } catch {
     notFound();
   }
@@ -64,7 +83,7 @@ export default async function WithArticlePage({ params }: Props) {
     endpoint: "with",
     queries: { limit: 5, orders: "-publishedAt" },
   });
-  const latestArticles = latestData.contents.filter((a) => a.id !== id);
+  const latestArticles = latestData.contents.filter((a) => a.id !== article.id);
   const thumb = article.eyecatch?.url ?? extractFirstImage(article.content) ?? null;
 
   return (
@@ -129,7 +148,7 @@ export default async function WithArticlePage({ params }: Props) {
                   const t = a.eyecatch?.url ?? extractFirstImage(a.content);
                   return (
                     <li key={a.id}>
-                      <Link href={`/with/${a.id}`} className="flex gap-3 group hover:opacity-80 transition-opacity">
+                      <Link href={`/with/${a.slug ?? a.id}/`} className="flex gap-3 group hover:opacity-80 transition-opacity">
                         <div className="shrink-0 w-14 h-10 relative rounded overflow-hidden bg-gray-100">
                           {t ? (
                             <Image src={t} alt={a.title} fill className="object-cover" sizes="56px" />

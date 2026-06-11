@@ -110,7 +110,7 @@ export default async function MediaCategoryPage({ params }: Props) {
                   const thumb = article.eyecatch?.url ?? extractFirstImage(article.content) ?? null;
                   return (
                     <li key={article.id}>
-                      <Link href={`/media/${article.id}/`} className="flex gap-5 group hover:opacity-80 transition-opacity">
+                      <Link href={`/media/${article.slug ?? article.id}/`} className="flex gap-5 group hover:opacity-80 transition-opacity">
                         <div className="shrink-0 w-32 h-24 sm:w-48 sm:h-32 relative rounded-lg overflow-hidden bg-gray-100">
                           {thumb ? (
                             <Image src={thumb} alt={article.title} fill className="object-cover" sizes="192px" />
@@ -157,7 +157,7 @@ export default async function MediaCategoryPage({ params }: Props) {
               <ul className="flex flex-col gap-3">
                 {latestArticles.map((article) => (
                   <li key={article.id}>
-                    <Link href={`/media/${article.id}/`} className="text-sm text-gray-700 hover:text-teal-500 transition-colors leading-snug line-clamp-2">
+                    <Link href={`/media/${article.slug ?? article.id}/`} className="text-sm text-gray-700 hover:text-teal-500 transition-colors leading-snug line-clamp-2">
                       {article.title}
                     </Link>
                   </li>

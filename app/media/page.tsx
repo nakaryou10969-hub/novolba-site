@@ -39,7 +39,7 @@ function ArticleCard({ article, large = false }: { article: WithArticle; large?:
   const thumb = article.eyecatch?.url ?? extractFirstImage(article.content) ?? null;
   return (
     <Link
-      href={`/media/${article.id}/`}
+      href={`/media/${article.slug ?? article.id}/`}
       className="flex flex-col rounded-xl overflow-hidden bg-white hover:shadow-lg transition-shadow group border border-gray-100 h-full"
     >
       <div className={`relative w-full bg-gray-100 ${large ? "aspect-[4/3]" : "aspect-[16/9]"}`}>
@@ -96,7 +96,7 @@ export default async function MediaPage() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 py-1">
               <div className="sm:col-span-2">
                 <Link
-                  href={`/media/${pickupArticles[0].id}/`}
+                  href={`/media/${pickupArticles[0].slug ?? pickupArticles[0].id}/`}
                   className="flex flex-col rounded-xl overflow-hidden bg-white hover:shadow-lg transition-shadow group border border-gray-100 h-full"
                 >
                   <div className="relative w-full aspect-[16/9] bg-gray-100">
@@ -132,7 +132,7 @@ export default async function MediaPage() {
                   return (
                     <Link
                       key={article.id}
-                      href={`/media/${article.id}/`}
+                      href={`/media/${article.slug ?? article.id}/`}
                       className="flex flex-col rounded-xl overflow-hidden bg-white hover:shadow-lg transition-shadow group border border-gray-100 flex-1"
                     >
                       <div className="relative w-full aspect-[16/9] bg-gray-100">
