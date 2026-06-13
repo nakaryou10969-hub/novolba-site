@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { extractFirstImage } from "../../libs/extractFirstImage";
 import type { WithArticle } from "../../libs/client";
+import { getMediaArticlePath } from "../../libs/articlePath";
 
 const ITEMS_PER_PAGE = 3;
 
@@ -22,7 +23,7 @@ function ArticleCard({ article }: { article: WithArticle }) {
 
   return (
     <Link
-      href={`/media/${article.id}/`}
+      href={getMediaArticlePath(article)}
       className="flex flex-col rounded-xl overflow-hidden bg-white hover:shadow-lg transition-shadow group border border-gray-100 h-full"
     >
       <div className="relative w-full aspect-[16/9] bg-gray-100">

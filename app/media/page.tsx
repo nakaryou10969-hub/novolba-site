@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { client, type WithArticle } from "../../libs/client";
 import { extractFirstImage } from "../../libs/extractFirstImage";
+import { getMediaArticlePath } from "../../libs/articlePath";
 import MediaSearch from "./MediaSearch";
 import LatestSlider from "./LatestSlider";
 import { CATEGORY_ORDER, CATEGORY_SLUG_MAP, PICKUP_IDS } from "./constants";
@@ -39,7 +40,7 @@ function ArticleCard({ article, large = false }: { article: WithArticle; large?:
   const thumb = article.eyecatch?.url ?? extractFirstImage(article.content) ?? null;
   return (
     <Link
-      href={`/media/${article.id}/`}
+      href={getMediaArticlePath(article)}
       className="flex flex-col rounded-xl overflow-hidden bg-white hover:shadow-lg transition-shadow group border border-gray-100 h-full"
     >
       <div className={`relative w-full bg-gray-100 ${large ? "aspect-[4/3]" : "aspect-[16/9]"}`}>
@@ -96,7 +97,7 @@ export default async function MediaPage() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 py-1">
               <div className="sm:col-span-2">
                 <Link
-                  href={`/media/${pickupArticles[0].id}/`}
+                  href={getMediaArticlePath(pickupArticles[0])}
                   className="flex flex-col rounded-xl overflow-hidden bg-white hover:shadow-lg transition-shadow group border border-gray-100 h-full"
                 >
                   <div className="relative w-full aspect-[16/9] bg-gray-100">
@@ -132,7 +133,7 @@ export default async function MediaPage() {
                   return (
                     <Link
                       key={article.id}
-                      href={`/media/${article.id}/`}
+                      href={getMediaArticlePath(article)}
                       className="flex flex-col rounded-xl overflow-hidden bg-white hover:shadow-lg transition-shadow group border border-gray-100 flex-1"
                     >
                       <div className="relative w-full aspect-[16/9] bg-gray-100">

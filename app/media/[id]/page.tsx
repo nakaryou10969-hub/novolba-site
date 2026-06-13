@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { client, type WithArticle } from "../../../libs/client";
 import { extractFirstImage } from "../../../libs/extractFirstImage";
+import { getMediaArticlePath } from "../../../libs/articlePath";
 
 // カテゴリ名→スラッグのマッピング
 const CATEGORY_TO_SLUG: Record<string, string> = {
@@ -20,51 +21,62 @@ type Props = {
   params: Promise<{ id: string }>;
 };
 
-export async function generateStaticParams() {
+let allWithArticlesPromise: Promise<WithArticle[]> | null = null;
+
+async function fetchAllWithArticles(): Promise<WithArticle[]> {
   const first = await client.getList<WithArticle>({
     endpoint: "with",
-    queries: { limit: 100, offset: 0, fields: "id" },
+    queries: { limit: 100, offset: 0, orders: "-publishedAt" },
   });
-  const total = first.totalCount;
   let all = first.contents;
-  if (total > 100) {
-    const second = await client.getList<WithArticle>({
+  for (let offset = 100; offset < first.totalCount; offset += 100) {
+    const next = await client.getList<WithArticle>({
       endpoint: "with",
-      queries: { limit: 100, offset: 100, fields: "id" },
+      queries: { limit: 100, offset, orders: "-publishedAt" },
     });
-    all = [...all, ...second.contents];
+    all = [...all, ...next.contents];
   }
-  return all.map((a) => ({ id: a.id }));
+  return all;
+}
+
+function getAllWithArticles(): Promise<WithArticle[]> {
+  allWithArticlesPromise ??= fetchAllWithArticles();
+  return allWithArticlesPromise;
+}
+
+async function getArticleByIdOrSlug(idOrSlug: string): Promise<WithArticle | null> {
+  const all = await getAllWithArticles();
+  return all.find((article) => article.slug === idOrSlug || article.id === idOrSlug) ?? null;
+}
+
+export async function generateStaticParams() {
+  const all = await getAllWithArticles();
+  return all.map((a) => ({ id: a.slug || a.id }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  try {
-    const article = await client.get<WithArticle>({ endpoint: "with", contentId: id });
+  const article = await getArticleByIdOrSlug(id);
+  if (article) {
     return {
       title: `${article.title} | WITH by NovolBa`,
       description: article.title,
     };
-  } catch {
-    return { title: "記事が見つかりません | NovolBa" };
   }
+  return { title: "記事が見つかりません | NovolBa" };
 }
 
 export default async function MediaArticlePage({ params }: Props) {
   const { id } = await params;
 
-  let article: WithArticle;
-  try {
-    article = await client.get<WithArticle>({ endpoint: "with", contentId: id });
-  } catch {
+  const resolvedArticle = await getArticleByIdOrSlug(id);
+  if (!resolvedArticle) {
     notFound();
   }
+  const article = resolvedArticle;
 
-  const latestData = await client.getList<WithArticle>({
-    endpoint: "with",
-    queries: { limit: 5, orders: "-publishedAt" },
-  });
-  const latestArticles = latestData.contents.filter((a) => a.id !== id);
+  const allArticles = await getAllWithArticles();
+  const latestArticles = allArticles.filter((a) => a.id !== article.id).slice(0, 5);
   const thumb = article.eyecatch?.url ?? extractFirstImage(article.content) ?? null;
 
   return (
@@ -129,7 +141,7 @@ export default async function MediaArticlePage({ params }: Props) {
                   const t = a.eyecatch?.url ?? extractFirstImage(a.content);
                   return (
                     <li key={a.id}>
-                      <Link href={`/media/${a.slug ?? a.id}/`} className="flex gap-3 group hover:opacity-80 transition-opacity">
+                      <Link href={getMediaArticlePath(a)} className="flex gap-3 group hover:opacity-80 transition-opacity">
                         <div className="shrink-0 w-14 h-10 relative rounded overflow-hidden bg-gray-100">
                           {t ? (
                             <Image src={t} alt={a.title} fill className="object-cover" sizes="56px" />
