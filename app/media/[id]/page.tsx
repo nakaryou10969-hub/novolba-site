@@ -22,7 +22,6 @@ type Props = {
 };
 
 let allWithArticlesPromise: Promise<WithArticle[]> | null = null;
-const articleDetailPromises = new Map<string, Promise<WithArticle>>();
 
 async function fetchAllWithArticles(): Promise<WithArticle[]> {
   const first = await client.getList<WithArticle>({
@@ -63,27 +62,13 @@ function toRouteKeyCandidates(value: string) {
   ]);
 }
 
-function getArticleDetail(contentId: string) {
-  if (!articleDetailPromises.has(contentId)) {
-    articleDetailPromises.set(contentId, client.get<WithArticle>({ endpoint: "with", contentId }));
-  }
-  return articleDetailPromises.get(contentId)!;
-}
-
 async function getArticleByIdOrSlug(idOrSlug: string): Promise<WithArticle | null> {
   const all = await getAllWithArticles();
   const idOrSlugCandidates = toRouteKeyCandidates(idOrSlug);
-  const article = all.find((item) => {
+  return all.find((item) => {
     const articleCandidates = toRouteKeyCandidates(item.slug || item.id);
     return item.id === idOrSlug || [...articleCandidates].some((candidate) => idOrSlugCandidates.has(candidate));
-  });
-  if (!article) return null;
-
-  try {
-    return await getArticleDetail(article.id);
-  } catch {
-    return article;
-  }
+  }) ?? null;
 }
 
 export async function generateStaticParams() {

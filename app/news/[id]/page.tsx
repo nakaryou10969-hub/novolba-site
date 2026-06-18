@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { client, type Blog, type MicroCMSListResponse } from "../../../libs/client";
+import { client, type Blog } from "../../../libs/client";
 import { extractFirstImage } from "../../../libs/extractFirstImage";
 import { getNewsArticlePath } from "../../../libs/articlePath";
 
@@ -10,7 +10,6 @@ type Props = {
 };
 
 let allBlogsPromise: Promise<Blog[]> | null = null;
-const blogDetailPromises = new Map<string, Promise<Blog>>();
 
 async function fetchAllBlogs(): Promise<Blog[]> {
   const first = await client.getList<Blog>({
@@ -51,27 +50,13 @@ function toRouteKeyCandidates(value: string) {
   ]);
 }
 
-function getBlogDetail(contentId: string) {
-  if (!blogDetailPromises.has(contentId)) {
-    blogDetailPromises.set(contentId, client.get<Blog>({ endpoint: "blogs", contentId }));
-  }
-  return blogDetailPromises.get(contentId)!;
-}
-
 async function getBlogByIdOrSlug(idOrSlug: string): Promise<Blog | null> {
   const all = await getAllBlogs();
   const idOrSlugCandidates = toRouteKeyCandidates(idOrSlug);
-  const blog = all.find((item) => {
+  return all.find((item) => {
     const blogCandidates = toRouteKeyCandidates(item.slug || item.id);
     return item.id === idOrSlug || [...blogCandidates].some((candidate) => idOrSlugCandidates.has(candidate));
-  });
-  if (!blog) return null;
-
-  try {
-    return await getBlogDetail(blog.id);
-  } catch {
-    return blog;
-  }
+  }) ?? null;
 }
 
 export async function generateStaticParams() {
@@ -100,28 +85,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: "記事が見つかりません | NovolBa" };
 }
 
-async function getLatestBlogs(): Promise<MicroCMSListResponse<Blog>> {
-  return client.getList<Blog>({
-    endpoint: "blogs",
-    queries: { limit: 6, orders: "-publishedAt" },
-  });
+async function getLatestBlogs(excludeId: string): Promise<Blog[]> {
+  const all = await getAllBlogs();
+  return all.filter((blog) => blog.id !== excludeId).slice(0, 5);
 }
 
 async function getRelatedBlogs(blog: Blog): Promise<Blog[]> {
   if (!blog.category) return [];
-  try {
-    const data = await client.getList<Blog>({
-      endpoint: "blogs",
-      queries: {
-        limit: 3,
-        orders: "-publishedAt",
-        filters: `category[equals]${blog.category.id}`,
-      },
-    });
-    return data.contents.filter((b) => b.id !== blog.id).slice(0, 3);
-  } catch {
-    return [];
-  }
+  const all = await getAllBlogs();
+  return all
+    .filter((candidate) => candidate.id !== blog.id && candidate.category?.id === blog.category?.id)
+    .slice(0, 3);
 }
 
 export default async function BlogDetailPage({ params }: Props) {
@@ -134,11 +108,11 @@ export default async function BlogDetailPage({ params }: Props) {
   const blog = resolvedBlog;
 
   const [latestBlogsData, relatedBlogs] = await Promise.all([
-    getLatestBlogs(),
+    getLatestBlogs(blog.id),
     getRelatedBlogs(blog),
   ]);
 
-  const latestBlogs = latestBlogsData.contents.filter((b) => b.id !== blog.id).slice(0, 5);
+  const latestBlogs = latestBlogsData;
   const thumbnailUrl = blog.eyecatch?.url ?? extractFirstImage(blog.content) ?? null;
 
   return (

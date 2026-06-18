@@ -20,51 +20,61 @@ type Props = {
   params: Promise<{ id: string }>;
 };
 
-export async function generateStaticParams() {
+let allWithArticlesPromise: Promise<WithArticle[]> | null = null;
+
+async function fetchAllWithArticles(): Promise<WithArticle[]> {
   const first = await client.getList<WithArticle>({
     endpoint: "with",
-    queries: { limit: 100, offset: 0, fields: "id" },
+    queries: { limit: 100, offset: 0, orders: "-publishedAt" },
   });
-  const total = first.totalCount;
   let all = first.contents;
-  if (total > 100) {
-    const second = await client.getList<WithArticle>({
+  for (let offset = 100; offset < first.totalCount; offset += 100) {
+    const next = await client.getList<WithArticle>({
       endpoint: "with",
-      queries: { limit: 100, offset: 100, fields: "id" },
+      queries: { limit: 100, offset, orders: "-publishedAt" },
     });
-    all = [...all, ...second.contents];
+    all = [...all, ...next.contents];
   }
+  return all;
+}
+
+function getAllWithArticles(): Promise<WithArticle[]> {
+  allWithArticlesPromise ??= fetchAllWithArticles();
+  return allWithArticlesPromise;
+}
+
+async function getArticleById(id: string): Promise<WithArticle | null> {
+  const all = await getAllWithArticles();
+  return all.find((article) => article.id === id) ?? null;
+}
+
+export async function generateStaticParams() {
+  const all = await getAllWithArticles();
   return all.map((a) => ({ id: a.id }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  try {
-    const article = await client.get<WithArticle>({ endpoint: "with", contentId: id });
+  const article = await getArticleById(id);
+  if (article) {
     return {
       title: `${article.title} | WITH by NovolBa`,
       description: article.title,
     };
-  } catch {
-    return { title: "記事が見つかりません | NovolBa" };
   }
+  return { title: "記事が見つかりません | NovolBa" };
 }
 
 export default async function WithArticlePage({ params }: Props) {
   const { id } = await params;
 
-  let article: WithArticle;
-  try {
-    article = await client.get<WithArticle>({ endpoint: "with", contentId: id });
-  } catch {
+  const article = await getArticleById(id);
+  if (!article) {
     notFound();
   }
 
-  const latestData = await client.getList<WithArticle>({
-    endpoint: "with",
-    queries: { limit: 5, orders: "-publishedAt" },
-  });
-  const latestArticles = latestData.contents.filter((a) => a.id !== id);
+  const allArticles = await getAllWithArticles();
+  const latestArticles = allArticles.filter((a) => a.id !== id).slice(0, 5);
   const thumb = article.eyecatch?.url ?? extractFirstImage(article.content) ?? null;
 
   return (

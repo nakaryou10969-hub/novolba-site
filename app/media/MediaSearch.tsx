@@ -3,21 +3,18 @@
 import { useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { extractFirstImage } from "../../libs/extractFirstImage";
 import { getMediaArticlePath } from "../../libs/articlePath";
 
 type Article = {
   id: string;
   slug?: string;
   title: string;
-  content: string;
   publishedAt: string;
   category?: string | { id: string; name: string };
-  eyecatch?: { url: string };
+  thumb?: string | null;
 };
 
 function ArticleCard({ article }: { article: Article }) {
-  const thumb = article.eyecatch?.url ?? extractFirstImage(article.content) ?? null;
   const categoryName = typeof article.category === "string"
     ? article.category
     : article.category?.name;
@@ -28,9 +25,9 @@ function ArticleCard({ article }: { article: Article }) {
       className="flex flex-col rounded-xl overflow-hidden bg-white hover:shadow-lg transition-shadow group border border-gray-100"
     >
       <div className="relative w-full aspect-[16/9] bg-gray-100">
-        {thumb ? (
+        {article.thumb ? (
           <Image
-            src={thumb}
+            src={article.thumb}
             alt={article.title}
             fill
             className="object-cover"

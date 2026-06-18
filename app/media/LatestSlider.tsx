@@ -3,13 +3,20 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { extractFirstImage } from "../../libs/extractFirstImage";
-import type { WithArticle } from "../../libs/client";
 import { getMediaArticlePath } from "../../libs/articlePath";
 
 const ITEMS_PER_PAGE = 3;
 
-function getCategoryName(article: WithArticle): string {
+type SliderArticle = {
+  id: string;
+  slug?: string;
+  title: string;
+  publishedAt: string;
+  category?: string | { id: string; name: string };
+  thumb?: string | null;
+};
+
+function getCategoryName(article: SliderArticle): string {
   if (!article.category) return "";
   if (typeof article.category === "string") return article.category;
   if (typeof article.category === "object" && "name" in (article.category as object)) {
@@ -18,18 +25,16 @@ function getCategoryName(article: WithArticle): string {
   return String(article.category);
 }
 
-function ArticleCard({ article }: { article: WithArticle }) {
-  const thumb = article.eyecatch?.url ?? extractFirstImage(article.content) ?? null;
-
+function ArticleCard({ article }: { article: SliderArticle }) {
   return (
     <Link
       href={getMediaArticlePath(article)}
       className="flex flex-col rounded-xl overflow-hidden bg-white hover:shadow-lg transition-shadow group border border-gray-100 h-full"
     >
       <div className="relative w-full aspect-[16/9] bg-gray-100">
-        {thumb ? (
+        {article.thumb ? (
           <Image
-            src={thumb}
+            src={article.thumb}
             alt={article.title}
             fill
             className="object-cover"
@@ -68,7 +73,7 @@ function ArticleCard({ article }: { article: WithArticle }) {
   );
 }
 
-export default function LatestSlider({ articles }: { articles: WithArticle[] }) {
+export default function LatestSlider({ articles }: { articles: SliderArticle[] }) {
   const totalPages = Math.ceil(articles.length / ITEMS_PER_PAGE);
   const [page, setPage] = useState(0);
 

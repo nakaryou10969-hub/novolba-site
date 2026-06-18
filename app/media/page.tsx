@@ -36,6 +36,15 @@ const getCategoryName = (article: WithArticle): string => {
   return String(article.category);
 };
 
+const toMediaSummary = (article: WithArticle) => ({
+  id: article.id,
+  slug: article.slug,
+  title: article.title,
+  publishedAt: article.publishedAt,
+  category: article.category,
+  thumb: article.eyecatch?.url ?? extractFirstImage(article.content) ?? null,
+});
+
 function ArticleCard({ article, large = false }: { article: WithArticle; large?: boolean }) {
   const thumb = article.eyecatch?.url ?? extractFirstImage(article.content) ?? null;
   return (
@@ -71,6 +80,7 @@ function ArticleCard({ article, large = false }: { article: WithArticle; large?:
 
 export default async function MediaPage() {
   const allArticles = await getAllWithArticles();
+  const articleSummaries = allArticles.map(toMediaSummary);
 
   const pickupArticles = PICKUP_IDS
     .map((id) => allArticles.find((a) => a.id === id))
@@ -175,7 +185,7 @@ export default async function MediaPage() {
 
       <section className="py-10 px-6 bg-white border-b border-gray-100">
         <div className="max-w-5xl mx-auto">
-          <MediaSearch allBlogs={allArticles} />
+          <MediaSearch allBlogs={articleSummaries} />
         </div>
       </section>
 
@@ -187,7 +197,7 @@ export default async function MediaPage() {
               新着記事
             </h2>
           </div>
-          <LatestSlider articles={allArticles.slice(0, 10)} />
+          <LatestSlider articles={articleSummaries.slice(0, 10)} />
         </div>
       </section>
 

@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "mirror:microcms-assets": "node scripts/mirror-microcms-assets.mjs",
+    "mirror:microcms-assets:scan": "node scripts/mirror-microcms-assets.mjs --scan-only",
     "start": "next start",
     "lint": "eslint"
   },
