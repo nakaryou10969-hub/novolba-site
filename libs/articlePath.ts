@@ -14,3 +14,7 @@ function safeDecodeURIComponent(value: string) {
 export function getMediaArticlePath(article: ArticlePathSource) {
   return `/media/${safeDecodeURIComponent(article.slug || article.id)}/`;
 }
+
+export function getNewsArticlePath(article: ArticlePathSource) {
+  return `/news/${safeDecodeURIComponent(article.slug || article.id)}/`;
+}

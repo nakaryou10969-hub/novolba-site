@@ -3,22 +3,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { client, type Blog, type Category, type MicroCMSListResponse } from "../../libs/client";
 import { extractFirstImage } from "../../libs/extractFirstImage";
+import { getNewsArticlePath } from "../../libs/articlePath";
 
 export const metadata: Metadata = {
   title: "NEWS | NovolBa",
   description: "NovolBaの最新ニュース・イベント情報・メディア掲載情報をお届けします。",
 };
-
-async function getBlogs(): Promise<MicroCMSListResponse<Blog>> {
-  return client.getList<Blog>({
-    endpoint: "blogs",
-    queries: {
-      limit: 100,
-      orders: "-publishedAt",
-      filters: "category[exists]",
-    },
-  });
-}
 
 async function getBlogsWithoutCategory(): Promise<MicroCMSListResponse<Blog>> {
   // カテゴリーなしの記事を取得（全件取得してJS側でフィルタ）
@@ -76,7 +66,7 @@ export default async function NewsPage() {
                 {blogsData.contents.map((blog) => (
                   <li key={blog.id}>
                     <Link
-                      href={`/news/${blog.id}`}
+                      href={getNewsArticlePath(blog)}
                       className="flex gap-4 py-6 group hover:opacity-80 transition-opacity"
                     >
                       {/* サムネイル */}
@@ -176,7 +166,7 @@ export default async function NewsPage() {
                 {latestBlogs.map((blog) => (
                   <li key={blog.id}>
                     <Link
-                      href={`/news/${blog.id}`}
+                      href={getNewsArticlePath(blog)}
                       className="flex gap-3 group hover:opacity-80 transition-opacity"
                     >
                       <div className="shrink-0 w-14 h-10 relative rounded overflow-hidden bg-gray-100">

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { client, type Blog, type Category } from "../../../../libs/client";
 import { extractFirstImage } from "../../../../libs/extractFirstImage";
+import { getNewsArticlePath } from "../../../../libs/articlePath";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -88,7 +89,7 @@ export default async function CategoryPage({ params }: Props) {
                   return (
                     <li key={blog.id}>
                       <Link
-                        href={`/news/${blog.id}`}
+                        href={getNewsArticlePath(blog)}
                         className="flex gap-5 group hover:opacity-80 transition-opacity"
                       >
                         {/* サムネイル */}
@@ -184,7 +185,7 @@ export default async function CategoryPage({ params }: Props) {
                 {latestBlogs.contents.map((blog) => (
                   <li key={blog.id}>
                     <Link
-                      href={`/news/${blog.id}`}
+                      href={getNewsArticlePath(blog)}
                       className="text-sm text-gray-700 hover:text-teal-500 transition-colors leading-snug line-clamp-2"
                     >
                       {blog.title}

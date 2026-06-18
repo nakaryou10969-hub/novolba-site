@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { client, type Blog, type MicroCMSListResponse } from "../libs/client";
 import { extractFirstImage } from "../libs/extractFirstImage";
+import { getNewsArticlePath } from "../libs/articlePath";
 
 // ---- サービス定義（コードに直書き） ----
 const serviceCards = [
@@ -242,7 +243,7 @@ export default async function Home() {
               {blogsData.contents.map((blog) => (
                 <Link
                   key={blog.id}
-                  href={`/news/${blog.id}`}
+                  href={getNewsArticlePath(blog)}
                   className="flex flex-col rounded-2xl overflow-hidden shadow-md bg-white hover:shadow-xl transition-shadow"
                 >
                   {/* サムネイル */}
@@ -314,7 +315,7 @@ export default async function Home() {
                   {usersVoiceData.contents.map((blog) => (
                     <Link
                       key={blog.id}
-                      href={`/news/${blog.id}`}
+                      href={getNewsArticlePath(blog)}
                       className="flex flex-col rounded-2xl overflow-hidden shadow-md bg-white hover:shadow-xl transition-shadow"
                     >
                       {blog.eyecatch ? (

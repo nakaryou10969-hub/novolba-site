@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { client, type Blog, type Category, type MicroCMSListResponse } from "../../../libs/client";
 import { extractFirstImage } from "../../../libs/extractFirstImage";
+import { getNewsArticlePath } from "../../../libs/articlePath";
 
 export const metadata: Metadata = {
   title: "NEWS 記事一覧 | NovolBa",
@@ -61,7 +62,7 @@ export default async function NewsAllPage() {
                 {blogsData.contents.map((blog) => (
                   <li key={blog.id}>
                     <Link
-                      href={`/news/${blog.id}`}
+                      href={getNewsArticlePath(blog)}
                       className="flex gap-4 py-6 group hover:opacity-80 transition-opacity"
                     >
                       {/* サムネイル */}

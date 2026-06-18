@@ -1,29 +1,88 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { client, type Blog, type MicroCMSListResponse } from "../../../libs/client";
 import { extractFirstImage } from "../../../libs/extractFirstImage";
+import { getNewsArticlePath } from "../../../libs/articlePath";
 
 type Props = {
   params: Promise<{ id: string }>;
 };
 
-export async function generateStaticParams() {
-  const data = await client.getList<Blog>({
+let allBlogsPromise: Promise<Blog[]> | null = null;
+const blogDetailPromises = new Map<string, Promise<Blog>>();
+
+async function fetchAllBlogs(): Promise<Blog[]> {
+  const first = await client.getList<Blog>({
     endpoint: "blogs",
-    queries: { limit: 100, fields: "id" },
+    queries: { limit: 100, offset: 0, orders: "-publishedAt" },
   });
-  return data.contents.map((blog) => ({ id: blog.id }));
+  let all = first.contents;
+  for (let offset = 100; offset < first.totalCount; offset += 100) {
+    const next = await client.getList<Blog>({
+      endpoint: "blogs",
+      queries: { limit: 100, offset, orders: "-publishedAt" },
+    });
+    all = [...all, ...next.contents];
+  }
+  return all;
+}
+
+function getAllBlogs(): Promise<Blog[]> {
+  allBlogsPromise ??= fetchAllBlogs();
+  return allBlogsPromise;
+}
+
+function safeDecodeURIComponent(value: string) {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
+
+function toRouteKeyCandidates(value: string) {
+  const decoded = safeDecodeURIComponent(value);
+  return new Set([
+    value,
+    value.toLowerCase(),
+    decoded,
+    encodeURIComponent(decoded).toLowerCase(),
+  ]);
+}
+
+function getBlogDetail(contentId: string) {
+  if (!blogDetailPromises.has(contentId)) {
+    blogDetailPromises.set(contentId, client.get<Blog>({ endpoint: "blogs", contentId }));
+  }
+  return blogDetailPromises.get(contentId)!;
+}
+
+async function getBlogByIdOrSlug(idOrSlug: string): Promise<Blog | null> {
+  const all = await getAllBlogs();
+  const idOrSlugCandidates = toRouteKeyCandidates(idOrSlug);
+  const blog = all.find((item) => {
+    const blogCandidates = toRouteKeyCandidates(item.slug || item.id);
+    return item.id === idOrSlug || [...blogCandidates].some((candidate) => idOrSlugCandidates.has(candidate));
+  });
+  if (!blog) return null;
+
+  try {
+    return await getBlogDetail(blog.id);
+  } catch {
+    return blog;
+  }
+}
+
+export async function generateStaticParams() {
+  const all = await getAllBlogs();
+  return all.map((blog) => ({ id: safeDecodeURIComponent(blog.slug || blog.id) }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  try {
-    const blog = await client.get<Blog>({
-      endpoint: "blogs",
-      contentId: id,
-    });
+  const blog = await getBlogByIdOrSlug(id);
+  if (blog) {
     const firstImage = extractFirstImage(blog.content);
     return {
       title: `${blog.title} | NEWS | NovolBa`,
@@ -34,15 +93,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           ? [blog.eyecatch.url]
           : firstImage
           ? [firstImage]
-          : [],
+        : [],
       },
     };
-  } catch {
-    return { title: "記事が見つかりません | NovolBa" };
   }
+  return { title: "記事が見つかりません | NovolBa" };
 }
 
-async function getLatestBlogs(excludeId: string): Promise<MicroCMSListResponse<Blog>> {
+async function getLatestBlogs(): Promise<MicroCMSListResponse<Blog>> {
   return client.getList<Blog>({
     endpoint: "blogs",
     queries: { limit: 6, orders: "-publishedAt" },
@@ -69,22 +127,18 @@ async function getRelatedBlogs(blog: Blog): Promise<Blog[]> {
 export default async function BlogDetailPage({ params }: Props) {
   const { id } = await params;
 
-  let blog: Blog;
-  try {
-    blog = await client.get<Blog>({
-      endpoint: "blogs",
-      contentId: id,
-    });
-  } catch {
+  const resolvedBlog = await getBlogByIdOrSlug(id);
+  if (!resolvedBlog) {
     notFound();
   }
+  const blog = resolvedBlog;
 
   const [latestBlogsData, relatedBlogs] = await Promise.all([
-    getLatestBlogs(id),
+    getLatestBlogs(),
     getRelatedBlogs(blog),
   ]);
 
-  const latestBlogs = latestBlogsData.contents.filter((b) => b.id !== id).slice(0, 5);
+  const latestBlogs = latestBlogsData.contents.filter((b) => b.id !== blog.id).slice(0, 5);
   const thumbnailUrl = blog.eyecatch?.url ?? extractFirstImage(blog.content) ?? null;
 
   return (
@@ -196,7 +250,7 @@ export default async function BlogDetailPage({ params }: Props) {
                     return (
                       <li key={latestBlog.id}>
                         <Link
-                          href={`/news/${latestBlog.id}`}
+                          href={getNewsArticlePath(latestBlog)}
                           className="flex gap-3 group hover:opacity-80 transition-opacity"
                         >
                           <div className="shrink-0 w-14 h-10 relative rounded overflow-hidden bg-gray-100">
@@ -253,7 +307,7 @@ export default async function BlogDetailPage({ params }: Props) {
                 return (
                   <Link
                     key={related.id}
-                    href={`/news/${related.id}`}
+                    href={getNewsArticlePath(related)}
                     className="flex flex-col rounded-xl overflow-hidden shadow-md bg-white hover:shadow-lg transition-shadow group"
                   >
                     <div className="w-full aspect-[16/9] bg-gray-100 overflow-hidden rounded-t-xl">
