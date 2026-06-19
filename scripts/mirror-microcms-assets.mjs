@@ -14,7 +14,7 @@ const CONCURRENCY = Number(process.env.MICROCMS_MIRROR_CONCURRENCY || 6);
 const SCAN_ONLY = process.argv.includes("--scan-only");
 
 const MICROCMS_ASSET_RE =
-  /https:\/\/images\.microcms-assets\.io\/assets\/[^"'<>\\ )]+?\.(?:png|jpg|jpeg|gif|webp|svg)(?:\?[^"'<>\\ )]+)?/gi;
+  /https:\/\/(?:images\.microcms-assets\.io|novolba\.com\/microcms-assets)\/assets\/[^"'<>\\ )]+?\.(?:png|jpg|jpeg|gif|webp|svg)(?:\?[^"'<>\\ )]+)?/gi;
 
 const TEXT_EXTENSIONS = new Set([".html", ".txt", ".json", ".js"]);
 const CONTENT_TYPES = new Map([
@@ -99,7 +99,12 @@ async function listFiles(dir, files = []) {
 }
 
 function normalizeUrl(rawUrl) {
-  return rawUrl.replace(/\\u0026/g, "&").replace(/&apos;/g, "'").replace(/\\+$/, "");
+  const url = rawUrl.replace(/\\u0026/g, "&").replace(/&apos;/g, "'").replace(/\\+$/, "");
+  const mirroredPrefix = `${PUBLIC_BASE}/assets/`;
+  if (url.startsWith(mirroredPrefix)) {
+    return `https://images.microcms-assets.io/assets/${url.slice(mirroredPrefix.length)}`;
+  }
+  return url;
 }
 
 function toMirrorUrl(sourceUrl) {
@@ -198,62 +203,19 @@ async function uploadToS3(file, key, sourceUrl) {
   ]);
 }
 
-function replaceUrls(urls, files) {
-  const replacements = new Map(urls.map((url) => [url, toMirrorUrl(url)]));
-  for (const file of files) {
-    let content = readFileSync(file, "utf8");
-    let changed = false;
-    for (const [source, mirrored] of replacements) {
-      if (content.includes(source)) {
-        content = content.split(source).join(mirrored);
-        changed = true;
-      }
-      const escaped = source.replace(/&/g, "\\u0026");
-      if (content.includes(escaped)) {
-        content = content.split(escaped).join(mirrored.replace(/&/g, "\\u0026"));
-        changed = true;
-      }
-      const htmlEntityEscaped = source.replace(/'/g, "&apos;");
-      if (content.includes(htmlEntityEscaped)) {
-        content = content.split(htmlEntityEscaped).join(mirrored);
-        changed = true;
-      }
-    }
-    if (changed) writeFileSync(file, content);
-  }
-}
-
-function replaceResidualHosts(files) {
+function assertNoSourceHosts(files) {
   const sourceHost = "https://images.microcms-assets.io/assets/";
-  const mirroredHost = `${PUBLIC_BASE}/assets/`;
-
+  const residualFiles = [];
   for (const file of files) {
-    let content = readFileSync(file, "utf8");
-    let changed = false;
-
-    if (content.includes(sourceHost)) {
-      content = content.split(sourceHost).join(mirroredHost);
-      changed = true;
-    }
-
-    const splitSourceHost = 'https://images.microcms-assets.io/as"])</script><script>self.__next_f.push([1,"sets/';
-    const splitMirroredHost = `${PUBLIC_BASE}/as"])</script><script>self.__next_f.push([1,"sets/`;
-    if (content.includes(splitSourceHost)) {
-      content = content.split(splitSourceHost).join(splitMirroredHost);
-      changed = true;
-    }
-
-    if (content.includes("logo_J-Tama\\u0026apos;s.jpg")) {
-      content = content.split("logo_J-Tama\\u0026apos;s.jpg").join("logo_J-Tama%27s.jpg");
-      changed = true;
-    }
-
-    if (content.includes("logo_J-Tama&apos;s.jpg")) {
-      content = content.split("logo_J-Tama&apos;s.jpg").join("logo_J-Tama%27s.jpg");
-      changed = true;
-    }
-
-    if (changed) writeFileSync(file, content);
+    const content = readFileSync(file, "utf8");
+    if (content.includes(sourceHost)) residualFiles.push(file);
+  }
+  if (residualFiles.length > 0) {
+    throw new Error(
+      `microCMS source asset URLs remain in generated files. Convert them before rendering instead of rewriting built RSC payloads.\n${residualFiles
+        .slice(0, 20)
+        .join("\n")}`
+    );
   }
 }
 
@@ -340,8 +302,7 @@ async function main() {
         `microCMS asset mirror skipped ${skippedUrls.length} asset(s); refusing to rewrite hosts because images could break.\n${examples}`
       );
     }
-    replaceUrls(mirroredUrls, files);
-    replaceResidualHosts(files);
+    assertNoSourceHosts(files);
     console.log(`mirror complete: uploaded ${uploaded}, already mirrored ${urls.length - uploaded - skippedUrls.length}, skipped ${skippedUrls.length}, transferred ${(transferredBytes / 1024 / 1024).toFixed(1)} MiB`);
   } finally {
     cleanupTempDir(tmp);

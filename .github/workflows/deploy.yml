@@ -28,6 +28,7 @@ jobs:
         env:
           MICROCMS_SERVICE_DOMAIN: ${{ secrets.MICROCMS_SERVICE_DOMAIN }}
           MICROCMS_API_KEY: ${{ secrets.MICROCMS_API_KEY }}
+          MICROCMS_ASSET_PUBLIC_BASE: https://novolba.com/microcms-assets
         run: npm run build
 
       - name: Mirror microCMS assets to S3

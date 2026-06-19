@@ -32,32 +32,28 @@ async function copyIfDifferent(source, target) {
 function flatToNestedTarget(file) {
   const dir = path.dirname(file);
   const name = path.basename(file);
-  const match = name.match(/^(__next\.[^.]+)\.(\$d[^.]+)(?:\.(.+))?\.txt$/);
-  if (!match) return null;
+  if (!name.startsWith("__next.") || !name.endsWith(".txt")) return null;
 
-  const [, routePayload, dynamicSegment, leaf] = match;
-  if (leaf) {
-    return path.join(dir, routePayload, dynamicSegment, `${leaf}.txt`);
-  }
-  return path.join(dir, routePayload, `${dynamicSegment}.txt`);
+  const parts = name.slice(0, -4).split(".");
+  if (parts.length < 3) return null;
+
+  const routePayload = `${parts[0]}.${parts[1]}`;
+  const nestedParts = parts.slice(2);
+  const leaf = nestedParts.pop();
+  if (!leaf) return null;
+
+  return path.join(dir, routePayload, ...nestedParts, `${leaf}.txt`);
 }
 
 function nestedToFlatTarget(file) {
   const name = path.basename(file);
-  const parent = path.basename(path.dirname(file));
-  const grandParent = path.basename(path.dirname(path.dirname(file)));
+  const parts = path.normalize(file).split(path.sep);
+  const payloadIndex = parts.findLastIndex((part) => part.startsWith("__next."));
+  if (payloadIndex === -1) return null;
 
-  if (parent.startsWith("$d") && grandParent.startsWith("__next.")) {
-    const routeDir = path.dirname(path.dirname(path.dirname(file)));
-    return path.join(routeDir, `${grandParent}.${parent}.${name}`);
-  }
-
-  if (name.startsWith("$d") && name.endsWith(".txt") && parent.startsWith("__next.")) {
-    const routeDir = path.dirname(path.dirname(file));
-    return path.join(routeDir, `${parent}.${name}`);
-  }
-
-  return null;
+  const routeDir = parts.slice(0, payloadIndex).join(path.sep);
+  const flatName = [...parts.slice(payloadIndex, -1), name].join(".");
+  return path.join(routeDir, flatName);
 }
 
 async function main() {

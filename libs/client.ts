@@ -1,4 +1,5 @@
 import { createClient } from "microcms-js-sdk";
+import { mirrorMicrocmsAssetsInValue } from "./microcmsAssets";
 
 if (!process.env.MICROCMS_SERVICE_DOMAIN) {
   throw new Error("MICROCMS_SERVICE_DOMAIN is not defined in .env.local");
@@ -7,10 +8,23 @@ if (!process.env.MICROCMS_API_KEY) {
   throw new Error("MICROCMS_API_KEY is not defined in .env.local");
 }
 
-export const client = createClient({
+const rawClient = createClient({
   serviceDomain: process.env.MICROCMS_SERVICE_DOMAIN,
   apiKey: process.env.MICROCMS_API_KEY,
 });
+
+export const client: typeof rawClient = {
+  ...rawClient,
+  async get(args) {
+    return mirrorMicrocmsAssetsInValue(await rawClient.get(args));
+  },
+  async getList(args) {
+    return mirrorMicrocmsAssetsInValue(await rawClient.getList(args));
+  },
+  async getListDetail(args) {
+    return mirrorMicrocmsAssetsInValue(await rawClient.getListDetail(args));
+  },
+};
 
 // ---- 型定義 ----
 
