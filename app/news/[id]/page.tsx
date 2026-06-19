@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { client, type Blog } from "../../../libs/client";
 import { extractFirstImage } from "../../../libs/extractFirstImage";
-import { getNewsArticlePath } from "../../../libs/articlePath";
+import { getArticleStaticParamIds, getNewsArticlePath } from "../../../libs/articlePath";
 import { renderArticleContent } from "../../../libs/renderArticleContent";
 
 type Props = {
@@ -62,7 +62,7 @@ async function getBlogByIdOrSlug(idOrSlug: string): Promise<Blog | null> {
 
 export async function generateStaticParams() {
   const all = await getAllBlogs();
-  return all.map((blog) => ({ id: safeDecodeURIComponent(blog.slug || blog.id) }));
+  return all.flatMap(getArticleStaticParamIds);
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

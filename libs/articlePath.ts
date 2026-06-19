@@ -11,10 +11,16 @@ function safeDecodeURIComponent(value: string) {
   }
 }
 
+export function getArticleStaticParamIds(article: ArticlePathSource) {
+  const ids = new Set([article.id]);
+  if (article.slug) ids.add(safeDecodeURIComponent(article.slug));
+  return [...ids].map((id) => ({ id }));
+}
+
 export function getMediaArticlePath(article: ArticlePathSource) {
-  return `/media/${safeDecodeURIComponent(article.slug || article.id)}/`;
+  return `/media/${article.id}/`;
 }
 
 export function getNewsArticlePath(article: ArticlePathSource) {
-  return `/news/${safeDecodeURIComponent(article.slug || article.id)}/`;
+  return `/news/${article.id}/`;
 }

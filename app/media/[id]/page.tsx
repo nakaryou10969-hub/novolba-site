@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { client, type WithArticle } from "../../../libs/client";
 import { extractFirstImage } from "../../../libs/extractFirstImage";
-import { getMediaArticlePath } from "../../../libs/articlePath";
+import { getArticleStaticParamIds, getMediaArticlePath } from "../../../libs/articlePath";
 import { renderArticleContent } from "../../../libs/renderArticleContent";
 
 // カテゴリ名→スラッグのマッピング
@@ -74,7 +74,7 @@ async function getArticleByIdOrSlug(idOrSlug: string): Promise<WithArticle | nul
 
 export async function generateStaticParams() {
   const all = await getAllWithArticles();
-  return all.map((a) => ({ id: safeDecodeURIComponent(a.slug || a.id) }));
+  return all.flatMap(getArticleStaticParamIds);
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
