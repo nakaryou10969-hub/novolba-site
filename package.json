@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && node scripts/ensure-next-export-payloads.mjs",
     "mirror:microcms-assets": "node scripts/mirror-microcms-assets.mjs",
     "mirror:microcms-assets:scan": "node scripts/mirror-microcms-assets.mjs --scan-only",
     "start": "next start",

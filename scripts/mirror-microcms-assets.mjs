@@ -319,7 +319,7 @@ async function main() {
         } catch (error) {
           const message = error instanceof Error ? error.message : String(error);
           if (message.includes("transfer limit")) throw error;
-          skippedUrls.push(url);
+          skippedUrls.push({ url, message });
           completed++;
           console.warn(`warning: skipped ${url}: ${message}`);
         }
@@ -331,6 +331,15 @@ async function main() {
     }
 
     await Promise.all(Array.from({ length: Math.min(CONCURRENCY, missingUrls.length) }, () => worker()));
+    if (skippedUrls.length > 0) {
+      const examples = skippedUrls
+        .slice(0, 10)
+        .map(({ url, message }) => `- ${url}: ${message}`)
+        .join("\n");
+      throw new Error(
+        `microCMS asset mirror skipped ${skippedUrls.length} asset(s); refusing to rewrite hosts because images could break.\n${examples}`
+      );
+    }
     replaceUrls(mirroredUrls, files);
     replaceResidualHosts(files);
     console.log(`mirror complete: uploaded ${uploaded}, already mirrored ${urls.length - uploaded - skippedUrls.length}, skipped ${skippedUrls.length}, transferred ${(transferredBytes / 1024 / 1024).toFixed(1)} MiB`);
