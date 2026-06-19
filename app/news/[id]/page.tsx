@@ -165,6 +165,9 @@ export default async function BlogDetailPage({ params }: Props) {
                   src={thumbnailUrl}
                   alt={blog.title}
                   className="w-full h-auto block"
+                  loading="eager"
+                  decoding="async"
+                  fetchPriority="high"
                 />
               </div>
             )}
@@ -235,6 +238,9 @@ export default async function BlogDetailPage({ params }: Props) {
                                 src={thumb}
                                 alt={latestBlog.title}
                                 className="w-full h-full object-cover"
+                                loading="lazy"
+                                decoding="async"
+                                fetchPriority="low"
                               />
                             ) : (
                               <div
@@ -292,6 +298,9 @@ export default async function BlogDetailPage({ params }: Props) {
                           src={thumb}
                           alt={related.title}
                           className="w-full h-full object-cover"
+                          loading="lazy"
+                          decoding="async"
+                          fetchPriority="low"
                         />
                       ) : (
                         <div

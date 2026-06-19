@@ -68,7 +68,7 @@ function renderGalleryShortcodes(content: string) {
           const caption = captionParts.join("|").trim();
           const alt = caption || "";
           const figcaption = caption ? `<figcaption>${escapeHtml(caption)}</figcaption>` : "";
-          return `<figure><img src="${escapeHtml(src)}" alt="${escapeHtml(alt)}" loading="lazy" />${figcaption}</figure>`;
+          return `<figure><img src="${escapeHtml(src)}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async" fetchpriority="low" />${figcaption}</figure>`;
         })
         .filter(Boolean)
         .join("");
@@ -80,6 +80,22 @@ function renderGalleryShortcodes(content: string) {
   );
 }
 
+function addLazyLoadingToImages(content: string) {
+  return content.replace(/<img\b([^>]*)>/gi, (_match, attrs: string) => {
+    let nextAttrs = attrs;
+    if (!/\sloading\s*=/i.test(nextAttrs)) {
+      nextAttrs += ' loading="lazy"';
+    }
+    if (!/\sdecoding\s*=/i.test(nextAttrs)) {
+      nextAttrs += ' decoding="async"';
+    }
+    if (!/\sfetchpriority\s*=/i.test(nextAttrs)) {
+      nextAttrs += ' fetchpriority="low"';
+    }
+    return `<img${nextAttrs}>`;
+  });
+}
+
 export function renderArticleContent(content: string) {
-  return renderGalleryShortcodes(renderButtonShortcodes(content));
+  return addLazyLoadingToImages(renderGalleryShortcodes(renderButtonShortcodes(content)));
 }
