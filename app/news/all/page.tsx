@@ -11,13 +11,33 @@ export const metadata: Metadata = {
 };
 
 async function getAllBlogs(): Promise<MicroCMSListResponse<Blog>> {
-  return client.getList<Blog>({
+  const first = await client.getList<Blog>({
     endpoint: "blogs",
     queries: {
       limit: 100,
+      offset: 0,
       orders: "-publishedAt",
     },
   });
+
+  let contents = first.contents;
+  for (let offset = 100; offset < first.totalCount; offset += 100) {
+    const next = await client.getList<Blog>({
+      endpoint: "blogs",
+      queries: {
+        limit: 100,
+        offset,
+        orders: "-publishedAt",
+      },
+    });
+    contents = [...contents, ...next.contents];
+  }
+
+  return {
+    ...first,
+    contents,
+    limit: contents.length,
+  };
 }
 
 async function getCategories(): Promise<MicroCMSListResponse<Category>> {
