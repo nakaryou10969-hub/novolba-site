@@ -99,7 +99,7 @@ export default function BasicOfficePage() {
 
       {/* ===== 従来の課題 ===== */}
       <section className="py-16 px-6 bg-gray-50">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-[1000px] mx-auto">
           <h2 className="text-xl font-bold text-center text-gray-800 mb-8">
             しかし、オフィス移転には<br />
             様々な<span style={{ color: "#3dbdac" }}>課題</span>が生じます。
@@ -112,7 +112,7 @@ export default function BasicOfficePage() {
           <img
             src="/problem.png"
             alt="従来のオフィス移転の課題"
-            style={{ width: "90vw", maxWidth: "800px", height: "auto" }}
+            style={{ width: "90vw", maxWidth: "1200px", height: "auto" }}
           />
         </div>
       </section>

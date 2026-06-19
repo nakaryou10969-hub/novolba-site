@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { client, type Blog } from "../../../libs/client";
 import { extractFirstImage } from "../../../libs/extractFirstImage";
 import { getNewsArticlePath } from "../../../libs/articlePath";
+import { renderArticleContent } from "../../../libs/renderArticleContent";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -171,7 +172,7 @@ export default async function BlogDetailPage({ params }: Props) {
             {/* 本文 */}
             <div
               className="prose-content"
-              dangerouslySetInnerHTML={{ __html: blog.content }}
+              dangerouslySetInnerHTML={{ __html: renderArticleContent(blog.content) }}
             />
 
             {/* カテゴリー・著者 */}

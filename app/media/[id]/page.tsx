@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { client, type WithArticle } from "../../../libs/client";
 import { extractFirstImage } from "../../../libs/extractFirstImage";
 import { getMediaArticlePath } from "../../../libs/articlePath";
+import { renderArticleContent } from "../../../libs/renderArticleContent";
 
 // カテゴリ名→スラッグのマッピング
 const CATEGORY_TO_SLUG: Record<string, string> = {
@@ -140,7 +141,7 @@ export default async function MediaArticlePage({ params }: Props) {
                 <Image src={thumb} alt={article.title} fill className="object-cover" sizes="(max-width: 1024px) 100vw, 800px" priority />
               </div>
             )}
-            <div className="prose-content" dangerouslySetInnerHTML={{ __html: article.content }} />
+            <div className="prose-content" dangerouslySetInnerHTML={{ __html: renderArticleContent(article.content) }} />
             <div className="mt-8">
               <Link
                 href="/media"
