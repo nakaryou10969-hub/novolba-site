@@ -48,7 +48,7 @@ const toMediaSummary = (article: WithArticle) => ({
 function ArticleCard({ article, large = false }: { article: WithArticle; large?: boolean }) {
   const thumb = article.eyecatch?.url ?? extractFirstImage(article.content) ?? null;
   return (
-    <Link
+    <a
       href={getMediaArticlePath(article)}
       className="flex flex-col rounded-xl overflow-hidden bg-white hover:shadow-lg transition-shadow group border border-gray-100 h-full"
     >
@@ -74,7 +74,7 @@ function ArticleCard({ article, large = false }: { article: WithArticle; large?:
           {new Date(article.publishedAt).toLocaleDateString("ja-JP", { year: "numeric", month: "long", day: "numeric" })}
         </time>
       </div>
-    </Link>
+    </a>
   );
 }
 
@@ -106,7 +106,7 @@ export default async function MediaPage() {
           {pickupArticles.length >= 3 ? (
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-1 py-1">
               <div className="sm:col-span-2">
-                <Link
+                <a
                   href={getMediaArticlePath(pickupArticles[0])}
                   className="flex flex-col rounded-xl overflow-hidden bg-white hover:shadow-lg transition-shadow group border border-gray-100 h-full"
                 >
@@ -135,13 +135,13 @@ export default async function MediaPage() {
                       {new Date(pickupArticles[0].publishedAt).toLocaleDateString("ja-JP", { year: "numeric", month: "long", day: "numeric" })}
                     </time>
                   </div>
-                </Link>
+                </a>
               </div>
               <div className="flex flex-col gap-1">
                 {[pickupArticles[1], pickupArticles[2]].map((article) => {
                   const thumb = article.eyecatch?.url ?? extractFirstImage(article.content) ?? null;
                   return (
-                    <Link
+                    <a
                       key={article.id}
                       href={getMediaArticlePath(article)}
                       className="flex flex-col rounded-xl overflow-hidden bg-white hover:shadow-lg transition-shadow group border border-gray-100 flex-1"
@@ -168,7 +168,7 @@ export default async function MediaPage() {
                           {new Date(article.publishedAt).toLocaleDateString("ja-JP", { year: "numeric", month: "short", day: "numeric" })}
                         </time>
                       </div>
-                    </Link>
+                    </a>
                   );
                 })}
               </div>

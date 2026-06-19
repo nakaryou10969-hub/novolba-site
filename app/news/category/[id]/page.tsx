@@ -88,7 +88,7 @@ export default async function CategoryPage({ params }: Props) {
                   const thumb = blog.eyecatch?.url ?? extractFirstImage(blog.content) ?? null;
                   return (
                     <li key={blog.id}>
-                      <Link
+                      <a
                         href={getNewsArticlePath(blog)}
                         className="flex gap-5 group hover:opacity-80 transition-opacity"
                       >
@@ -136,7 +136,7 @@ export default async function CategoryPage({ params }: Props) {
                             })}
                           </time>
                         </div>
-                      </Link>
+                      </a>
                     </li>
                   );
                 })}
@@ -184,12 +184,12 @@ export default async function CategoryPage({ params }: Props) {
               <ul className="flex flex-col gap-3">
                 {latestBlogs.contents.map((blog) => (
                   <li key={blog.id}>
-                    <Link
+                    <a
                       href={getNewsArticlePath(blog)}
                       className="text-sm text-gray-700 hover:text-teal-500 transition-colors leading-snug line-clamp-2"
                     >
                       {blog.title}
-                    </Link>
+                    </a>
                   </li>
                 ))}
               </ul>

@@ -164,7 +164,7 @@ export default async function MediaArticlePage({ params }: Props) {
                   const t = a.eyecatch?.url ?? extractFirstImage(a.content);
                   return (
                     <li key={a.id}>
-                      <Link href={getMediaArticlePath(a)} className="flex gap-3 group hover:opacity-80 transition-opacity">
+                      <a href={getMediaArticlePath(a)} className="flex gap-3 group hover:opacity-80 transition-opacity">
                         <div className="shrink-0 w-14 h-10 relative rounded overflow-hidden bg-gray-100">
                           {t ? (
                             <Image src={t} alt={a.title} fill className="object-cover" sizes="56px" />
@@ -178,7 +178,7 @@ export default async function MediaArticlePage({ params }: Props) {
                           </p>
                           <p className="text-xs text-gray-700 leading-snug line-clamp-2 group-hover:underline">{a.title}</p>
                         </div>
-                      </Link>
+                      </a>
                     </li>
                   );
                 })}

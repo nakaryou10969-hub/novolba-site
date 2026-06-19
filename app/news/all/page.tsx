@@ -81,7 +81,7 @@ export default async function NewsAllPage() {
               <ul className="divide-y divide-gray-100">
                 {blogsData.contents.map((blog) => (
                   <li key={blog.id}>
-                    <Link
+                    <a
                       href={getNewsArticlePath(blog)}
                       className="flex gap-4 py-6 group hover:opacity-80 transition-opacity"
                     >
@@ -139,7 +139,7 @@ export default async function NewsAllPage() {
                           {blog.title}
                         </h2>
                       </div>
-                    </Link>
+                    </a>
                   </li>
                 ))}
               </ul>

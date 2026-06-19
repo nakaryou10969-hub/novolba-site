@@ -87,7 +87,7 @@ export default async function MediaAllPage() {
                   const categoryName = getCategoryName(article);
                   return (
                     <li key={article.id}>
-                      <Link
+                      <a
                         href={getMediaArticlePath(article)}
                         className="flex gap-4 py-6 group hover:opacity-80 transition-opacity"
                       >
@@ -113,7 +113,7 @@ export default async function MediaAllPage() {
                             {article.title}
                           </h2>
                         </div>
-                      </Link>
+                      </a>
                     </li>
                   );
                 })}
@@ -143,7 +143,7 @@ export default async function MediaAllPage() {
                   const thumb = article.eyecatch?.url ?? extractFirstImage(article.content);
                   return (
                     <li key={article.id}>
-                      <Link href={getMediaArticlePath(article)} className="flex gap-3 group hover:opacity-80 transition-opacity">
+                      <a href={getMediaArticlePath(article)} className="flex gap-3 group hover:opacity-80 transition-opacity">
                         <div className="shrink-0 w-14 h-10 relative rounded overflow-hidden bg-gray-100">
                           {thumb ? (
                             <Image src={thumb} alt={article.title} fill className="object-cover" sizes="56px" />
@@ -157,7 +157,7 @@ export default async function MediaAllPage() {
                           </p>
                           <p className="text-xs text-gray-700 leading-snug line-clamp-2 group-hover:underline">{article.title}</p>
                         </div>
-                      </Link>
+                      </a>
                     </li>
                   );
                 })}

@@ -111,7 +111,7 @@ export default async function MediaCategoryPage({ params }: Props) {
                   const thumb = article.eyecatch?.url ?? extractFirstImage(article.content) ?? null;
                   return (
                     <li key={article.id}>
-                      <Link href={getMediaArticlePath(article)} className="flex gap-5 group hover:opacity-80 transition-opacity">
+                      <a href={getMediaArticlePath(article)} className="flex gap-5 group hover:opacity-80 transition-opacity">
                         <div className="shrink-0 w-32 h-24 sm:w-48 sm:h-32 relative rounded-lg overflow-hidden bg-gray-100">
                           {thumb ? (
                             <Image src={thumb} alt={article.title} fill className="object-cover" sizes="192px" />
@@ -129,7 +129,7 @@ export default async function MediaCategoryPage({ params }: Props) {
                             {new Date(article.publishedAt).toLocaleDateString("ja-JP", { year: "numeric", month: "long", day: "numeric" })}
                           </time>
                         </div>
-                      </Link>
+                      </a>
                     </li>
                   );
                 })}
@@ -158,9 +158,9 @@ export default async function MediaCategoryPage({ params }: Props) {
               <ul className="flex flex-col gap-3">
                 {latestArticles.map((article) => (
                   <li key={article.id}>
-                    <Link href={getMediaArticlePath(article)} className="text-sm text-gray-700 hover:text-teal-500 transition-colors leading-snug line-clamp-2">
+                    <a href={getMediaArticlePath(article)} className="text-sm text-gray-700 hover:text-teal-500 transition-colors leading-snug line-clamp-2">
                       {article.title}
-                    </Link>
+                    </a>
                   </li>
                 ))}
               </ul>

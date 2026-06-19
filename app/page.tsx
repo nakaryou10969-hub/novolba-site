@@ -241,7 +241,7 @@ export default async function Home() {
             {/* 最新記事 3件（1行） */}
             <div className="max-w-6xl mx-auto grid grid-cols-1 gap-8 sm:grid-cols-3">
               {blogsData.contents.map((blog) => (
-                <Link
+                <a
                   key={blog.id}
                   href={getNewsArticlePath(blog)}
                   className="flex flex-col rounded-2xl overflow-hidden shadow-md bg-white hover:shadow-xl transition-shadow"
@@ -297,7 +297,7 @@ export default async function Home() {
                       })}
                     </time>
                   </div>
-                </Link>
+                </a>
               ))}
             </div>
 
@@ -313,7 +313,7 @@ export default async function Home() {
                 </div>
                 <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
                   {usersVoiceData.contents.map((blog) => (
-                    <Link
+                    <a
                       key={blog.id}
                       href={getNewsArticlePath(blog)}
                       className="flex flex-col rounded-2xl overflow-hidden shadow-md bg-white hover:shadow-xl transition-shadow"
@@ -368,7 +368,7 @@ export default async function Home() {
                           })}
                         </time>
                       </div>
-                    </Link>
+                    </a>
                   ))}
                 </div>
               </div>

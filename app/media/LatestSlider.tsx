@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { getMediaArticlePath } from "../../libs/articlePath";
 
 const ITEMS_PER_PAGE = 3;
@@ -27,7 +26,7 @@ function getCategoryName(article: SliderArticle): string {
 
 function ArticleCard({ article }: { article: SliderArticle }) {
   return (
-    <Link
+    <a
       href={getMediaArticlePath(article)}
       className="flex flex-col rounded-xl overflow-hidden bg-white hover:shadow-lg transition-shadow group border border-gray-100 h-full"
     >
@@ -69,7 +68,7 @@ function ArticleCard({ article }: { article: SliderArticle }) {
           })}
         </time>
       </div>
-    </Link>
+    </a>
   );
 }
 

@@ -2,7 +2,6 @@
 
 import { useState, useMemo } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { getMediaArticlePath } from "../../libs/articlePath";
 
 type Article = {
@@ -20,7 +19,7 @@ function ArticleCard({ article }: { article: Article }) {
     : article.category?.name;
 
   return (
-    <Link
+    <a
       href={getMediaArticlePath(article)}
       className="flex flex-col rounded-xl overflow-hidden bg-white hover:shadow-lg transition-shadow group border border-gray-100"
     >
@@ -62,7 +61,7 @@ function ArticleCard({ article }: { article: Article }) {
           })}
         </time>
       </div>
-    </Link>
+    </a>
   );
 }
 

@@ -224,7 +224,7 @@ export default async function BlogDetailPage({ params }: Props) {
                     const thumb = latestBlog.eyecatch?.url ?? extractFirstImage(latestBlog.content);
                     return (
                       <li key={latestBlog.id}>
-                        <Link
+                        <a
                           href={getNewsArticlePath(latestBlog)}
                           className="flex gap-3 group hover:opacity-80 transition-opacity"
                         >
@@ -257,7 +257,7 @@ export default async function BlogDetailPage({ params }: Props) {
                               {latestBlog.title}
                             </p>
                           </div>
-                        </Link>
+                        </a>
                       </li>
                     );
                   })}
@@ -280,7 +280,7 @@ export default async function BlogDetailPage({ params }: Props) {
               {relatedBlogs.map((related) => {
                 const thumb = related.eyecatch?.url ?? extractFirstImage(related.content);
                 return (
-                  <Link
+                  <a
                     key={related.id}
                     href={getNewsArticlePath(related)}
                     className="flex flex-col rounded-xl overflow-hidden shadow-md bg-white hover:shadow-lg transition-shadow group"
@@ -314,7 +314,7 @@ export default async function BlogDetailPage({ params }: Props) {
                         {related.title}
                       </p>
                     </div>
-                  </Link>
+                  </a>
                 );
               })}
             </div>
