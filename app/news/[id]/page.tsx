@@ -5,6 +5,7 @@ import { client, type Blog } from "../../../libs/client";
 import { extractFirstImage } from "../../../libs/extractFirstImage";
 import { getArticleStaticParamIds, getNewsArticlePath } from "../../../libs/articlePath";
 import { renderArticleContent } from "../../../libs/renderArticleContent";
+import { getRestoredNewsBodyImages } from "../../../libs/restoredArticleImages";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -115,6 +116,7 @@ export default async function BlogDetailPage({ params }: Props) {
 
   const latestBlogs = latestBlogsData;
   const thumbnailUrl = blog.eyecatch?.url ?? extractFirstImage(blog.content) ?? null;
+  const restoredBodyImages = getRestoredNewsBodyImages(blog.id);
 
   return (
     <main className="bg-white">
@@ -175,7 +177,7 @@ export default async function BlogDetailPage({ params }: Props) {
             {/* 本文 */}
             <div
               className="prose-content"
-              dangerouslySetInnerHTML={{ __html: renderArticleContent(blog.content) }}
+              dangerouslySetInnerHTML={{ __html: renderArticleContent(blog.content, restoredBodyImages) }}
             />
 
             {/* カテゴリー・著者 */}

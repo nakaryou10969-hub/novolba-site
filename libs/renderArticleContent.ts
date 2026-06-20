@@ -96,6 +96,17 @@ function addLazyLoadingToImages(content: string) {
   });
 }
 
-export function renderArticleContent(content: string) {
-  return addLazyLoadingToImages(renderGalleryShortcodes(renderButtonShortcodes(content)));
+function renderRestoredImageFigures(urls: string[]) {
+  if (!urls.length) return "";
+  const figures = urls
+    .map(
+      (url) =>
+        `<figure><img src="${escapeHtml(url)}" alt="" loading="lazy" decoding="async" fetchpriority="low" /></figure>`,
+    )
+    .join("");
+  return `<div class="restored-body-images">${figures}</div>`;
+}
+
+export function renderArticleContent(content: string, restoredImageUrls: string[] = []) {
+  return addLazyLoadingToImages(renderGalleryShortcodes(renderButtonShortcodes(content))) + renderRestoredImageFigures(restoredImageUrls);
 }
