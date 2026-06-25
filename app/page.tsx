@@ -127,7 +127,7 @@ export default async function Home() {
           </div>
         </div>
 
-        <div className="relative mx-auto hidden min-h-[620px] max-w-6xl flex-row items-center gap-0 px-6 py-16 md:flex lg:min-h-[720px]">
+        <div className="relative mx-auto hidden min-h-[620px] w-[calc(100vw-48px)] max-w-[1536px] flex-row items-center gap-0 py-16 md:flex lg:min-h-[clamp(720px,43vw,840px)] lg:w-[80vw]">
           <div
             className="pointer-events-none"
             style={{
@@ -150,7 +150,7 @@ export default async function Home() {
               className="flex flex-col items-start font-bold leading-[1.45]"
               style={{
                 color: "#28ad9b",
-                fontSize: 64,
+                fontSize: "clamp(64px, 4.45vw, 86px)",
                 fontFamily: '"Yu Gothic", "游ゴシック", YuGothic, sans-serif',
               }}
             >
@@ -168,8 +168,11 @@ export default async function Home() {
             </h1>
 
             <div
-              className="mt-12 flex flex-col gap-2 text-[24px] font-bold leading-[1.5] text-gray-800"
-              style={{ fontFamily: '"Yu Gothic", "游ゴシック", YuGothic, sans-serif' }}
+              className="mt-12 flex flex-col gap-2 font-bold leading-[1.5] text-gray-800"
+              style={{
+                fontSize: "clamp(24px, 1.67vw, 32px)",
+                fontFamily: '"Yu Gothic", "游ゴシック", YuGothic, sans-serif',
+              }}
             >
               {heroContent.leadLines.map((line, index) => (
                 <p key={index} className="bg-white/95 px-0.5 whitespace-nowrap">
@@ -214,8 +217,9 @@ export default async function Home() {
               width={heroContent.visual.width}
               height={heroContent.visual.height}
               priority
-              className="h-auto w-[790px] max-w-[790px] [transform:scaleX(-1)]"
-              sizes="52vw"
+              className="h-auto [transform:scaleX(-1)]"
+              style={{ width: "clamp(790px, 54.9vw, 1054px)", maxWidth: "none" }}
+              sizes="55vw"
             />
           </div>
 

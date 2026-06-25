@@ -17,7 +17,7 @@ export default function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-sm border-b border-gray-100">
-      <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+      <div className="mx-auto flex h-20 w-[calc(100vw-48px)] max-w-[1536px] items-center justify-between lg:w-[80vw]">
 
         {/* ロゴ */}
         <Link href="/" className="flex items-center" onClick={() => setMenuOpen(false)}>
