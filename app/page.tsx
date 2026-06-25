@@ -127,7 +127,7 @@ export default async function Home() {
           </div>
         </div>
 
-        <div className="relative mx-auto hidden min-h-[620px] w-[calc(100vw-48px)] max-w-[1344px] flex-row items-center gap-0 py-16 lg:flex lg:min-h-[clamp(720px,37.6vw,735px)] lg:w-[70vw]">
+        <div className="relative mx-auto hidden min-h-[620px] w-full max-w-[1344px] flex-row items-center gap-0 py-16 lg:flex lg:min-h-[clamp(720px,37.6vw,735px)] min-[1250px]:w-[70vw]">
           <div
             className="pointer-events-none"
             style={{
@@ -210,7 +210,7 @@ export default async function Home() {
             </div>
           </div>
 
-          <div className="relative z-10 -ml-36 -mr-44 flex w-[58%] justify-end">
+          <div className="relative z-10 -ml-24 flex w-1/2 justify-end min-[1250px]:-ml-36 min-[1250px]:-mr-44 min-[1250px]:w-[58%]">
             <Image
               src={heroContent.visual.src}
               alt={heroContent.visual.alt}
@@ -218,8 +218,8 @@ export default async function Home() {
               height={heroContent.visual.height}
               priority
               className="h-auto [transform:scaleX(-1)]"
-              style={{ width: "clamp(790px, 48vw, 922px)", maxWidth: "none" }}
-              sizes="48vw"
+              style={{ width: "clamp(650px, 55vw, 922px)", maxWidth: "none" }}
+              sizes="55vw"
             />
           </div>
 
