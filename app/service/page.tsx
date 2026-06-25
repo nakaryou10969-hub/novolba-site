@@ -70,9 +70,6 @@ export default function ServicePage() {
         <p className="text-xs tracking-[0.3em] text-gray-400 uppercase mb-3">Our Services</p>
         <h1 className="text-4xl font-bold tracking-widest text-gray-800">SERVICE</h1>
         <div className="mt-4 w-12 h-0.5" style={{ backgroundColor: "#3dbdac" }} />
-        <p className="mt-4 text-sm text-gray-500 max-w-md leading-relaxed">
-          スタートアップのオフィス課題を、3つのサービスで解決します。
-        </p>
       </section>
 
       {/* ===== サービス一覧 ===== */}
