@@ -100,7 +100,7 @@ export default async function Home() {
           className="absolute top-0 left-0 right-0 h-1 z-10"
           style={{ backgroundColor: "#3dbdac" }}
         />
-        <div className="relative z-10 flex flex-col md:hidden">
+        <div className="relative z-10 flex flex-col lg:hidden">
           <div className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -127,7 +127,7 @@ export default async function Home() {
           </div>
         </div>
 
-        <div className="relative mx-auto hidden min-h-[620px] w-[calc(100vw-48px)] max-w-[1344px] flex-row items-center gap-0 py-16 md:flex lg:min-h-[clamp(720px,37.6vw,735px)] lg:w-[70vw]">
+        <div className="relative mx-auto hidden min-h-[620px] w-[calc(100vw-48px)] max-w-[1344px] flex-row items-center gap-0 py-16 lg:flex lg:min-h-[clamp(720px,37.6vw,735px)] lg:w-[70vw]">
           <div
             className="pointer-events-none"
             style={{
@@ -175,7 +175,7 @@ export default async function Home() {
               }}
             >
               {heroContent.leadLines.map((line, index) => (
-                <p key={index} className="bg-white/95 px-0.5 whitespace-nowrap">
+                <p key={index} className="w-fit bg-white/95 px-0.5 whitespace-nowrap">
                   {line.map((part, partIndex) => (
                     <span
                       key={part.text}
