@@ -100,7 +100,7 @@ export default function BasicOfficePage() {
       {/* ===== 従来の課題 ===== */}
       <section className="py-16 px-6 bg-gray-50">
         <div className="max-w-[1000px] mx-auto">
-          <h2 className="text-xl font-bold text-center text-gray-800 mb-8">
+          <h2 className="text-[24px] font-bold text-center text-gray-800 mb-8">
             しかし、オフィス移転には<br />
             様々な<span style={{ color: "#3dbdac" }}>課題</span>が生じます。
           </h2>
@@ -243,7 +243,7 @@ export default function BasicOfficePage() {
       {/* ===== 料金 ===== */}
       <section className="py-16 px-6 bg-gray-50">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-xl font-bold text-center text-gray-800 mb-4">
+          <h2 className="text-[24px] font-bold text-center text-gray-800 mb-4">
             サービス利用料金の目安
           </h2>
           <p className="text-xs text-center text-gray-400 mb-8">

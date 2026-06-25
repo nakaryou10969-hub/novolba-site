@@ -127,7 +127,7 @@ export default async function Home() {
           </div>
         </div>
 
-        <div className="relative mx-auto hidden min-h-[620px] w-[calc(100vw-48px)] max-w-[1536px] flex-row items-center gap-0 py-16 md:flex lg:min-h-[clamp(720px,43vw,840px)] lg:w-[80vw]">
+        <div className="relative mx-auto hidden min-h-[620px] w-[calc(100vw-48px)] max-w-[1344px] flex-row items-center gap-0 py-16 md:flex lg:min-h-[clamp(720px,37.6vw,735px)] lg:w-[70vw]">
           <div
             className="pointer-events-none"
             style={{
@@ -150,7 +150,7 @@ export default async function Home() {
               className="flex flex-col items-start font-bold leading-[1.45]"
               style={{
                 color: "#28ad9b",
-                fontSize: "clamp(64px, 4.45vw, 86px)",
+                fontSize: "clamp(64px, 3.89vw, 75px)",
                 fontFamily: '"Yu Gothic", "游ゴシック", YuGothic, sans-serif',
               }}
             >
@@ -170,7 +170,7 @@ export default async function Home() {
             <div
               className="mt-12 flex flex-col gap-2 font-bold leading-[1.5] text-gray-800"
               style={{
-                fontSize: "clamp(24px, 1.67vw, 32px)",
+                fontSize: "clamp(24px, 1.46vw, 28px)",
                 fontFamily: '"Yu Gothic", "游ゴシック", YuGothic, sans-serif',
               }}
             >
@@ -218,8 +218,8 @@ export default async function Home() {
               height={heroContent.visual.height}
               priority
               className="h-auto [transform:scaleX(-1)]"
-              style={{ width: "clamp(790px, 54.9vw, 1054px)", maxWidth: "none" }}
-              sizes="55vw"
+              style={{ width: "clamp(790px, 48vw, 922px)", maxWidth: "none" }}
+              sizes="48vw"
             />
           </div>
 
