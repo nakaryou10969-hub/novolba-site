@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import serviceKaguImage from "../../public/service-kagu.jpg";
+import serviceBasicImage from "../../public/service-basic.jpg";
+import serviceBuddyImage from "../../public/service-buddy.jpg";
 
 export const metadata: Metadata = {
   title: "SERVICE | NovolBa",
@@ -17,7 +20,7 @@ const services = [
       "月額費用内で、家具の入替え可能",
       "要件に合わせたレイアウト提案",
     ],
-    imageSrc: "/service-kagu.jpg",
+    imageSrc: serviceKaguImage.src,
     detailHref: "/service/kagu-hodai",
     actionLabel: "家具を探す",
     actionHref: "/service/kagu-hodai/furniture",
@@ -32,7 +35,7 @@ const services = [
       "最低6か月から契約",
       "入居人数分の家具、Wi-Fi、プリンター込",
     ],
-    imageSrc: "/service-basic.jpg",
+    imageSrc: serviceBasicImage.src,
     detailHref: "/service/basic-office",
     actionLabel: "物件を探す",
     actionHref: "/service/basic-office/offices",
@@ -47,7 +50,7 @@ const services = [
       "レイアウト設計",
       "移転PR戦略",
     ],
-    imageSrc: "/service-buddy.jpg",
+    imageSrc: serviceBuddyImage.src,
     detailHref: "/service/novolba-buddy",
     actionLabel: "相談する",
     actionHref: "/inquiry",

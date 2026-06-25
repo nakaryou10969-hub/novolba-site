@@ -1,4 +1,7 @@
 import Image from "next/image";
+import serviceKaguImage from "../../public/service-kagu.jpg";
+import serviceBasicImage from "../../public/service-basic.jpg";
+import serviceBuddyImage from "../../public/service-buddy.jpg";
 
 type ServiceItem = {
   imageSrc: string;
@@ -10,21 +13,21 @@ type ServiceItem = {
 
 const services: ServiceItem[] = [
   {
-    imageSrc: "/service-kagu.jpg",
+    imageSrc: serviceKaguImage.src,
     imageAlt: "家具ホーダイ!! Service",
     title: "家具ホーダイ!! Service",
     description: "入替え可能な中古家具のサブスクリプション",
     bullets: ["1年目 坪3,000円〜", "23区内、横浜"],
   },
   {
-    imageSrc: "/service-basic.jpg",
+    imageSrc: serviceBasicImage.src,
     imageAlt: "BASIC OFFICE Service",
     title: "BASIC OFFICE Service",
     description: "5〜30人用の一社占有家具付きオフィス",
     bullets: ["10坪 5名利用で月額16万円〜", "渋谷、新宿、五反田、東日本橋 等"],
   },
   {
-    imageSrc: "/service-buddy.jpg",
+    imageSrc: serviceBuddyImage.src,
     imageAlt: "ノボルバディ Service",
     title: "ノボルバディ Service",
     description: "場づくりの右腕に、移転を丸ごとお任せ！",

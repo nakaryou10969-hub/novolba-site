@@ -3,6 +3,10 @@ import Link from "next/link";
 import { client, type Blog, type MicroCMSListResponse } from "../libs/client";
 import { extractFirstImage } from "../libs/extractFirstImage";
 import { getNewsArticlePath } from "../libs/articlePath";
+import neoHeroImage from "../public/neo-hero.png";
+import serviceKaguImage from "../public/service-kagu.jpg";
+import serviceBasicImage from "../public/service-basic.jpg";
+import serviceBuddyImage from "../public/service-buddy.jpg";
 
 const heroContent = {
   titleLines: ["挑戦する", "スタートアップの", '"昇る場"を提供します。'],
@@ -15,7 +19,7 @@ const heroContent = {
     ],
   ],
   visual: {
-    src: "/neo-hero.png",
+    src: neoHeroImage,
     alt: "階段状の上昇する場で働く人々のイラスト",
     width: 1600,
     height: 1231,
@@ -33,7 +37,7 @@ const serviceCards = [
     title: "家具ホーダイ!! Service",
     description: "入替え可能な中古家具のサブスクリプション",
     bullets: ["1年目 坪3,000円〜", "23区内、横浜", "月額費用内で、家具の入替え可能", "要件に合わせたレイアウト提案"],
-    imageSrc: "/service-kagu.jpg",
+    imageSrc: serviceKaguImage.src,
     detailHref: "/service/kagu-hodai",
     actionLabel: "家具を探す",
     actionHref: "/service/kagu-hodai/furniture",
@@ -43,7 +47,7 @@ const serviceCards = [
     title: "BASIC OFFICE Service",
     description: "5〜30人用の一社占有家具付きオフィス",
     bullets: ["10坪 5名利用で月額16万円〜", "渋谷、新宿、五反田、東日本橋 等", "最低6か月から契約", "入居人数分の家具、Wi-Fi、プリンター込"],
-    imageSrc: "/service-basic.jpg",
+    imageSrc: serviceBasicImage.src,
     detailHref: "/service/basic-office",
     actionLabel: "物件を探す",
     actionHref: "/service/basic-office/offices",
@@ -53,7 +57,7 @@ const serviceCards = [
     title: "ノボルバディ Service",
     description: "場づくりの右腕に、移転を丸ごとお任せ！",
     bullets: ["移転プロジェクトマネジメント", "ワークショップ", "レイアウト設計", "移転PR戦略"],
-    imageSrc: "/service-buddy.jpg",
+    imageSrc: serviceBuddyImage.src,
     detailHref: "/service/novolba-buddy",
     actionLabel: "相談する",
     actionHref: "/inquiry",
