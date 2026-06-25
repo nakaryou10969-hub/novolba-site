@@ -4,6 +4,28 @@ import { client, type Blog, type MicroCMSListResponse } from "../libs/client";
 import { extractFirstImage } from "../libs/extractFirstImage";
 import { getNewsArticlePath } from "../libs/articlePath";
 
+const heroContent = {
+  titleLines: ["挑戦する", "スタートアップの", '"昇る場"を提供します。'],
+  leadLines: [
+    [{ text: "オフィス移転もその後も。" }],
+    [
+      { text: "手軽に家具を入替えて、" },
+      { text: "いつも最高の空間を", highlight: true },
+      { text: "！" },
+    ],
+  ],
+  visual: {
+    src: "/neo-hero.png",
+    alt: "階段状の上昇する場で働く人々のイラスト",
+    width: 1600,
+    height: 1231,
+  },
+  actions: [
+    { label: "お問い合わせ", href: "/inquiry", primary: true },
+    { label: "サービスを見る", href: "#service", primary: false },
+  ],
+};
+
 // ---- サービス定義（コードに直書き） ----
 const serviceCards = [
   {
@@ -72,27 +94,23 @@ export default async function Home() {
     <main className="bg-white">
 
       {/* ===== Hero ===== */}
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden bg-white">
         {/* アクセントライン */}
         <div
           className="absolute top-0 left-0 right-0 h-1 z-10"
           style={{ backgroundColor: "#3dbdac" }}
         />
-
-        {/* スマホ：画像をそのまま表示してボタンを下に配置 */}
-        <div className="flex flex-col md:hidden">
-          {/* 画像：画面幅にフィット、左右はみ出しなし */}
-          <div className="w-full overflow-hidden">
+        <div className="relative z-10 flex flex-col md:hidden">
+          <div className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/header.img.png"
               alt="挑戦するスタートアップの昇る場を提供します"
-              className="w-full h-auto block"
-              style={{ maxWidth: "100%", display: "block" }}
+              className="block h-auto w-screen max-w-none"
+              style={{ width: "100vw", display: "block" }}
             />
           </div>
-          {/* ボタン */}
-          <div className="flex flex-row gap-3 justify-center px-6 py-5">
+          <div className="flex flex-row justify-center gap-3 px-6 py-5">
             <Link
               href="/inquiry"
               className="px-5 py-2 text-xs font-medium text-white rounded-full shadow-md hover:opacity-90 transition-opacity"
@@ -109,34 +127,98 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* PC：背景画像全体レイアウト */}
-        <div className="hidden md:flex flex-col">
-          {/* 画像 */}
-          <div className="w-full overflow-hidden relative">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/hero-illustration.png"
-              alt="挑戦するスタートアップの昇る場を提供します"
-              className="w-full h-auto block"
-              style={{ maxWidth: "100%", display: "block" }}
+        <div className="relative mx-auto hidden min-h-[620px] max-w-6xl flex-row items-center gap-0 px-6 py-16 md:flex lg:min-h-[720px]">
+          <div
+            className="pointer-events-none"
+            style={{
+              position: "absolute",
+              bottom: 0,
+              left: "50%",
+              zIndex: 20,
+              width: "100vw",
+              height: 210,
+              transform: "translateX(-50%)",
+              background:
+                "linear-gradient(180deg, rgba(174, 232, 223, 0.9) 0%, rgba(216, 245, 238, 0.78) 48%, rgba(255, 255, 255, 1) 100%)",
+              clipPath:
+                "polygon(0 54%, 14% 34%, 34% 31%, 50% 44%, 67% 55%, 82% 45%, 100% 26%, 100% 100%, 0 100%)",
+            }}
+            aria-hidden="true"
+          />
+          <div className="relative z-30 flex flex-col items-start text-left md:w-[58%]">
+            <h1
+              className="flex flex-col items-start font-bold leading-[1.45]"
+              style={{
+                color: "#28ad9b",
+                fontSize: 64,
+                fontFamily: '"Yu Gothic", "游ゴシック", YuGothic, sans-serif',
+              }}
+            >
+              {heroContent.titleLines.map((line) => (
+                <span
+                  key={line}
+                  className={[
+                    "block w-fit bg-white/95 pl-0.5 whitespace-nowrap",
+                    line.includes("提供します") ? "pr-px" : "pr-0.5",
+                  ].join(" ")}
+                >
+                  {line}
+                </span>
+              ))}
+            </h1>
+
+            <div
+              className="mt-12 flex flex-col gap-2 text-[24px] font-bold leading-[1.5] text-gray-800"
+              style={{ fontFamily: '"Yu Gothic", "游ゴシック", YuGothic, sans-serif' }}
+            >
+              {heroContent.leadLines.map((line, index) => (
+                <p key={index} className="bg-white/95 px-0.5 whitespace-nowrap">
+                  {line.map((part, partIndex) => (
+                    <span
+                      key={part.text}
+                      className={[
+                        partIndex === 0 && line.length > 1 ? "inline" : "",
+                        part.highlight ? "box-decoration-clone px-0.5" : "",
+                      ].filter(Boolean).join(" ") || undefined}
+                      style={part.highlight ? { backgroundColor: "#fbff78" } : undefined}
+                    >
+                      {part.text}
+                    </span>
+                  ))}
+                </p>
+              ))}
+            </div>
+
+            <div className="mt-11 flex flex-row flex-wrap justify-start gap-4">
+              {heroContent.actions.map((action) => (
+                <Link
+                  key={action.href}
+                  href={action.href}
+                  className={
+                    action.primary
+                      ? "px-6 py-2.5 text-sm font-medium text-white rounded-full shadow-md hover:opacity-90 transition-opacity md:px-8 md:py-3"
+                      : "px-6 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-full shadow-sm hover:bg-gray-50 transition-colors md:px-8 md:py-3"
+                  }
+                  style={action.primary ? { backgroundColor: "#3dbdac" } : undefined}
+                >
+                  {action.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <div className="relative z-10 -ml-36 -mr-44 flex w-[58%] justify-end">
+            <Image
+              src={heroContent.visual.src}
+              alt={heroContent.visual.alt}
+              width={heroContent.visual.width}
+              height={heroContent.visual.height}
+              priority
+              className="h-auto w-[790px] max-w-[790px] [transform:scaleX(-1)]"
+              sizes="52vw"
             />
           </div>
-          {/* ボタン */}
-          <div className="flex flex-row gap-4 justify-start px-10 py-6">
-            <Link
-              href="/inquiry"
-              className="px-8 py-3 text-sm font-medium text-white rounded-full shadow-md hover:opacity-90 transition-opacity"
-              style={{ backgroundColor: "#3dbdac" }}
-            >
-              お問い合わせ
-            </Link>
-            <Link
-              href="#service"
-              className="px-8 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-full shadow-sm hover:bg-gray-50 transition-colors"
-            >
-              サービスを見る
-            </Link>
-          </div>
+
         </div>
       </section>
 
