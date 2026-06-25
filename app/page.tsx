@@ -231,7 +231,7 @@ export default async function Home() {
       </section>
 
       {/* ===== Service ===== */}
-      <section id="service" className="pt-16 pb-24 px-6 bg-white">
+      <section id="service" className="py-24 px-6 bg-white">
         <div className="text-center mb-14">
           <p className="text-xs tracking-[0.3em] text-gray-400 uppercase mb-2">Our Services</p>
           <h2 className="text-3xl font-bold tracking-widest text-gray-800">
