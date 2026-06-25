@@ -14,8 +14,7 @@ const heroContent = {
     [{ text: "オフィス移転もその後も。" }],
     [
       { text: "手軽に家具を入替えて、" },
-      { text: "いつも最高の空間を", highlight: true },
-      { text: "！" },
+      { text: "いつも最高の空間を！", highlight: true },
     ],
   ],
   visual: {
