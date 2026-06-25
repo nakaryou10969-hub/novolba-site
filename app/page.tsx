@@ -14,7 +14,8 @@ const heroContent = {
     [{ text: "オフィス移転もその後も。" }],
     [
       { text: "手軽に家具を入替えて、" },
-      { text: "いつも最高の空間を！", highlight: true },
+      { text: "いつも最高の空間", highlight: true },
+      { text: "を！" },
     ],
   ],
   visual: {
@@ -178,13 +179,13 @@ export default async function Home() {
               }}
             >
               {heroContent.leadLines.map((line, index) => (
-                <p key={index} className="w-fit bg-white/95 px-0.5 whitespace-nowrap">
-                  {line.map((part, partIndex) => (
+                <p key={index} className="flex w-fit items-stretch bg-white/95 px-0.5 whitespace-nowrap">
+                  {line.map((part) => (
                     <span
                       key={part.text}
                       className={[
-                        partIndex === 0 && line.length > 1 ? "inline" : "",
-                        part.highlight ? "box-decoration-clone px-0.5" : "",
+                        "flex items-center",
+                        part.highlight ? "self-stretch px-0.5" : "",
                       ].filter(Boolean).join(" ") || undefined}
                       style={part.highlight ? { backgroundColor: "#fbff78" } : undefined}
                     >
