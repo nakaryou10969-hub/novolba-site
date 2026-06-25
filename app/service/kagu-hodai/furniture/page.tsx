@@ -124,34 +124,6 @@ export default function FurniturePage() {
             ))}
           </div>
 
-          {/* 連絡先 */}
-          <div
-            className="rounded-2xl p-8 text-center"
-            style={{ backgroundColor: "#e6f7f5" }}
-          >
-            <p className="text-sm font-bold text-gray-700 mb-4">お気軽にご連絡ください 😊</p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center text-sm text-gray-600">
-              <a href="mailto:support@novolba.com" className="hover:underline" style={{ color: "#3dbdac" }}>
-                📧 support@novolba.com
-              </a>
-              <a href="tel:08047206472" className="hover:underline" style={{ color: "#3dbdac" }}>
-                📞 080-4720-6472
-              </a>
-            </div>
-            <p className="mt-4 text-xs text-gray-500">
-              選ぶのがめんどくさい、こんな条件なんだけど…など、まずは気軽にご連絡ください。<br />
-              FaceBookメッセンジャーでのお気軽チャットも可能です。
-              <a
-                href="https://www.facebook.com/hayashi.masaki.33"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline ml-1"
-                style={{ color: "#3dbdac" }}
-              >
-                NovolBaオフィスコンサル 林（はやし）
-              </a>
-            </p>
-          </div>
         </div>
       </section>
 
