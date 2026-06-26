@@ -28,6 +28,10 @@ function textFromEditorHtml(value: string) {
     .trim();
 }
 
+function textFromHtml(value: string) {
+  return textFromEditorHtml(value).replace(/\s+/g, " ").trim();
+}
+
 function safeUrl(value: string) {
   const url = decodeBasicEntities(value).trim();
   return URL_PATTERN.test(url) ? url : "";
@@ -35,6 +39,16 @@ function safeUrl(value: string) {
 
 function externalLinkAttrs(url: string) {
   return /^https?:\/\//i.test(url) ? ' target="_blank" rel="noopener noreferrer"' : "";
+}
+
+function shortcodeAttribute(attrs: string, name: string) {
+  const pattern = new RegExp(`${name}=(?:"|&quot;)(.*?)(?:"|&quot;)`, "i");
+  return attrs.match(pattern)?.[1] ?? "";
+}
+
+function headingIdFromAttrs(attrs: string) {
+  const match = attrs.match(/\sid=(?:"([^"]+)"|'([^']+)'|([^\s>]+))/i);
+  return match?.[1] ?? match?.[2] ?? match?.[3] ?? "";
 }
 
 function renderButtonShortcodes(content: string) {
@@ -46,6 +60,22 @@ function renderButtonShortcodes(content: string) {
       if (!hrefValue || !label) return "";
 
       return `<div class="wp-block-button"><a class="wp-block-button__link" href="${escapeHtml(hrefValue)}"${externalLinkAttrs(hrefValue)}>${escapeHtml(label)}</a></div>`;
+    },
+  );
+}
+
+function renderImageTextShortcodes(content: string) {
+  return content.replace(
+    /(?:<p[^>]*>\s*)?\[\[image-text\s+([^\]]+)\]\](?:\s*<\/p>)?([\s\S]*?)(?:<p[^>]*>\s*)?\[\[\/image-text\]\](?:\s*<\/p>)?/gi,
+    (_match, attrs: string, bodyContent: string) => {
+      const src = safeUrl(shortcodeAttribute(attrs, "image") || shortcodeAttribute(attrs, "src"));
+      if (!src) return "";
+
+      const alt = shortcodeAttribute(attrs, "alt");
+      const body = bodyContent.trim();
+      if (!body) return "";
+
+      return `<div class="article-image-text"><figure class="article-image-text__figure"><img src="${escapeHtml(src)}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async" fetchpriority="low" /></figure><div class="article-image-text__body">${body}</div></div>`;
     },
   );
 }
@@ -80,6 +110,49 @@ function renderGalleryShortcodes(content: string) {
   );
 }
 
+function uniqueHeadingId(base: string, usedIds: Set<string>) {
+  let id = base;
+  let index = 2;
+  while (usedIds.has(id)) {
+    id = `${base}-${index}`;
+    index += 1;
+  }
+  usedIds.add(id);
+  return id;
+}
+
+function addHeadingIdsAndRenderToc(content: string) {
+  const headings: Array<{ id: string; level: number; text: string }> = [];
+  const usedIds = new Set<string>();
+  let generatedIndex = 0;
+
+  const contentWithIds = content.replace(
+    /<h([1-5])([^>]*)>([\s\S]*?)<\/h\1>/gi,
+    (match, level: string, attrs: string, innerHtml: string) => {
+      const existingId = headingIdFromAttrs(attrs);
+      const id = existingId || uniqueHeadingId(`article-heading-${generatedIndex + 1}`, usedIds);
+      if (existingId) usedIds.add(existingId);
+      generatedIndex += 1;
+
+      const text = textFromHtml(innerHtml);
+      if (text) headings.push({ id, level: Number(level), text });
+      if (existingId) return match;
+      return `<h${level}${attrs} id="${escapeHtml(id)}">${innerHtml}</h${level}>`;
+    },
+  );
+
+  const tocHtml = headings.length
+    ? `<nav class="article-toc" aria-label="目次"><p class="article-toc__title">目次</p><ol>${headings
+        .map(
+          ({ id, level, text }) =>
+            `<li class="article-toc__item article-toc__item--h${level}"><a href="#${escapeHtml(id)}">${escapeHtml(text)}</a></li>`,
+        )
+        .join("")}</ol></nav>`
+    : "";
+
+  return contentWithIds.replace(/(?:<p[^>]*>\s*)?\[\[toc\]\](?:\s*<\/p>)?/gi, tocHtml);
+}
+
 function addLazyLoadingToImages(content: string) {
   return content.replace(/<img\b([^>]*)>/gi, (_match, attrs: string) => {
     let nextAttrs = attrs;
@@ -108,5 +181,6 @@ function renderRestoredImageFigures(urls: string[]) {
 }
 
 export function renderArticleContent(content: string, restoredImageUrls: string[] = []) {
-  return addLazyLoadingToImages(renderGalleryShortcodes(renderButtonShortcodes(content))) + renderRestoredImageFigures(restoredImageUrls);
+  const renderedShortcodes = renderGalleryShortcodes(renderImageTextShortcodes(renderButtonShortcodes(content)));
+  return addLazyLoadingToImages(addHeadingIdsAndRenderToc(renderedShortcodes)) + renderRestoredImageFigures(restoredImageUrls);
 }

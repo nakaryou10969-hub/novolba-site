@@ -58,6 +58,7 @@ section .text-sm.text-white\/80 {
   line-height: 1.9;
   color: #374151;
   font-size: 0.95rem;
+  overflow-wrap: anywhere;
 }
 
 .prose-content p {
@@ -67,11 +68,13 @@ section .text-sm.text-white\/80 {
 .prose-content h1,
 .prose-content h2,
 .prose-content h3,
-.prose-content h4 {
+.prose-content h4,
+.prose-content h5 {
   font-weight: 700;
   margin-top: 2em;
   margin-bottom: 0.8em;
   color: #1f2937;
+  scroll-margin-top: 6rem;
 }
 
 .prose-content h2 {
@@ -80,6 +83,8 @@ section .text-sm.text-white\/80 {
   padding-left: 0.75rem;
 }
 .prose-content h3 { font-size: 1.1rem; }
+.prose-content h4 { font-size: 1rem; }
+.prose-content h5 { font-size: 0.95rem; }
 
 /* 画像 */
 .prose-content img {
@@ -147,8 +152,63 @@ section .text-sm.text-white\/80 {
 .prose-content a {
   color: #3dbdac;
   text-decoration: underline;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
+.prose-content .article-toc {
+  margin: 1.75em 0;
+  padding: 1.2em 1.4em;
+  border: 1px solid #d8f0ed;
+  border-radius: 8px;
+  background: #f7fcfb;
+}
+
+.prose-content .article-toc__title {
+  margin: 0 0 0.7em;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.prose-content .article-toc ol {
+  margin: 0;
+  padding-left: 1.2em;
+}
+
+.prose-content .article-toc__item {
+  margin-bottom: 0.25em;
+}
+
+.prose-content .article-toc__item--h2 { margin-left: 0.75em; }
+.prose-content .article-toc__item--h3 { margin-left: 1.5em; }
+.prose-content .article-toc__item--h4 { margin-left: 2.25em; }
+.prose-content .article-toc__item--h5 { margin-left: 3em; }
+
+.prose-content .article-image-text {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin: 1.8em 0;
+}
+
+.prose-content .article-image-text__figure {
+  flex: 0 0 min(42%, 320px);
+  margin: 0;
+}
+
+.prose-content .article-image-text__figure img {
+  width: 100%;
+  margin: 0;
+}
+
+.prose-content .article-image-text__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.prose-content .article-image-text__body > :last-child {
+  margin-bottom: 0;
+}
 /* ボタン風リンク（wp-block-button） */
 .prose-content .wp-block-button,
 .prose-content .wp-block-buttons {
@@ -253,4 +313,22 @@ section .text-sm.text-white\/80 {
 
 .prose-content code {
   padding: 0.1em 0.4em;
+}
+@media (max-width: 640px) {
+  .prose-content .article-toc__item--h2,
+  .prose-content .article-toc__item--h3,
+  .prose-content .article-toc__item--h4,
+  .prose-content .article-toc__item--h5 {
+    margin-left: 0;
+  }
+
+  .prose-content .article-image-text {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .prose-content .article-image-text__figure {
+    flex-basis: auto;
+    width: 100%;
+  }
 }
