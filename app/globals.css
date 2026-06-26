@@ -77,6 +77,12 @@ section .text-sm.text-white\/80 {
   scroll-margin-top: 6rem;
 }
 
+.prose-content h1 {
+  font-size: 1.45rem;
+  border-left: 4px solid #3dbdac;
+  padding-left: 0.75rem;
+}
+
 .prose-content h2 {
   font-size: 1.3rem;
   border-left: 4px solid #3dbdac;
@@ -329,6 +335,11 @@ section .text-sm.text-white\/80 {
 
   .prose-content .article-image-text__figure {
     flex-basis: auto;
+    order: 0;
     width: 100%;
+  }
+
+  .prose-content .article-image-text__body {
+    order: 1;
   }
 }
