@@ -14,7 +14,7 @@ const CONCURRENCY = Number(process.env.MICROCMS_MIRROR_CONCURRENCY || 6);
 const SCAN_ONLY = process.argv.includes("--scan-only");
 
 const MICROCMS_ASSET_RE =
-  /https:\/\/(?:images\.microcms-assets\.io|novolba\.com\/microcms-assets)\/assets\/[^"'<>\\ )]+?\.(?:png|jpg|jpeg|gif|webp|svg)(?:\?[^"'<>\\ )]+)?/gi;
+  /https:\/\/(?:images\.microcms-assets\.io|novolba\.com\/microcms-assets)\/assets\/[^"'<>\\\s]+?\.(?:png|jpg|jpeg|gif|webp|svg)(?:\?[^"'<>\\\s]+)?/gi;
 
 const TEXT_EXTENSIONS = new Set([".html", ".txt", ".json", ".js"]);
 const CONTENT_TYPES = new Map([
