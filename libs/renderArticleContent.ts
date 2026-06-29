@@ -1,4 +1,5 @@
 const URL_PATTERN = /^(https?:\/\/|\/(?!\/))/i;
+const URL_IN_TEXT_PATTERN = /(https?:\/\/[^\s"'<>]+|\/(?!\/)[^\s"'<>]+)/i;
 
 function escapeHtml(value: string) {
   return value
@@ -37,13 +38,40 @@ function safeUrl(value: string) {
   return URL_PATTERN.test(url) ? url : "";
 }
 
+function safeUrlFromHtmlish(value: string) {
+  const decoded = decodeBasicEntities(value).trim();
+  const anchorHref = decoded.match(/<a\b[^>]*\bhref=(?:"([^"]+)"|'([^']+)')/i)?.[1];
+  const candidates = [
+    anchorHref,
+    textFromEditorHtml(decoded),
+    decoded.match(URL_IN_TEXT_PATTERN)?.[0],
+    decoded,
+  ];
+
+  for (const candidate of candidates) {
+    if (!candidate) continue;
+    const url = safeUrl(candidate);
+    if (url) return url;
+  }
+
+  return "";
+}
+
 function externalLinkAttrs(url: string) {
   return /^https?:\/\//i.test(url) ? ' target="_blank" rel="noopener noreferrer"' : "";
 }
 
 function shortcodeAttribute(attrs: string, name: string) {
-  const pattern = new RegExp(`${name}=(?:"|&quot;)(.*?)(?:"|&quot;)`, "i");
-  return attrs.match(pattern)?.[1] ?? "";
+  const escapedQuotePattern = new RegExp(`${name}\\s*=\\s*&quot;([\\s\\S]*?)&quot;`, "i");
+  const escapedQuoteMatch = attrs.match(escapedQuotePattern);
+  if (escapedQuoteMatch) return escapedQuoteMatch[1];
+
+  const doubleQuotePattern = new RegExp(`${name}\\s*=\\s*"([^"]*)"`, "i");
+  const doubleQuoteMatch = attrs.match(doubleQuotePattern);
+  if (doubleQuoteMatch) return doubleQuoteMatch[1];
+
+  const singleQuotePattern = new RegExp(`${name}\\s*=\\s*'([^']*)'`, "i");
+  return attrs.match(singleQuotePattern)?.[1] ?? "";
 }
 
 function headingIdFromAttrs(attrs: string) {
@@ -68,11 +96,14 @@ function renderImageTextShortcodes(content: string) {
   return content.replace(
     /(?:<p[^>]*>\s*)?\[\[image-text\s+([^\]]+)\]\](?:\s*<\/p>)?([\s\S]*?)(?:<p[^>]*>\s*)?\[\[\/image-text\]\](?:\s*<\/p>)?/gi,
     (_match, attrs: string, bodyContent: string) => {
-      const src = safeUrl(shortcodeAttribute(attrs, "image") || shortcodeAttribute(attrs, "src"));
+      const src = safeUrlFromHtmlish(shortcodeAttribute(attrs, "image") || shortcodeAttribute(attrs, "src"));
       if (!src) return "";
 
-      const alt = shortcodeAttribute(attrs, "alt");
-      const body = bodyContent.trim();
+      const alt = decodeBasicEntities(shortcodeAttribute(attrs, "alt"));
+      const body = decodeBasicEntities(bodyContent)
+        .replace(/<p([^>]*)>\s*<p>/gi, "<p$1>")
+        .replace(/<\/p>\s*<\/p>/gi, "</p>")
+        .trim();
       if (!body) return "";
 
       return `<div class="article-image-text"><figure class="article-image-text__figure"><img src="${escapeHtml(src)}" alt="${escapeHtml(alt)}" loading="lazy" decoding="async" fetchpriority="low" /></figure><div class="article-image-text__body">${body}</div></div>`;
