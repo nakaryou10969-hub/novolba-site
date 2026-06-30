@@ -141,6 +141,11 @@ section .text-sm.text-white\/80 {
   background: #f9fafb;
 }
 
+.prose-content figure:not(:has(figcaption)) {
+  border: 1px solid transparent;
+  background: transparent;
+}
+
 .prose-content figure img {
   border: none;
   border-radius: 0;
