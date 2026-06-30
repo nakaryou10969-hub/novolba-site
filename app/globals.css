@@ -200,7 +200,7 @@ section .text-sm.text-white\/80 {
 .prose-content .article-image-text__figure {
   flex: 0 0 min(42%, 320px);
   margin: 0;
-  border-color: transparent;
+  border: 1px solid transparent;
   background: transparent;
 }
 
