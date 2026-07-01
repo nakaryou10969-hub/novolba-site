@@ -20,8 +20,8 @@ const budgetOptions = [
 const areaOptions = ["渋谷・新宿", "五反田・品川・芝浦", "神田・人形町", "その他"];
 
 const howOptions = [
-  "google検索", "SNS", "note", "プレスリリース", "イベント",
-  "仲介会社の紹介", "ダイレクトメール", "知人からの紹介", "その他",
+  "google検索", "SNS", "note", "peatix", "プレスリリース", "イベント",
+  "仲介会社の紹介", "知人からの紹介", "その他",
 ];
 
 type Status = "idle" | "loading" | "success" | "error";
