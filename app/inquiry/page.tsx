@@ -406,13 +406,6 @@ export default function InquiryPage() {
             >
               📧 support@novolba.com
             </a>
-            <a
-              href="tel:08047206472"
-              className="flex items-center justify-center gap-2 px-6 py-3 rounded-full border text-sm font-medium hover:opacity-80 transition-opacity"
-              style={{ borderColor: "#3dbdac", color: "#3dbdac" }}
-            >
-              📞 080-4720-6472
-            </a>
           </div>
         </div>
       </section>

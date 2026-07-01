@@ -217,8 +217,7 @@ export default function FurniturePage() {
           <p>会社名：株式会社NovolBa</p>
           <p>代表取締役：鄧 雯（トウ ブン）</p>
           <p>営業所：東京都千代田区神田錦町3-15-16 錦町ブンカイサン 2階</p>
-          <p>Email：support@novolba.com</p>
-          <p>電話：080-4720-6472</p>
+          <p className="text-center">Email：support@novolba.com</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link

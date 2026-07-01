@@ -287,7 +287,6 @@ export default function OfficesPage() {
         <div className="max-w-sm mx-auto text-sm text-white/90 leading-relaxed mb-8 space-y-1">
           <p>株式会社NovolBa</p>
           <p>Email: support@novolba.com</p>
-          <p>電話: 080-4720-6472</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link

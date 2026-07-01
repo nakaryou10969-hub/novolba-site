@@ -417,8 +417,7 @@ export default function KaguHodaiPage() {
       >
         <h2 className="text-xl sm:text-2xl font-bold mb-4">まずはお気軽にご相談ください</h2>
         <p className="text-sm text-white/80 mb-8 max-w-md mx-auto leading-relaxed">
-          E-mail: support@novolba.com<br />
-          携帯: 080-4720-6472
+          E-mail: support@novolba.com
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
