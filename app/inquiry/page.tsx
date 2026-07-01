@@ -3,12 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 
+const BASIC_INQUIRY_OPTION = "家具付きオフィスのサブスク「Basic」について";
+
 const inquiryOptions = [
-  "物件を探してほしい",
-  "オススメ物件について",
-  "家具のサブスク「家具ホーダイ!!」について",
-  "場づくりの右腕「ノボルバディ」",
-  "優待について",
+  "家具のサブスク「家具ホーダイ‼」について",
+  BASIC_INQUIRY_OPTION,
+  "場づくりの右腕「ノボルバディ」について",
+  "メディア「WITH」について",
+  "KANDA Startup Commonsについて",
   "その他",
 ];
 
@@ -31,6 +33,7 @@ export default function InquiryPage() {
   const [areas, setAreas] = useState<string[]>([]);
   const [areaOther, setAreaOther] = useState("");
   const [budget, setBudget] = useState("");
+  const [inquiryDetails, setInquiryDetails] = useState("");
   const [company, setCompany] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -54,6 +57,7 @@ export default function InquiryPage() {
   const sanitize = (str: string) => str.replace(/<[^>]*>/g, "").trim();
   const isValidEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
   const isValidPhone = (v: string) => /^[0-9\-+() ]{8,20}$/.test(v);
+  const shouldShowBasicFields = inquiryType === BASIC_INQUIRY_OPTION;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,12 +70,12 @@ export default function InquiryPage() {
       setErrorMsg("お問い合わせ種別を選択してください。");
       return;
     }
-    if (areas.length === 0) {
+    if (shouldShowBasicFields && areas.length === 0) {
       setStatus("error");
       setErrorMsg("希望エリアを1つ以上選択してください。");
       return;
     }
-    if (!budget) {
+    if (shouldShowBasicFields && !budget) {
       setStatus("error");
       setErrorMsg("月額予算を選択してください。");
       return;
@@ -114,8 +118,8 @@ export default function InquiryPage() {
 
     const payload = {
       お問い合わせ種別: inquiryType,
-      希望エリア: areaValue,
-      月額予算: budget,
+      ...(shouldShowBasicFields ? { 希望エリア: areaValue, 月額予算: budget } : {}),
+      お問い合わせ内容: sanitize(inquiryDetails),
       会社名: sanitize(company),
       氏名: sanitize(name),
       メールアドレス: email.trim(),
@@ -216,54 +220,72 @@ export default function InquiryPage() {
               </div>
 
               {/* 希望エリア */}
-              <div>
-                <label className={labelClass}>
-                  希望エリア{requiredMark}
-                </label>
-                <p className="text-xs text-red-500 mb-1">（複数選択可）</p>
-                <p className="text-xs text-gray-500 mb-3">エリアから選択</p>
-                <div className="flex flex-wrap gap-4">
-                  {areaOptions.map((area) => (
-                    <label key={area} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+              {shouldShowBasicFields && (
+                <div>
+                  <label className={labelClass}>
+                    希望エリア{requiredMark}
+                  </label>
+                  <p className="text-xs text-red-500 mb-1">（複数選択可）</p>
+                  <p className="text-xs text-gray-500 mb-3">エリアから選択</p>
+                  <div className="flex flex-wrap gap-4">
+                    {areaOptions.map((area) => (
+                      <label key={area} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={areas.includes(area)}
+                          onChange={() => toggleCheck(area, areas, setAreas)}
+                          className="w-4 h-4"
+                        />
+                        {area}
+                      </label>
+                    ))}
+                    {areas.includes("その他") && (
                       <input
-                        type="checkbox"
-                        checked={areas.includes(area)}
-                        onChange={() => toggleCheck(area, areas, setAreas)}
-                        className="w-4 h-4"
+                        type="text"
+                        value={areaOther}
+                        onChange={(e) => setAreaOther(e.target.value)}
+                        placeholder="エリアを入力"
+                        className="px-3 py-1 border border-gray-200 rounded-lg text-sm focus:outline-none"
                       />
-                      {area}
-                    </label>
-                  ))}
-                  {areas.includes("その他") && (
-                    <input
-                      type="text"
-                      value={areaOther}
-                      onChange={(e) => setAreaOther(e.target.value)}
-                      placeholder="エリアを入力"
-                      className="px-3 py-1 border border-gray-200 rounded-lg text-sm focus:outline-none"
-                    />
-                  )}
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* 月額予算 */}
+              {shouldShowBasicFields && (
+                <div>
+                  <label className={labelClass}>
+                    月額予算{requiredMark}
+                  </label>
+                  <p className="text-xs text-gray-500 mb-1">（目安：坪単価2万円前後）</p>
+                  <p className="text-xs text-gray-500 mb-3">※月額料金には、人数分の家具、Wi-Fi、プリンター、ホワイトボードが含まれます。</p>
+                  <select
+                    value={budget}
+                    onChange={(e) => setBudget(e.target.value)}
+                    required={shouldShowBasicFields}
+                    className={inputClass}
+                  >
+                    <option value="">選択してください</option>
+                    {budgetOptions.map((opt) => (
+                      <option key={opt} value={opt}>{opt}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {/* お問い合わせ内容 */}
               <div>
                 <label className={labelClass}>
-                  月額予算{requiredMark}
+                  お問い合わせ内容
                 </label>
-                <p className="text-xs text-gray-500 mb-1">（目安：坪単価2万円前後）</p>
-                <p className="text-xs text-gray-500 mb-3">※月額料金には、人数分の家具、Wi-Fi、プリンター、ホワイトボードが含まれます。</p>
-                <select
-                  value={budget}
-                  onChange={(e) => setBudget(e.target.value)}
-                  required
-                  className={inputClass}
-                >
-                  <option value="">選択してください</option>
-                  {budgetOptions.map((opt) => (
-                    <option key={opt} value={opt}>{opt}</option>
-                  ))}
-                </select>
+                <textarea
+                  value={inquiryDetails}
+                  onChange={(e) => setInquiryDetails(e.target.value)}
+                  placeholder="お問い合わせ内容をご記入ください"
+                  rows={5}
+                  className={`${inputClass} resize-y`}
+                />
               </div>
 
               {/* 会社名 */}
