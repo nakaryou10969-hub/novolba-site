@@ -11,16 +11,34 @@ function safeDecodeURIComponent(value: string) {
   }
 }
 
+export function getArticleRouteSegment(article: ArticlePathSource) {
+  return article.slug ? safeDecodeURIComponent(article.slug) : article.id;
+}
+
 export function getArticleStaticParamIds(article: ArticlePathSource) {
-  const ids = new Set([article.id]);
-  if (article.slug) ids.add(safeDecodeURIComponent(article.slug));
+  const ids = new Set([getArticleRouteSegment(article), article.id]);
   return [...ids].map((id) => ({ id }));
 }
 
+export function toArticleRouteKeyCandidates(value: string) {
+  const decoded = safeDecodeURIComponent(value);
+  return new Set([
+    value,
+    value.toLowerCase(),
+    decoded,
+    decoded.toLowerCase(),
+    encodeURIComponent(decoded).toLowerCase(),
+  ]);
+}
+
 export function getMediaArticlePath(article: ArticlePathSource) {
-  return `/media/${article.id}/`;
+  return `/media/${getArticleRouteSegment(article)}/`;
 }
 
 export function getNewsArticlePath(article: ArticlePathSource) {
-  return `/news/${article.id}/`;
+  return `/news/${getArticleRouteSegment(article)}/`;
+}
+
+export function getWithArticlePath(article: ArticlePathSource) {
+  return `/with/${getArticleRouteSegment(article)}/`;
 }

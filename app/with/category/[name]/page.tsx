@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { client, type WithArticle } from "../../../../libs/client";
 import { extractFirstImage } from "../../../../libs/extractFirstImage";
+import { getWithArticlePath } from "../../../../libs/articlePath";
 
 type Props = {
   params: Promise<{ name: string }>;
@@ -120,7 +121,7 @@ export default async function WithCategoryPage({ params }: Props) {
                   return (
                     <li key={article.id}>
                       <Link
-                        href={`/with/${article.id}/`}
+                        href={getWithArticlePath(article)}
                         className="flex gap-5 group hover:opacity-80 transition-opacity"
                       >
                         {/* サムネイル */}
@@ -217,7 +218,7 @@ export default async function WithCategoryPage({ params }: Props) {
                 {latestArticles.map((article) => (
                   <li key={article.id}>
                     <Link
-                      href={`/with/${article.id}/`}
+                      href={getWithArticlePath(article)}
                       className="text-sm text-gray-700 hover:text-teal-500 transition-colors leading-snug line-clamp-2"
                     >
                       {article.title}

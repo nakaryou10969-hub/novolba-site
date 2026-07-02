@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { client, type WithArticle } from "../../../libs/client";
 import { extractFirstImage } from "../../../libs/extractFirstImage";
+import { getWithArticlePath } from "../../../libs/articlePath";
 
 export const metadata: Metadata = {
   title: "すべての記事 | WITH by NovolBa",
@@ -87,7 +88,7 @@ export default async function WithAllPage() {
                   return (
                     <li key={article.id}>
                       <Link
-                        href={`/with/${article.id}/`}
+                        href={getWithArticlePath(article)}
                         className="flex gap-4 py-6 group hover:opacity-80 transition-opacity"
                       >
                         {/* サムネイル */}
@@ -178,7 +179,7 @@ export default async function WithAllPage() {
                   return (
                     <li key={article.id}>
                       <Link
-                        href={`/with/${article.id}/`}
+                        href={getWithArticlePath(article)}
                         className="flex gap-3 group hover:opacity-80 transition-opacity"
                       >
                         <div className="shrink-0 w-14 h-10 relative rounded overflow-hidden bg-gray-100">

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { client, type WithArticle } from "../../../libs/client";
 import { extractFirstImage } from "../../../libs/extractFirstImage";
-import { getArticleStaticParamIds, getMediaArticlePath } from "../../../libs/articlePath";
+import { getArticleStaticParamIds, getMediaArticlePath, toArticleRouteKeyCandidates } from "../../../libs/articlePath";
 import { renderArticleContent } from "../../../libs/renderArticleContent";
 
 // カテゴリ名→スラッグのマッピング
@@ -45,29 +45,11 @@ function getAllWithArticles(): Promise<WithArticle[]> {
   return allWithArticlesPromise;
 }
 
-function safeDecodeURIComponent(value: string) {
-  try {
-    return decodeURIComponent(value);
-  } catch {
-    return value;
-  }
-}
-
-function toRouteKeyCandidates(value: string) {
-  const decoded = safeDecodeURIComponent(value);
-  return new Set([
-    value,
-    value.toLowerCase(),
-    decoded,
-    encodeURIComponent(decoded).toLowerCase(),
-  ]);
-}
-
 async function getArticleByIdOrSlug(idOrSlug: string): Promise<WithArticle | null> {
   const all = await getAllWithArticles();
-  const idOrSlugCandidates = toRouteKeyCandidates(idOrSlug);
+  const idOrSlugCandidates = toArticleRouteKeyCandidates(idOrSlug);
   return all.find((item) => {
-    const articleCandidates = toRouteKeyCandidates(item.slug || item.id);
+    const articleCandidates = toArticleRouteKeyCandidates(item.slug || item.id);
     return item.id === idOrSlug || [...articleCandidates].some((candidate) => idOrSlugCandidates.has(candidate));
   }) ?? null;
 }

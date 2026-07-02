@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { client, type WithArticle } from "../../../libs/client";
 import { extractFirstImage } from "../../../libs/extractFirstImage";
+import { getArticleStaticParamIds, getWithArticlePath, toArticleRouteKeyCandidates } from "../../../libs/articlePath";
 import { renderArticleContent } from "../../../libs/renderArticleContent";
 
 // カテゴリ名→スラッグのマッピング
@@ -44,19 +45,23 @@ function getAllWithArticles(): Promise<WithArticle[]> {
   return allWithArticlesPromise;
 }
 
-async function getArticleById(id: string): Promise<WithArticle | null> {
+async function getArticleByIdOrSlug(idOrSlug: string): Promise<WithArticle | null> {
   const all = await getAllWithArticles();
-  return all.find((article) => article.id === id) ?? null;
+  const idOrSlugCandidates = toArticleRouteKeyCandidates(idOrSlug);
+  return all.find((article) => {
+    const articleCandidates = toArticleRouteKeyCandidates(article.slug || article.id);
+    return article.id === idOrSlug || [...articleCandidates].some((candidate) => idOrSlugCandidates.has(candidate));
+  }) ?? null;
 }
 
 export async function generateStaticParams() {
   const all = await getAllWithArticles();
-  return all.map((a) => ({ id: a.id }));
+  return all.flatMap(getArticleStaticParamIds);
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const article = await getArticleById(id);
+  const article = await getArticleByIdOrSlug(id);
   if (article) {
     return {
       title: `${article.title} | WITH by NovolBa`,
@@ -69,13 +74,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function WithArticlePage({ params }: Props) {
   const { id } = await params;
 
-  const article = await getArticleById(id);
+  const article = await getArticleByIdOrSlug(id);
   if (!article) {
     notFound();
   }
 
   const allArticles = await getAllWithArticles();
-  const latestArticles = allArticles.filter((a) => a.id !== id).slice(0, 5);
+  const latestArticles = allArticles.filter((a) => a.id !== article.id).slice(0, 5);
   const thumb = article.eyecatch?.url ?? extractFirstImage(article.content) ?? null;
 
   return (
@@ -140,7 +145,7 @@ export default async function WithArticlePage({ params }: Props) {
                   const t = a.eyecatch?.url ?? extractFirstImage(a.content);
                   return (
                     <li key={a.id}>
-                      <Link href={`/with/${a.id}`} className="flex gap-3 group hover:opacity-80 transition-opacity">
+                      <Link href={getWithArticlePath(a)} className="flex gap-3 group hover:opacity-80 transition-opacity">
                         <div className="shrink-0 w-14 h-10 relative rounded overflow-hidden bg-gray-100">
                           {t ? (
                             <Image src={t} alt={a.title} fill className="object-cover" sizes="56px" />

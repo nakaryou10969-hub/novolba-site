@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { client, type Blog } from "../../../libs/client";
 import { extractFirstImage } from "../../../libs/extractFirstImage";
-import { getArticleStaticParamIds, getNewsArticlePath } from "../../../libs/articlePath";
+import { getArticleStaticParamIds, getNewsArticlePath, toArticleRouteKeyCandidates } from "../../../libs/articlePath";
 import { renderArticleContent } from "../../../libs/renderArticleContent";
 import { getRestoredNewsBodyImages } from "../../../libs/restoredArticleImages";
 
@@ -34,29 +34,11 @@ function getAllBlogs(): Promise<Blog[]> {
   return allBlogsPromise;
 }
 
-function safeDecodeURIComponent(value: string) {
-  try {
-    return decodeURIComponent(value);
-  } catch {
-    return value;
-  }
-}
-
-function toRouteKeyCandidates(value: string) {
-  const decoded = safeDecodeURIComponent(value);
-  return new Set([
-    value,
-    value.toLowerCase(),
-    decoded,
-    encodeURIComponent(decoded).toLowerCase(),
-  ]);
-}
-
 async function getBlogByIdOrSlug(idOrSlug: string): Promise<Blog | null> {
   const all = await getAllBlogs();
-  const idOrSlugCandidates = toRouteKeyCandidates(idOrSlug);
+  const idOrSlugCandidates = toArticleRouteKeyCandidates(idOrSlug);
   return all.find((item) => {
-    const blogCandidates = toRouteKeyCandidates(item.slug || item.id);
+    const blogCandidates = toArticleRouteKeyCandidates(item.slug || item.id);
     return item.id === idOrSlug || [...blogCandidates].some((candidate) => idOrSlugCandidates.has(candidate));
   }) ?? null;
 }
