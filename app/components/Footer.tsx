@@ -6,6 +6,7 @@ const footerLinks = [
   { label: "NEWS", href: "/news" },
   { label: "MEDIA", href: "/media" },
   { label: "COMPANY", href: "/company" },
+  { label: "RECRUIT", href: "https://novolba.notion.site/recruit" },
   { label: "CONTACT", href: "/inquiry" },
 ];
 

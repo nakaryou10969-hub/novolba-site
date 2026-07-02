@@ -10,6 +10,7 @@ const navLinks = [
   { label: "NEWS", href: "/news" },
   { label: "MEDIA", href: "/media" },
   { label: "COMPANY", href: "/company" },
+  { label: "RECRUIT", href: "https://novolba.notion.site/recruit" },
 ];
 
 export default function Header() {
@@ -31,19 +32,19 @@ export default function Header() {
         </Link>
 
         {/* デスクトップナビ */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-2 lg:gap-6">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium tracking-widest text-gray-600 hover:text-teal-500 transition-colors"
+              className="shrink-0 text-sm font-medium tracking-widest text-gray-600 hover:text-teal-500 transition-colors"
             >
               {link.label}
             </Link>
           ))}
           <Link
             href="/inquiry"
-            className="ml-2 px-4 py-2 text-sm font-medium tracking-widest text-white rounded-full transition-opacity hover:opacity-90"
+            className="ml-1 shrink-0 px-4 py-2 text-sm font-medium tracking-widest text-white rounded-full transition-opacity hover:opacity-90 lg:ml-2"
             style={{ backgroundColor: "#3dbdac" }}
           >
             お問い合わせ
