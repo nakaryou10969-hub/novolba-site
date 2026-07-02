@@ -10,16 +10,11 @@ export const metadata: Metadata = {
   description: "NovolBaの最新ニュース・イベント情報・メディア掲載情報をお届けします。",
 };
 
-async function getBlogsWithoutCategory(): Promise<MicroCMSListResponse<Blog>> {
-  // カテゴリーなしの記事を取得（全件取得してJS側でフィルタ）
-  const all = await client.getList<Blog>({
+async function getBlogs(): Promise<MicroCMSListResponse<Blog>> {
+  return client.getList<Blog>({
     endpoint: "blogs",
     queries: { limit: 100, orders: "-publishedAt" },
   });
-  return {
-    ...all,
-    contents: all.contents.filter((b) => !b.category),
-  };
 }
 
 async function getCategories(): Promise<MicroCMSListResponse<Category>> {
@@ -31,7 +26,7 @@ async function getCategories(): Promise<MicroCMSListResponse<Category>> {
 
 export default async function NewsPage() {
   const [blogsData, categoriesData] = await Promise.all([
-    getBlogsWithoutCategory(),
+    getBlogs(),
     getCategories(),
   ]);
 
