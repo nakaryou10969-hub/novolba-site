@@ -380,14 +380,19 @@ export default function InquiryPage() {
               </div>
 
               {/* 送信ボタン */}
-              <button
-                type="submit"
-                disabled={status === "loading"}
-                className="w-full py-4 text-sm font-bold text-white rounded-full transition-opacity hover:opacity-90 disabled:opacity-50"
-                style={{ backgroundColor: "#3dbdac" }}
-              >
-                {status === "loading" ? "送信中..." : "送信する"}
-              </button>
+              <div>
+                <button
+                  type="submit"
+                  disabled={status === "loading"}
+                  className="w-full py-4 text-sm font-bold text-white rounded-full transition-opacity hover:opacity-90 disabled:opacity-50"
+                  style={{ backgroundColor: "#3dbdac" }}
+                >
+                  {status === "loading" ? "送信中..." : "送信する"}
+                </button>
+                <p className="mt-3 text-sm text-gray-500 text-center">
+                  営業・勧誘を目的としたお問い合わせはお断りしております。
+                </p>
+              </div>
             </form>
           )}
           </div>
