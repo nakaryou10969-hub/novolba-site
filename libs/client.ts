@@ -13,6 +13,26 @@ const rawClient = createClient({
   apiKey: process.env.MICROCMS_API_KEY,
 });
 
+type NextRequestInit = RequestInit & {
+  next?: {
+    revalidate?: number;
+  };
+};
+
+function withFreshMicrocmsData<T>(args: T): T {
+  const requestArgs = args as T & { customRequestInit?: NextRequestInit };
+  return {
+    ...requestArgs,
+    customRequestInit: {
+      ...requestArgs.customRequestInit,
+      next: {
+        ...requestArgs.customRequestInit?.next,
+        revalidate: 1,
+      },
+    },
+  } as T;
+}
+
 async function requestWithRetry<T>(request: () => Promise<T>): Promise<T> {
   let lastError: unknown;
 
@@ -32,13 +52,13 @@ async function requestWithRetry<T>(request: () => Promise<T>): Promise<T> {
 export const client: typeof rawClient = {
   ...rawClient,
   async get(args) {
-    return mirrorMicrocmsAssetsInValue(await requestWithRetry(() => rawClient.get(args)));
+    return mirrorMicrocmsAssetsInValue(await requestWithRetry(() => rawClient.get(withFreshMicrocmsData(args))));
   },
   async getList(args) {
-    return mirrorMicrocmsAssetsInValue(await requestWithRetry(() => rawClient.getList(args)));
+    return mirrorMicrocmsAssetsInValue(await requestWithRetry(() => rawClient.getList(withFreshMicrocmsData(args))));
   },
   async getListDetail(args) {
-    return mirrorMicrocmsAssetsInValue(await requestWithRetry(() => rawClient.getListDetail(args)));
+    return mirrorMicrocmsAssetsInValue(await requestWithRetry(() => rawClient.getListDetail(withFreshMicrocmsData(args))));
   },
 };
 
