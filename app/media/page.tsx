@@ -45,6 +45,25 @@ const toMediaSummary = (article: WithArticle) => ({
   thumb: article.eyecatch?.url ?? extractFirstImage(article.content) ?? null,
 });
 
+function getPickupArticles(allArticles: WithArticle[]): WithArticle[] {
+  const selected = new Map<string, WithArticle>();
+
+  for (const article of allArticles) {
+    if (article.pickup) {
+      selected.set(article.id, article);
+    }
+  }
+
+  for (const id of PICKUP_IDS) {
+    const article = allArticles.find((a) => a.id === id);
+    if (article) {
+      selected.set(article.id, article);
+    }
+  }
+
+  return Array.from(selected.values()).slice(0, 3);
+}
+
 function ArticleCard({ article, large = false }: { article: WithArticle; large?: boolean }) {
   const thumb = article.eyecatch?.url ?? extractFirstImage(article.content) ?? null;
   return (
@@ -82,9 +101,7 @@ export default async function MediaPage() {
   const allArticles = await getAllWithArticles();
   const articleSummaries = allArticles.map(toMediaSummary);
 
-  const pickupArticles = PICKUP_IDS
-    .map((id) => allArticles.find((a) => a.id === id))
-    .filter((a): a is WithArticle => !!a);
+  const pickupArticles = getPickupArticles(allArticles);
 
   const categoryGroups = CATEGORY_ORDER.map((cat) => ({
     name: cat,
