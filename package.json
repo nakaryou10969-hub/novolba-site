@@ -8,9 +8,12 @@
     "mirror:microcms-assets": "node scripts/mirror-microcms-assets.mjs",
     "mirror:microcms-assets:scan": "node scripts/mirror-microcms-assets.mjs --scan-only",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "preview:serve": "node preview/server.mjs",
+    "test:preview": "node --test preview/*.test.mjs"
   },
   "dependencies": {
+    "dompurify": "^3.4.16",
     "microcms-js-sdk": "^3.4.0",
     "next": "16.2.4",
     "react": "19.2.4",
@@ -24,6 +27,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
+    "jsdom": "^29.1.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
