@@ -10,6 +10,9 @@
     "start": "next start",
     "lint": "eslint",
     "preview:serve": "node preview/server.mjs",
+    "build:preview:lambda": "node preview/build-lambda.mjs",
+    "package:preview:lambda": "node preview/package-lambda.mjs",
+    "test:preview:lambda": "node --test preview/lambda/*.test.mjs",
     "test:preview": "node --test preview/*.test.mjs"
   },
   "dependencies": {
