@@ -3,7 +3,8 @@
 Production remains a Next.js static export. This separate, dependency-free Node
 server serves the `out/preview/index.html` shell and static assets, and retrieves one draft through
 `POST /api/preview`. It does not deploy itself or change the production S3 and
-CloudFront workflow. Run from the repository root using a maintained Node.js 22
+CloudFront workflow. The optional Lambda deployment below has its own manual workflow.
+Run from the repository root using a maintained Node.js 22
 or newer runtime.
 
 This is a dedicated preview origin. `/preview/`, `/preview` and
@@ -65,8 +66,8 @@ Rate limits are in-memory and keyed by socket peer: 240 total requests/minute,
 requests/minute. `X-Forwarded-For` is deliberately ignored. Users behind the same
 proxy therefore share one bucket; multiple runtime replicas have independent
 buckets. Apply per-client and fleet-wide limits at the trusted ingress as needed.
-No AWS services, permissions, secrets, DNS records or permanent accounts are
-created by this code. Runtime/TLS/DNS/cost choices remain approval items.
+The HTTP server creates no AWS services or permissions. The optional deployment
+script below creates a dedicated Lambda stack only after its explicit manual run.
 
 ## microCMS screen preview configuration
 
@@ -156,4 +157,63 @@ preview operation still require authorized environment verification.
 
 Any `build:preview:mock` output is test fixture data only. It is suitable for
 local visual QA and must never be deployed to the production or hosted preview
-environment. Hosting must use a fresh ordinary build with approved real data.
+environment. Lambda uses the credential-free preview-only build described below.
+
+## AWS Lambda deployment
+
+`npm run build:preview:lambda` builds only the real preview route and its layout
+in an isolated `.preview-lambda-build/` staging directory. It needs no CMS key,
+fetches no articles, uses no mock content, and leaves the production `app/`,
+Next configuration, and `out/` unchanged. WITH, MEDIA, and NEWS use the same
+reviewed article components as production.
+
+`npm run package:preview:lambda` packages the dedicated output and dependency-free
+HTTP server. Only the preview HTML and required assets are included. Source maps,
+other article HTML, environment files, dependencies, mock output, symlinks, and
+oversized buffered responses are rejected or excluded. The ZIP has Linux file
+permissions, and `run.sh` has LF line endings and execute permissions.
+
+The `Deploy authenticated preview to Lambda` workflow is manual only. It does
+not run on `main` pushes or CMS updates and does not deploy to production S3 or
+invalidate CloudFront. Before its first run, the owner must approve creating
+the `novolba-microcms-preview` CloudFormation stack in `us-east-1` with a dedicated
+execution role, log group, Lambda Web Adapter layer, and Function URL.
+
+Repository configuration, entered by the owner:
+
+- Keep the existing `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`,
+  `MICROCMS_SERVICE_DOMAIN`, and `MICROCMS_API_KEY` secrets. Their values are
+  never downloaded or printed by the implementation.
+- Add `PREVIEW_BASIC_USERNAME` and `PREVIEW_BASIC_PASSWORD` repository secrets.
+  The password must have at least 16 characters. Do not send it in chat.
+- Add the `PREVIEW_AWS_ACCOUNT_ID` repository variable for the approved AWS
+  account. Deployment checks the active caller against this value first.
+- The deployment credential needs CloudFormation, Lambda, IAM role/pass-role,
+  and CloudWatch Logs management rights for this dedicated stack. Changing its
+  existing permissions requires a separate review; do not broaden them silently.
+
+Run `node preview/lambda/deploy.mjs` through the manual workflow. Secrets pass
+to AWS CLI through stdin as CloudFormation `NoEcho` parameters; they are not
+placed in CLI arguments or temporary files. CloudFormation and Lambda retain
+the runtime secrets encrypted. Stack parameters and environment values must
+never be exported into logs or screenshots.
+
+Deployment first removes public invocation access, applies code and configuration,
+then enables the exact Function URL origin. `AuthType: NONE` means AWS-level
+invocation is public; the existing Basic authentication protects every HTTP
+route. Both public invocation permissions are restricted to Function URL use.
+Unsuccessful and unauthenticated invocations still count toward Lambda usage.
+During an update, preview access can be temporarily unavailable.
+
+The runtime uses Node.js 22, 512 MB memory, a 30-second timeout, standard
+environment encryption, and a TCP readiness probe. Debug logging, active tracing,
+VPC/NAT, provisioned concurrency, custom KMS keys, Secrets Manager, deployment
+S3 buckets, and container registries are not added. Logs expire after 14 days.
+Reserved concurrency is not configured. The observed us-east-1 account limit
+is 10 concurrent executions, shared with existing functions; the deployment
+does not request a quota increase. This is not a monthly cost cap.
+
+After deployment, the workflow prints only the non-secret HTTPS origin. Configure
+the `with` and `blogs` screen preview templates above with that origin, then verify
+saved unpublished articles and saved edits to published articles in the actual
+CMS. Do not treat a successful build or stack creation as live verification.
