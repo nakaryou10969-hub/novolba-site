@@ -18,3 +18,29 @@ main 0bb96517e798c070384bda65767957af48ced772 の分離コピーへ with と blo
 所有者 nakaryou10969-hub の標準CLI認証と対象repoの push 権限を確認済み。作業用認証を使い、既存アカウントの認証を削除せず、.auth・資格情報・生成物をcommitに含めない。originと最新mainを再確認し、最終テスト・型・変更ファイルLint・差分チェック後に作業用ブランチだけをpushする。CIが起動すれば該当commitの結果を確認し、未起動ならその事実をPRに記載する。
 
 最終実装の検証実績は44/44テスト成功、型チェック・変更ファイルLint・モック静的build成功。全体Lintには未変更 app/service/novolba-buddy/page.tsx の引用符エラー4件があり、本変更には含めない。ブラウザ検証は2サイト合計で初回24件・追加12件成功、実microCMSと実AWSは未検証。
+
+## 2026-10-02 AWSプレビュー実装の追加承認
+
+ユーザーが調査報告後に実装を承認した。AWSアカウントは共通、microCMSサービスは別。今回の承認は上記の旧レビュー限定スコープを、Lambda向けコード・起動・梱包・配備手順の実装まで拡張する。
+
+- 本番の静的export、既存記事デザイン、S3/CloudFront配備処理は維持する。
+- サイト別の通常Lambda、AWS公式Lambda Web Adapter、Function URL、既存Basic認証を使用する。us-east-1、固定費のある追加サービス無しを基本とする。
+- 認証・Host/Origin検証、許可APIの限定、全レスポンスno-store、draftKey非保存、秘密の非ログ出力を保持する。
+- IAM実行ロール・Function URLの公開権限は完成した具体案を示し、必要なブラウザ操作時の承認後に設定する。
+- 秘密情報を取得・転記・ローカル保存・コミットしない。既存GitHub SecretsのCI内利用は値を表示せず、追加のBasic認証情報は本人が入力する。
+- mock build成果物を実AWSへ配備しない。梱包はプレビューshellと必要assets、Node runtimeのみとし、公開記事HTMLやsource/map/envファイルを除外する。
+- 開発はcodex/aws-microcms-previewブランチで行い、support側nakaryou10969-hubの認証を確認してからリモートへ反映する。別の連携アカウントでは書き込まない。
+- テスト・パッケージ検証の完了と、AWS配備・microCMS設定・実下書きの確認は区別して報告する。
+
+
+### 専用プレビュービルド
+- CMSキーやモック記事を使わず、元layout・previewルートとレビュー済み依存だけを独立stagingにコピーしてNext.js静的exportを行う。
+- 専用成果物は `.preview-lambda-build/out`。本番app/next.config/outを変更しない。
+- Lambda梱包と配備は専用成果物を使用し、mock marker付き成果物を拒否する。
+
+### 今回のローカル検証結果
+- プレビューおよびLambda専用テスト計58件成功。キー不要の実Next.jsビルドと型検査、変更ファイルESLint、差分チェック成功。
+- Lambda ZIP 341,956 bytes、展開1,046,747 bytes。標準ZIP CRC、run.shの755/LF、プレビューHTML限定、CloudFormation JSONと手動workflow YAMLの解析を確認。
+- 両サイトの既存GitHub Secretsは必要な名前の存在のみ確認。値は取得していない。Basic認証2種類の追加は本人の入力待ち。
+- AWS配備、実LinuxでのAWS CLI処理、実microCMS記事・draftKey置換は未検証。GitHub反映はChromeのファイル読取許可待ち。
+- Chromeのus-east-1 Lambdaダッシュボードで、アカウント全体10・未予約10の同時実行上限を確認。各5枠の予約はAWS条件を満たさないため設定しない。上限変更は行わず、既存関数と共有する。
