@@ -42,5 +42,5 @@ main 0bb96517e798c070384bda65767957af48ced772 の分離コピーへ with と blo
 - プレビューおよびLambda専用テスト計58件成功。キー不要の実Next.jsビルドと型検査、変更ファイルESLint、差分チェック成功。
 - Lambda ZIP 341,956 bytes、展開1,046,747 bytes。標準ZIP CRC、run.shの755/LF、プレビューHTML限定、CloudFormation JSONと手動workflow YAMLの解析を確認。
 - 両サイトの既存GitHub Secretsは必要な名前の存在のみ確認。値は取得していない。Basic認証2種類の追加は本人の入力待ち。
-- AWS配備、実LinuxでのAWS CLI処理、実microCMS記事・draftKey置換は未検証。GitHub反映はChromeのファイル読取許可待ち。
+- AWS配備、実LinuxでのAWS CLI処理、実microCMS記事・draftKey置換は未検証。GitHubの作業用ブランチへChromeで反映済み。対象14ファイルの内容一致を匿名git読取で確認した。
 - Chromeのus-east-1 Lambdaダッシュボードで、アカウント全体10・未予約10の同時実行上限を確認。各5枠の予約はAWS条件を満たさないため設定しない。上限変更は行わず、既存関数と共有する。
