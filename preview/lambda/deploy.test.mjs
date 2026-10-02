@@ -120,7 +120,9 @@ test("AWS runner isolates application secrets from child environment and suppres
   await assert.rejects(runner(["cloudformation", "create-stack", "--cli-input-json", "file:///dev/stdin"], { input: JSON.stringify({ secret: ENV.PREVIEW_BASIC_PASSWORD }) }), (error) => !error.message.includes(ENV.PREVIEW_BASIC_PASSWORD) && /details were suppressed/.test(error.message));
   for (const key of ["MICROCMS_API_KEY", "PREVIEW_BASIC_USERNAME", "PREVIEW_BASIC_PASSWORD"]) assert.equal(childOptions.env[key], undefined);
   assert.equal(childArgs.includes("--debug"), false); assert.equal(childArgs.includes(ENV.PREVIEW_BASIC_PASSWORD), false);
-  assert.equal(childArgs.includes('cat | aws "$@" | cat'), true);
+  assert.match(childArgs[1], /os\.memfd_create/);
+  assert.match(childArgs[1], /pass_fds/);
+  assert.equal(childArgs.includes("--debug"), false);
 });
 test("AWS runner parses response payload and CLI metadata from the in-memory stdout pipe", async () => {
   const runner = awsRunner(ENV, () => {
@@ -168,4 +170,13 @@ test("AWS failure classification returns fixed labels and never CLI input or sec
     assert.equal(classifyAwsFailure(input), expected);
     assert.equal(classifyAwsFailure(input).includes(secret), false);
   }
+});
+
+// --generate-cli-skeleton output validates input locally; it makes no AWS API call.
+test("real Linux AWS CLI reads anonymous memory input without contacting AWS", { skip: process.platform !== "linux" }, async () => {
+  const runner = awsRunner({ PATH: process.env.PATH, AWS_ACCESS_KEY_ID: "public-test-fixture", AWS_SECRET_ACCESS_KEY: "public-test-fixture", AWS_EC2_METADATA_DISABLED: "true" });
+  const result = await runner(["cloudformation", "create-stack", "--cli-input-json", "file:///dev/stdin", "--generate-cli-skeleton", "output"], {
+    input: JSON.stringify({ StackName: "public-test-fixture", TemplateBody: JSON.stringify({ Resources: {} }), Parameters: [{ ParameterKey: "Fixture", ParameterValue: "public-test-fixture" }] })
+  });
+  assert.equal(typeof result.StackId, "string");
 });
