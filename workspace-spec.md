@@ -60,3 +60,5 @@ main 0bb96517e798c070384bda65767957af48ced772 の分離コピーへ with と blo
 
 ## 2026-10-02 配備権限の限定
 既存のgithub-actions-novolbaにはS3・CloudFront権限のみがあり、CloudFormation配備権限が不足している。新しい配備権限案はus-east-1のksc-microcms-preview/novolba-microcms-previewのstack・Lambda・ログと、同名-executionの2ロールに限定する。ロール作成時にはmicrocms-preview-logs-boundaryを必須とし、権限の上限を2つの専用ロググループへのCreateLogStream/PutLogEventsに固定する。配備ユーザーに境界ポリシーの変更・除去、他ロール操作、新しいアクセスキー作成の権限を与えない。境界ポリシー作成・既存配備ユーザーへの限定権限追加は、具体的なポリシーを提示した上でブラウザ規則に基づく追加確認待ちとする。それ以外の承認済み実装・main更新・検証は進める。
+## 2026-10-03 配備失敗の安全な診断
+専用ポリシー付与後の実CIはCloudFormation create-stackで失敗し、秘密を含むCLI詳細は抑止されている。エラー全文・要求JSON・秘密値を返さず、固定allowlistのエラー種別だけを出力する診断を追加する。対象の配備機能・秘密stdin・権限限定・本番workflowは維持する。未知のエラーや診断文に秘密値が混ざった場合も転記しないことをテストする。
