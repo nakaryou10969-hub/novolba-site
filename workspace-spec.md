@@ -109,3 +109,11 @@ CloudFormationコンソールのテンプレートアップロードはS3保存�
 公開アクセス停止前の関数snapshotをコード更新へ使わず、CF更新完了後・コード更新直前にGetFunctionを読み直す。所有者・稼働状態を再検証し、初期snapshotとCodeSha256が変わっていない場合だけ最新RevisionIdで1回更新する。欠落・所有不一致・コード並行変更・更新中/失敗状態なら停止。RevisionId条件、非公開検査、同じURLの公開条件、秘密非保存、自動再試行禁止は保持。模擬AWSの既存関数再配備で更新番号変化を再現してから外部反映する。追加IAM権限・キー・リソース作成は行わない。
 
 検証結果: 修正前の実SDK loopbackでUpdateFunctionCodeの412を再現。修正後Lambdaテスト44/44成功。初期hash欠落、CF変更なし、並行コード変更/欠落/所有不一致/稼働不良、再読後412の一回停止を含む。独立レビューで指摘なし。最新番号の条件と失敗後の設定更新・invoke・公開禁止を確認。対象はdeploy.mjs、deploy.test.mjs、sdk-integration.test.mjs、workspace-spec.mdの4ファイルで、main 268d6efを基準に反映。skip ciで本番push配備を避け、修正・照合後に専用プレビュー配備を実行する。実AWS成功と実記事表示は外部検証で別途確認する。
+
+## 2026-10-03 WITH実スキーマと著者セレクト型
+
+配備#6はmain f5f5b19で成功したが、実下書き表示は引き続き失敗。microCMSのAPIスキーマを読み取り照合し、WITHのtitle/slugはテキスト、contentはリッチエディタ、category/author/tagはセレクト、pickupは真偽値、eyecatchは画像と確認した。selectContentのauthor文字列限定が実スキーマと不整合。WITH authorの空配列を省略、単一/複数配列を先頭文字列へ正規化し、最大64件/各1000文字/全要素stringを検査する。文字列互換、NEWSの既存author検査、権限・draftKey検査・本番表示を保持する。NEWS実スキーマの著者フィールドIDはahthorで取得項目に含まれず、スキーマ名や取得項目を変更しない。tagも取得項目外。
+
+全取得項目と実スキーマに沿ったWITH結合fixtureでcategory=[]/author=[]/pickup=false/eyecatch=null/本文/slug/標準日時をまとめて検証する。修正前502を手元で再現、修正後テスト・独立レビュー・リモート照合後に配備し、実下書き本文表示を確認するまで完了としない。APIスキーマの入力/変更保存・キー取得は行わない。
+
+検証結果: 全スキーマ結合fixtureで修正前502を1回再現し、修正後プレビューテスト98/98成功。空/単一/複数著者、64件/1000字境界、全要素型・異常末尾、NEWS配列拒否・文字列互換を確認。独立レビューで指摘なし。実行時差分はWITH author処理5行のみ、対象はserver.mjs/server.test.mjs/workspace-spec.mdの3ファイル。配備処理・取得項目・本番側コードは変更しない。skip ciで本番push配備を避け、照合後に既存手動プレビュー配備を実行し、microCMSから開いた保存済み下書きを検証する。

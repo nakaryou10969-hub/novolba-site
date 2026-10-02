@@ -201,6 +201,11 @@ function selectContent(raw, input, fields) {
   const textFields = ["content", "date", "summary", "slug", "author", "createdAt", "updatedAt", "publishedAt", "revisedAt"];
   for (const key of textFields) {
     if (!fields.includes(key) || raw[key] === undefined || raw[key] === null) continue;
+    if (key === "author" && input.endpoint === "with" && Array.isArray(raw[key])) {
+      if (raw[key].length > 64 || !raw[key].every((item) => typeof item === "string" && item.length <= 1000)) return fail();
+      if (raw[key].length) result[key] = raw[key][0];
+      continue;
+    }
     if (typeof raw[key] !== "string") return fail();
     result[key] = raw[key];
   }
