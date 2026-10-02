@@ -62,3 +62,32 @@ main 0bb96517e798c070384bda65767957af48ced772 の分離コピーへ with と blo
 既存のgithub-actions-novolbaにはS3・CloudFront権限のみがあり、CloudFormation配備権限が不足している。新しい配備権限案はus-east-1のksc-microcms-preview/novolba-microcms-previewのstack・Lambda・ログと、同名-executionの2ロールに限定する。ロール作成時にはmicrocms-preview-logs-boundaryを必須とし、権限の上限を2つの専用ロググループへのCreateLogStream/PutLogEventsに固定する。配備ユーザーに境界ポリシーの変更・除去、他ロール操作、新しいアクセスキー作成の権限を与えない。境界ポリシー作成・既存配備ユーザーへの限定権限追加は、具体的なポリシーを提示した上でブラウザ規則に基づく追加確認待ちとする。それ以外の承認済み実装・main更新・検証は進める。
 ## 2026-10-03 配備失敗の安全な診断
 専用ポリシー付与後の実CIはCloudFormation create-stackで失敗し、秘密を含むCLI詳細は抑止されている。エラー全文・要求JSON・秘密値を返さず、固定allowlistのエラー種別だけを出力する診断を追加する。対象の配備機能・秘密stdin・権限限定・本番workflowは維持する。未知のエラーや診断文に秘密値が混ざった場合も転記しないことをテストする。
+
+## 2026-10-03 CLI入力互換性の修正
+実CIでcreate-stackがcli-input-fileに分類され、AWS要求前の入力失敗と判明。Linuxの匿名メモリファイル(memfd)をPython標準ライブラリで作り、AWS CLIへ継承する。秘密値をディスク・引数・ログに保存しない。Lambda invokeの応答もmemfdで回収する。実AWS CLIの非通信スケルトン生成で入力経路を検証してから配備する。対象IAM・公開範囲・本番workflowは変更しない。
+
+## 2026-10-03 再実装と通知影響を抑える検証条件
+ユーザーは、GitHub Actionsの失敗がメンバー全員へ通知されることを指摘した後、再実装を指示した。GitHubへ診断目的のworkflow・試行配備を送らず、main反映前に手元の隔離環境で原因を再現し、修正と異常終了を検証する。
+- cli-input-fileは独自分類であり、具体的原因の特定完了ではない。旧節の『判明』は根本原因特定を意味しない。
+- memfd案は実Linux未検証の候補。モック成功と実CLI成功を区別する。子プロセスの終了保証と出力上限も検証する。
+- このPCにはDocker/Podman/WSLのLinux環境がない。システム変更や再起動を避け、公式配布元の一時的な検証環境を検討する。実AWS資格情報・CMSキーは検証環境へ渡さない。
+- 配備前にテンプレートと限定IAMの必要操作を照合する。main反映は本番自動配備を起動するため、ローカル検証を終えるまで行わない。
+- 本番配備は片方だけ1回実行し、結果確認後に他方へ進む。未知エラー・同じ失敗・タイムアウトでは停止し、実状態確認前に再送・権限追加・削除しない。
+- microCMSのURL設定と新規下書き/公開済み改稿の実表示まで完了条件とする。秘密値を取得・保存せず、記事変更・公開を行わない。
+
+### 配備処理をAWS SDK v3へ切替え
+手元のLinux環境導入は約0.9GBの追加検証環境を要するため採用しない。CLIの根本原因は未特定として残し、問題のCLI/標準入力/子プロセス経路自体を削除する。公式AWS SDK v3を開発依存に固定し、CI内の既存資格情報で直接呼び出す。実SDKとloopbackの模擬AWSエンドポイントをWindowsで検証する。
+- 既存runAwsテストインターフェースと配備順序・公開前検査は維持する。リージョン固定・アカウント照合・既存スタック所有タグ確認を保持する。
+- SDK clientは書込の自動再試行をしない(maxAttempts=1)。期限をAbortSignalで設定し、応答stream上限・安全なエラー分類を設ける。CLI child/秘密argv/一時ファイルは使わない。
+- local検証のSDK接続先は明示したloopbackだけ。実AWS/CMS秘密値を渡さない。非漏えい、入力一致、Invoke応答、期限・出力上限・エラー時非公開を検証する。
+- CloudFormationのスタックTagsに必要なTagResource/UntagResourceを対象2スタックのみ追加する案を事前整備する。権限境界の変更・削除・対象外拡張は行わない。
+
+### CloudFormationとSDKの責務・中間構成の整合
+CFのinline ZipFileが生成するindex.jsとrun.shの不整合、後続CF更新による仮コードへの上書きを根本的に避ける。CFは実行ロール・ロググループ・Function URL・公開許可を管理し、通常Lambda本体はSDKが実ZIP/設定/タグ/RevisionIdを管理する。新規S3バケット/成果物保存は追加しない。
+- 新規CFはFunctionPrepared=falseで権限・ログのみを作成し、SDKで実ZIPのLambdaを作成する。既存Lambdaはタグ・実行ロール・Runtime/Architectureを確認してから更新する。
+- 実関数作成後にFunctionPrepared=true/EnablePublicAccess=falseでURLを作る。URL originをSDK環境変数へ設定してから非公開Invokeで検査し、最終CF更新は2公開許可のみを有効にする。
+- CFへCMS秘密値を渡す必要がなくなるため、MicrocmsApiKey/ServiceDomain/PublicOriginパラメータは廃止する。既存CI SecretsはSDKからLambda環境変数へ直接渡す。既存記事・本番配備workflowは変更しない。
+- Lambda更新前のRevisionIdと更新後CodeSha256/State/LastUpdateStatusを確認する。CFの管理外Lambdaを自動削除しない。今後の削除手順は専用LambdaとCFスタックの両方が対象になることをREADMEへ明記する。
+
+### 初回IAM反映の分離
+CloudFormationコンソールのテンプレートアップロードはS3保存を伴うため採用しない。ログイン済みAWS ConsoleのCloudShellから、秘密を含まないTemplateBodyを直接指定し、専用2スタックのFunctionPrepared=false/EnablePublicAccess=falseの基盤だけを先に作る。新規S3・資格情報発行・秘密情報取得は行わない。CREATE_COMPLETEとロール境界/inlineを確認し、GitHubコード反映の間に反映待ち時間を確保する。CloudShellはAWS公式で追加利用料金なし、他AWSリソースと通信の料金は通常どおり。CreateStackは1サイトずつ、失敗/timeoutで停止・状態確認する。

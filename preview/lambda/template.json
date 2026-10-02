@@ -1,28 +1,20 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "Dedicated microCMS article preview using draftKey links without additional login",
+  "Description": "Dedicated draftKey preview infrastructure; real Lambda ZIP is managed by the approved SDK deployment",
   "Parameters": {
     "FunctionName": {
       "Type": "String",
       "AllowedPattern": "[a-zA-Z][a-zA-Z0-9_-]{0,63}"
     },
-    "ServiceDomain": {
-      "Type": "String",
-      "Default": "unconfigured",
-      "AllowedPattern": "[a-z0-9][a-z0-9-]{0,62}"
-    },
-    "MicrocmsApiKey": {
-      "Type": "String",
-      "NoEcho": true,
-      "Default": "",
-      "MaxLength": 1024
-    },
-    "PublicOrigin": {
-      "Type": "String",
-      "Default": "https://unconfigured.invalid",
-      "AllowedPattern": "https://[a-z0-9.-]+"
-    },
     "EnablePublicAccess": {
+      "Type": "String",
+      "Default": "false",
+      "AllowedValues": [
+        "false",
+        "true"
+      ]
+    },
+    "FunctionPrepared": {
       "Type": "String",
       "Default": "false",
       "AllowedValues": [
@@ -32,12 +24,27 @@
     }
   },
   "Conditions": {
-    "PublicAccessEnabled": {
+    "FunctionExists": {
       "Fn::Equals": [
         {
-          "Ref": "EnablePublicAccess"
+          "Ref": "FunctionPrepared"
         },
         "true"
+      ]
+    },
+    "PublicAccessEnabled": {
+      "Fn::And": [
+        {
+          "Condition": "FunctionExists"
+        },
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "EnablePublicAccess"
+            },
+            "true"
+          ]
+        }
       ]
     }
   },
@@ -54,8 +61,12 @@
     "PreviewRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
-        "RoleName": { "Fn::Sub": "${FunctionName}-execution" },
-        "PermissionsBoundary": { "Fn::Sub": "arn:${AWS::Partition}:iam::${AWS::AccountId}:policy/microcms-preview-logs-boundary" },
+        "RoleName": {
+          "Fn::Sub": "${FunctionName}-execution"
+        },
+        "PermissionsBoundary": {
+          "Fn::Sub": "arn:${AWS::Partition}:iam::${AWS::AccountId}:policy/microcms-preview-logs-boundary"
+        },
         "AssumeRolePolicyDocument": {
           "Version": "2012-10-17",
           "Statement": [
@@ -90,72 +101,16 @@
         ]
       }
     },
-    "PreviewFunction": {
-      "Type": "AWS::Lambda::Function",
-      "DependsOn": "PreviewLogGroup",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "FunctionName"
-        },
-        "Description": "Article preview requiring a matching microCMS draftKey",
-        "Runtime": "nodejs22.x",
-        "Architectures": [
-          "x86_64"
-        ],
-        "Handler": "run.sh",
-        "Role": {
-          "Fn::GetAtt": [
-            "PreviewRole",
-            "Arn"
-          ]
-        },
-        "MemorySize": 512,
-        "Timeout": 30,
-        "Layers": [
-          {
-            "Fn::Sub": "arn:${AWS::Partition}:lambda:${AWS::Region}:753240598075:layer:LambdaAdapterLayerX86:30"
-          }
-        ],
-        "Code": {
-          "ZipFile": "exports.handler = async () => { throw new Error('Preview package has not been deployed.'); };"
-        },
-        "Environment": {
-          "Variables": {
-            "AWS_LAMBDA_EXEC_WRAPPER": "/opt/bootstrap",
-            "AWS_LWA_PORT": "3001",
-            "AWS_LWA_READINESS_CHECK_PROTOCOL": "tcp",
-            "AWS_LWA_READINESS_CHECK_TIMEOUT_SECONDS": "5",
-            "AWS_LWA_INVOKE_MODE": "buffered",
-            "RUST_LOG": "warn",
-            "PREVIEW_HOST": "127.0.0.1",
-            "PREVIEW_PORT": "3001",
-            "MICROCMS_SERVICE_DOMAIN": {
-              "Ref": "ServiceDomain"
-            },
-            "MICROCMS_API_KEY": {
-              "Ref": "MicrocmsApiKey"
-            },
-            "PREVIEW_PUBLIC_ORIGIN": {
-              "Ref": "PublicOrigin"
-            }
-          }
-        },
-        "LoggingConfig": {
-          "LogFormat": "JSON",
-          "ApplicationLogLevel": "WARN",
-          "SystemLogLevel": "WARN"
-        }
-      }
-    },
     "PreviewUrl": {
       "Type": "AWS::Lambda::Url",
       "Properties": {
         "AuthType": "NONE",
         "InvokeMode": "BUFFERED",
         "TargetFunctionArn": {
-          "Ref": "PreviewFunction"
+          "Fn::Sub": "arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:${FunctionName}"
         }
-      }
+      },
+      "Condition": "FunctionExists"
     },
     "AllowFunctionUrl": {
       "Type": "AWS::Lambda::Permission",
@@ -163,7 +118,7 @@
       "DependsOn": "PreviewUrl",
       "Properties": {
         "FunctionName": {
-          "Ref": "PreviewFunction"
+          "Ref": "FunctionName"
         },
         "Action": "lambda:InvokeFunctionUrl",
         "Principal": "*",
@@ -176,7 +131,7 @@
       "DependsOn": "PreviewUrl",
       "Properties": {
         "FunctionName": {
-          "Ref": "PreviewFunction"
+          "Ref": "FunctionName"
         },
         "Action": "lambda:InvokeFunction",
         "Principal": "*",
@@ -187,7 +142,7 @@
   "Outputs": {
     "FunctionName": {
       "Value": {
-        "Ref": "PreviewFunction"
+        "Ref": "FunctionName"
       }
     },
     "FunctionUrl": {
@@ -195,6 +150,15 @@
         "Fn::GetAtt": [
           "PreviewUrl",
           "FunctionUrl"
+        ]
+      },
+      "Condition": "FunctionExists"
+    },
+    "RoleArn": {
+      "Value": {
+        "Fn::GetAtt": [
+          "PreviewRole",
+          "Arn"
         ]
       }
     }
