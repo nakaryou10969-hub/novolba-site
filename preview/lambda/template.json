@@ -54,6 +54,8 @@
     "PreviewRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
+        "RoleName": { "Fn::Sub": "${FunctionName}-execution" },
+        "PermissionsBoundary": { "Fn::Sub": "arn:${AWS::Partition}:iam::${AWS::AccountId}:policy/microcms-preview-logs-boundary" },
         "AssumeRolePolicyDocument": {
           "Version": "2012-10-17",
           "Statement": [

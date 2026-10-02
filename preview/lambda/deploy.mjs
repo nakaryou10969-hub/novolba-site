@@ -115,7 +115,7 @@ export async function deployPreview({ env = process.env, platform = process.plat
   const apply = async (origin, enabled, create = false) => {
     const action = create ? "create-stack" : "update-stack";
     const result = await runAws(["cloudformation", action, "--cli-input-json", "file:///dev/stdin", "--query", "StackId"], {
-      input: JSON.stringify({ StackName: stackName, TemplateBody: template, Parameters: parameters(origin, enabled), Capabilities: ["CAPABILITY_IAM"], Tags: tags }),
+      input: JSON.stringify({ StackName: stackName, TemplateBody: template, Parameters: parameters(origin, enabled), Capabilities: ["CAPABILITY_NAMED_IAM"], Tags: tags }),
       allowNoUpdates: !create
     });
     if (!result?.noUpdates) await runAws(["cloudformation", "wait", create ? "stack-create-complete" : "stack-update-complete", "--stack-name", stackName]);

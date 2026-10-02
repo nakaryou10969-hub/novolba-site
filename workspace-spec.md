@@ -57,3 +57,6 @@ main 0bb96517e798c070384bda65767957af48ced772 の分離コピーへ with と blo
 - AWS IAMとFunction URL公開の具体的な実行確認は配備直前に行う。実CMSのdraftKey置換と不正キー拒否、新規下書き・公開済み改稿の確認は別途必要。
 
 追加パスワード撤去後の検証: プレビュー・Lambda合計59件成功。変更コードESLintとgit diff --check成功。ZIP 341,787 bytes、CRC/run.sh755・LF/プレビューHTML限定を再確認。実AWS・実CMSは未配備・未検証。
+
+## 2026-10-02 配備権限の限定
+既存のgithub-actions-novolbaにはS3・CloudFront権限のみがあり、CloudFormation配備権限が不足している。新しい配備権限案はus-east-1のksc-microcms-preview/novolba-microcms-previewのstack・Lambda・ログと、同名-executionの2ロールに限定する。ロール作成時にはmicrocms-preview-logs-boundaryを必須とし、権限の上限を2つの専用ロググループへのCreateLogStream/PutLogEventsに固定する。配備ユーザーに境界ポリシーの変更・除去、他ロール操作、新しいアクセスキー作成の権限を与えない。境界ポリシー作成・既存配備ユーザーへの限定権限追加は、具体的なポリシーを提示した上でブラウザ規則に基づく追加確認待ちとする。それ以外の承認済み実装・main更新・検証は進める。

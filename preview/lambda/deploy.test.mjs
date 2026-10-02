@@ -64,6 +64,8 @@ test("template defaults closed, grants both URL permissions only conditionally, 
   assert.equal(roleStatement.length, 1);
   assert.deepEqual(roleStatement[0].Action, ["logs:CreateLogStream", "logs:PutLogEvents"]);
   assert.match(roleStatement[0].Resource["Fn::Sub"], /\$\{FunctionName\}/);
+  assert.equal(TEMPLATE.Resources.PreviewRole.Properties.RoleName["Fn::Sub"], "${FunctionName}-execution");
+  assert.match(TEMPLATE.Resources.PreviewRole.Properties.PermissionsBoundary["Fn::Sub"], /:policy\/microcms-preview-logs-boundary$/);
   const fn = TEMPLATE.Resources.PreviewFunction.Properties;
   assert.equal(fn.Runtime, "nodejs22.x"); assert.equal(fn.MemorySize, 512); assert.equal(fn.Timeout, 30);
   assert.equal(fn.ReservedConcurrentExecutions, undefined);
@@ -88,6 +90,7 @@ test("new deployment configures origin and checks shell and keyless rejection be
   const published = JSON.stringify({ args: aws.calls.map((call) => call.args), logs });
   for (const secret of [ENV.MICROCMS_API_KEY, ENV.PREVIEW_BASIC_USERNAME, ENV.PREVIEW_BASIC_PASSWORD]) assert.equal(published.includes(secret), false);
   assert.ok(changes.every((call) => call.args.includes("file:///dev/stdin")));
+  assert.ok(changes.every((call) => JSON.parse(call.input).Capabilities[0] === "CAPABILITY_NAMED_IAM"));
 });
 test("preview check failure leaves public invocation disabled", async (t) => {
   const root = await fixture(t); const aws = fakeAws({ probeStatus: 500 });
