@@ -32,23 +32,31 @@ function managedStack() {
   return { StackStatus: "CREATE_COMPLETE", Outputs: [{ OutputKey: "FunctionName", OutputValue: FUNCTION_NAME }, { OutputKey: "FunctionUrl", OutputValue: FUNCTION_URL }],
     Tags: [{ Key: "ManagedBy", Value: "microcms-preview-lambda" }, { Key: "PreviewSite", Value: SITE.name }] };
 }
-function fakeAws({ account = ENV.EXPECTED_AWS_ACCOUNT_ID, probeStatus = 401, initialStack = null } = {}) {
+function fakeAws({ account = ENV.EXPECTED_AWS_ACCOUNT_ID, probeStatus = 200, initialStack = null } = {}) {
   const calls = []; let stack = initialStack;
   const run = async (args, options = {}) => {
     calls.push({ args, ...options });
     if (args[0] === "sts") return account;
     if (args[1] === "describe-stacks") return stack;
     if (["create-stack", "update-stack"].includes(args[1])) { stack = managedStack(); return "public-test-stack-id"; }
-    if (args[1] === "invoke") return { metadata: { StatusCode: 200 }, payload: { statusCode: probeStatus, headers: { "WWW-Authenticate": 'Basic realm="Site preview"', "Cache-Control": "private, no-store" } } };
+    if (args[1] === "invoke") {
+      const event = JSON.parse(options.input); const api = event.rawPath === "/api/preview";
+      return { metadata: { StatusCode: 200 }, payload: { statusCode: probeStatus === 200 && api ? 400 : probeStatus,
+        headers: { "Content-Type": api ? "application/json" : "text/html; charset=utf-8", "Cache-Control": "private, no-store" },
+        body: api ? JSON.stringify({ error: "Invalid preview request." }) : "<html>Preview shell</html>" } };
+    }
     return null;
   };
   return { calls, run };
 }
 test("template defaults closed, grants both URL permissions only conditionally, and limits execution role", () => {
   assert.equal(TEMPLATE.Parameters.EnablePublicAccess.Default, "false");
-  for (const key of ["MicrocmsApiKey", "BasicUsername", "BasicPassword"]) {
+  for (const key of ["MicrocmsApiKey"]) {
     assert.equal(TEMPLATE.Parameters[key].NoEcho, true); assert.equal(TEMPLATE.Parameters[key].Default, "");
   }
+  assert.equal(TEMPLATE.Parameters.BasicUsername, undefined);
+  assert.equal(TEMPLATE.Parameters.BasicPassword, undefined);
+  assert.equal(TEMPLATE.Resources.PreviewFunction.Properties.Environment.Variables.PREVIEW_BASIC_PASSWORD, undefined);
   assert.equal(TEMPLATE.Resources.AllowFunctionUrl.Condition, "PublicAccessEnabled");
   assert.equal(TEMPLATE.Resources.AllowFunctionUrl.Properties.FunctionUrlAuthType, "NONE");
   assert.equal(TEMPLATE.Resources.AllowInvokeViaFunctionUrl.Properties.InvokedViaFunctionUrl, true);
@@ -63,10 +71,14 @@ test("template defaults closed, grants both URL permissions only conditionally, 
   assert.equal(fn.Environment.Variables.AWS_LWA_READINESS_CHECK_PROTOCOL, "tcp");
   assert.equal(fn.LoggingConfig.ApplicationLogLevel, "WARN"); assert.equal(TEMPLATE.Resources.PreviewLogGroup.Properties.RetentionInDays, 14);
 });
-test("new deployment configures origin and checks authentication before enabling public invocation", async (t) => {
+test("new deployment configures origin and checks shell and keyless rejection before enabling public invocation", async (t) => {
   const root = await fixture(t); const aws = fakeAws(); const logs = [];
   const result = await deployPreview({ root, platform: "linux", env: ENV, runAws: aws.run, log: (line) => logs.push(line) });
   assert.equal(result.origin, FUNCTION_URL.slice(0, -1));
+  const probes = aws.calls.filter((call) => call.args[1] === "invoke").map((call) => JSON.parse(call.input));
+  assert.deepEqual(probes.map((event) => event.rawPath), ["/preview/", "/api/preview"]);
+  assert.equal(probes[1].body, "{}");
+  assert.equal(probes[1].headers.authorization, undefined);
   const changes = aws.calls.filter((call) => ["create-stack", "update-stack"].includes(call.args[1]));
   const parameter = (call, key) => JSON.parse(call.input).Parameters.find((item) => item.ParameterKey === key).ParameterValue;
   assert.deepEqual(changes.map((call) => parameter(call, "EnablePublicAccess")), ["false", "false", "true"]);
@@ -77,7 +89,7 @@ test("new deployment configures origin and checks authentication before enabling
   for (const secret of [ENV.MICROCMS_API_KEY, ENV.PREVIEW_BASIC_USERNAME, ENV.PREVIEW_BASIC_PASSWORD]) assert.equal(published.includes(secret), false);
   assert.ok(changes.every((call) => call.args.includes("file:///dev/stdin")));
 });
-test("authentication failure leaves public invocation disabled", async (t) => {
+test("preview check failure leaves public invocation disabled", async (t) => {
   const root = await fixture(t); const aws = fakeAws({ probeStatus: 500 });
   await assert.rejects(deployPreview({ root, platform: "linux", env: ENV, runAws: aws.run, log: () => {} }), /remains disabled/);
   assert.equal(aws.calls.filter((call) => ["create-stack", "update-stack"].includes(call.args[1])).some((call) => JSON.parse(call.input).Parameters.find((item) => item.ParameterKey === "EnablePublicAccess").ParameterValue === "true"), false);
@@ -90,7 +102,7 @@ test("wrong account, unmanaged stack, invalid credentials, or non-Linux deployme
     assert.equal(aws.calls.some((call) => ["create-stack", "update-stack", "update-function-code"].includes(call.args[1])), false);
   }
   const aws = fakeAws();
-  await assert.rejects(deployPreview({ root, platform: "linux", env: { ...ENV, PREVIEW_BASIC_PASSWORD: "short" }, runAws: aws.run }));
+  await assert.rejects(deployPreview({ root, platform: "linux", env: { ...ENV, MICROCMS_API_KEY: "" }, runAws: aws.run }));
   await assert.rejects(deployPreview({ root, platform: "win32", env: ENV, runAws: aws.run }));
   assert.equal(aws.calls.length, 0);
 });
@@ -119,4 +131,20 @@ test("AWS runner parses response payload and CLI metadata from the in-memory std
   });
   const result = await runner(["lambda", "invoke", "/dev/stdout"], { input: "public test fixture", payloadOutput: true });
   assert.equal(result.payload.statusCode, 401); assert.equal(result.metadata.StatusCode, 200);
+});
+
+
+test("no Basic secret is needed and a broken keyless rejection never publishes the URL", async (t) => {
+  const root = await fixture(t); const env = { ...ENV };
+  delete env.PREVIEW_BASIC_USERNAME; delete env.PREVIEW_BASIC_PASSWORD;
+  const aws = fakeAws(); await deployPreview({ root, platform: "linux", env, runAws: aws.run, log: () => {} });
+  const bad = fakeAws();
+  const run = async (args, options) => {
+    const result = await bad.run(args, options);
+    if (args[1] === "invoke" && JSON.parse(options.input).rawPath === "/api/preview") result.payload.statusCode = 200;
+    return result;
+  };
+  await assert.rejects(deployPreview({ root, platform: "linux", env, runAws: run, log: () => {} }), /remains disabled/);
+  const changes = bad.calls.filter((call) => ["create-stack", "update-stack"].includes(call.args[1]));
+  assert.equal(changes.some((call) => JSON.parse(call.input).Parameters.some((item) => item.ParameterKey === "EnablePublicAccess" && item.ParameterValue === "true")), false);
 });
