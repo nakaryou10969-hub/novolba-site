@@ -181,6 +181,81 @@ test("unpublished content and edits to published content use draftKey without ca
   assert.ok(!unpublished.text.includes(input.draftKey));
 });
 
+async function categoryFixture(t, category) {
+  return fixture(t, { upstream: (_req, res) => {
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify({ id: input.contentId, title: "Category draft", content: "<p>Draft body</p>", category }));
+  } });
+}
+
+test("WITH select categories normalize single selections from real CMS responses", async (t) => {
+  const { call, upstreamCalls } = await categoryFixture(t, ["お知らせ"]);
+  const response = await call("/api/preview", { body: JSON.stringify({ ...input, endpoint: "with" }) });
+  assert.equal(response.status, 200); privateHeaders(response);
+  assert.equal(JSON.parse(response.text).content.category, "お知らせ");
+  assert.equal(upstreamCalls.length, 2);
+});
+
+test("WITH select categories omit empty selections and use the first of multiple validated selections", async (t) => {
+  const cases = [
+    { category: [], expected: undefined },
+    { category: ["最初", "次の選択"], expected: "最初" },
+    { category: Array.from({ length: 64 }, (_, index) => `選択${index}`), expected: "選択0" },
+    { category: ["x".repeat(200)], expected: "x".repeat(200) },
+  ];
+  for (const [index, example] of cases.entries()) {
+    await t.test(String(index), async (subtest) => {
+      const { call } = await categoryFixture(subtest, example.category);
+      const response = await call("/api/preview", { body: JSON.stringify({ ...input, endpoint: "with" }) });
+      assert.equal(response.status, 200); privateHeaders(response);
+      const content = JSON.parse(response.text).content;
+      assert.equal(content.category, example.expected);
+      assert.equal(Object.hasOwn(content, "category"), example.expected !== undefined);
+    });
+  }
+});
+
+test("WITH select categories reject malformed elements, nesting and excessive counts or lengths", async (t) => {
+  const cases = [[null], [1], [true], [["nested"]], ["valid", {}], ["valid", "x".repeat(201)],
+    Array.from({ length: 65 }, () => "selection"), { invalid: "object" }];
+  for (const [index, category] of cases.entries()) {
+    await t.test(String(index), async (subtest) => {
+      const { call } = await categoryFixture(subtest, category);
+      const response = await call("/api/preview", { body: JSON.stringify({ ...input, endpoint: "with" }) });
+      assert.equal(response.status, 502); privateHeaders(response);
+      assert.deepEqual(JSON.parse(response.text), { error: "Preview content is unavailable." });
+    });
+  }
+});
+
+test("legacy category strings and NEWS reference objects retain their existing shapes", async (t) => {
+  const cases = [
+    { endpoint: "with", category: "Legacy category" },
+    { endpoint: "blogs", category: { id: "category_1", name: "NEWS category", privateField: "MUST_NOT_BE_RETURNED" },
+      expected: { id: "category_1", name: "NEWS category" } },
+  ];
+  for (const example of cases) {
+    await t.test(example.endpoint, async (subtest) => {
+      const { call } = await categoryFixture(subtest, example.category);
+      const response = await call("/api/preview", { body: JSON.stringify({ ...input, endpoint: example.endpoint }) });
+      assert.equal(response.status, 200); privateHeaders(response);
+      assert.deepEqual(JSON.parse(response.text).content.category, example.expected ?? example.category);
+      assert.ok(!response.text.includes("MUST_NOT_BE_RETURNED"));
+    });
+  }
+});
+
+test("NEWS categories continue to reject arrays", async (t) => {
+  for (const [index, category] of [[], ["category"], [{ id: "category_1", name: "Category" }]].entries()) {
+    await t.test(String(index), async (subtest) => {
+      const { call } = await categoryFixture(subtest, category);
+      const response = await call("/api/preview", { body: JSON.stringify({ ...input, endpoint: "blogs" }) });
+      assert.equal(response.status, 502); privateHeaders(response);
+      assert.deepEqual(JSON.parse(response.text), { error: "Preview content is unavailable." });
+    });
+  }
+});
+
 test("each explicitly allowlisted endpoint works and other endpoints never reach upstream", async (t) => {
   const { call, upstreamCalls } = await fixture(t);
   for (const allowed of SITE.endpoints) {

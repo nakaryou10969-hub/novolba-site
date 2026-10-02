@@ -91,3 +91,13 @@ CFのinline ZipFileが生成するindex.jsとrun.shの不整合、後続CF更新
 
 ### 初回IAM反映の分離
 CloudFormationコンソールのテンプレートアップロードはS3保存を伴うため採用しない。ログイン済みAWS ConsoleのCloudShellから、秘密を含まないTemplateBodyを直接指定し、専用2スタックのFunctionPrepared=false/EnablePublicAccess=falseの基盤だけを先に作る。新規S3・資格情報発行・秘密情報取得は行わない。CREATE_COMPLETEとロール境界/inlineを確認し、GitHubコード反映の間に反映待ち時間を確保する。CloudShellはAWS公式で追加利用料金なし、他AWSリソースと通信の料金は通常どおり。CreateStackは1サイトずつ、失敗/timeoutで停止・状態確認する。
+
+## 2026-10-03 WITH新規下書きの表示失敗調査と型修正
+- 本人がWITHで新規・未公開下書きを作成し、画面プレビューで失敗。再読み込み有効なのでURL解析は成功している。実HTTP statusと実CMS取得段階は確認待ち。
+- microCMS公式仕様ではセレクト項目は単一選択でも文字列配列、未選択は空配列。現サーバーのカテゴリ配列拒否は仕様との不整合として、まず秘密なしモックで再現する。
+- NovolBa専用プレビューのWITHカテゴリだけを既存表示部品へ渡せる単一文字列へ正規化する。空配列はカテゴリ無し、複数値は最初の選択を表示する。数・長さ・要素型を検証し、NEWSの参照カテゴリと本番取得/表示は変更しない。
+- 非空draftKey、不一致キー検査、Host/Origin/CSP/サニタイズ/no-store/秘密非保存を保持。IAM・APIキー権限は変更しない。
+- GitHub Actionsを原因診断に使わず、再現テストと修正、既存テスト・差分確認を手元で完了してから外部反映を判断する。実記事の表示成功までは修正完了と扱わない。
+ローカル検証結果: 修正前にカテゴリ単一配列で502を再現。修正後test:preview 70/70、Lambda専用27/27、変更コードESLint・差分検査成功。独立レビューで指摘なし。修正済みZIPは36 files / 341887 bytes、展開1046267 bytes。現在mainはdcdd2d41a4e3030225a04d4be061cd594748b253で変更なし。実HTTP status確認待ち、未配備、実記事表示は未確認。
+
+ブラウザー検証: Chromeで既存の実Nextビルドと修正済みNodeサーバーをloopbackモックで組み合わせ、カテゴリ配列を含む記事本文・カテゴリ・公開日未設定を表示。POST200、正規Origin一致、Referer無し、URLキー消去を確認。実キー・外部CMS通信なし。これを根拠に承認済みのNovolBaプレビュー修正を反映する。対象はserver.mjs/server.test.mjs/workspace-spec.mdの3ファイル。コミットのskip ci指定で変更不要な本番push配備を起動せず、手動プレビュー配備だけ1回実行する。保護された必須チェックの迂回やworkflow設定変更は行わない。
