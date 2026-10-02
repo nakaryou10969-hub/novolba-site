@@ -101,3 +101,11 @@ CloudFormationコンソールのテンプレートアップロードはS3保存�
 ローカル検証結果: 修正前にカテゴリ単一配列で502を再現。修正後test:preview 70/70、Lambda専用27/27、変更コードESLint・差分検査成功。独立レビューで指摘なし。修正済みZIPは36 files / 341887 bytes、展開1046267 bytes。現在mainはdcdd2d41a4e3030225a04d4be061cd594748b253で変更なし。実HTTP status確認待ち、未配備、実記事表示は未確認。
 
 ブラウザー検証: Chromeで既存の実Nextビルドと修正済みNodeサーバーをloopbackモックで組み合わせ、カテゴリ配列を含む記事本文・カテゴリ・公開日未設定を表示。POST200、正規Origin一致、Referer無し、URLキー消去を確認。実キー・外部CMS通信なし。これを根拠に承認済みのNovolBaプレビュー修正を反映する。対象はserver.mjs/server.test.mjs/workspace-spec.mdの3ファイル。コミットのskip ci指定で変更不要な本番push配備を起動せず、手動プレビュー配備だけ1回実行する。保護された必須チェックの迂回やworkflow設定変更は行わない。
+
+## 2026-10-03 既存関数再配備のRevisionId整合
+
+手動配備#5は公開呼出しを停止した後、UpdateFunctionCode20150331v2でPreconditionFailedException（Revision ID不一致）となり停止。CloudTrailのエラーコード/理由、CF UPDATE_COMPLETE・EnablePublicAccess=false、Lambda旧コードhashと最終更新日時を読み取り確認。失敗後の再送は行っていない。
+
+公開アクセス停止前の関数snapshotをコード更新へ使わず、CF更新完了後・コード更新直前にGetFunctionを読み直す。所有者・稼働状態を再検証し、初期snapshotとCodeSha256が変わっていない場合だけ最新RevisionIdで1回更新する。欠落・所有不一致・コード並行変更・更新中/失敗状態なら停止。RevisionId条件、非公開検査、同じURLの公開条件、秘密非保存、自動再試行禁止は保持。模擬AWSの既存関数再配備で更新番号変化を再現してから外部反映する。追加IAM権限・キー・リソース作成は行わない。
+
+検証結果: 修正前の実SDK loopbackでUpdateFunctionCodeの412を再現。修正後Lambdaテスト44/44成功。初期hash欠落、CF変更なし、並行コード変更/欠落/所有不一致/稼働不良、再読後412の一回停止を含む。独立レビューで指摘なし。最新番号の条件と失敗後の設定更新・invoke・公開禁止を確認。対象はdeploy.mjs、deploy.test.mjs、sdk-integration.test.mjs、workspace-spec.mdの4ファイルで、main 268d6efを基準に反映。skip ciで本番push配備を避け、修正・照合後に専用プレビュー配備を実行する。実AWS成功と実記事表示は外部検証で別途確認する。
