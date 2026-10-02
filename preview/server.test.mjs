@@ -181,6 +181,93 @@ test("unpublished content and edits to published content use draftKey without ca
   assert.ok(!unpublished.text.includes(input.draftKey));
 });
 
+const withSchemaDraft = {
+  id: input.contentId, title: "Schema-shaped draft", content: "<p>Draft body</p>", slug: "schema-draft",
+  category: [], author: [], pickup: false, eyecatch: null,
+  createdAt: "2026-10-03T00:00:00.000Z", updatedAt: "2026-10-03T01:00:00.000Z",
+  publishedAt: null, revisedAt: "2026-10-03T01:00:00.000Z",
+  tag: ["MUST_NOT_BE_RETURNED"], ahthor: ["MUST_NOT_BE_RETURNED"],
+};
+
+async function authorFixture(t, author, extra = {}) {
+  return fixture(t, { upstream: (_req, res) => {
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify({ ...withSchemaDraft, author, ...extra }));
+  } });
+}
+
+test("WITH schema-shaped draft accepts all selected fields with empty selects and a null image", async (t) => {
+  const { call, upstreamCalls } = await authorFixture(t, []);
+  const response = await call("/api/preview", { body: JSON.stringify({ ...input, endpoint: "with" }) });
+  assert.equal(response.status, 200); privateHeaders(response);
+  assert.deepEqual(JSON.parse(response.text).content, {
+    id: input.contentId, title: withSchemaDraft.title, content: withSchemaDraft.content, slug: withSchemaDraft.slug,
+    pickup: false, createdAt: withSchemaDraft.createdAt, updatedAt: withSchemaDraft.updatedAt, revisedAt: withSchemaDraft.revisedAt,
+  });
+  assert.equal(upstreamCalls.length, 2);
+  assert.equal(upstreamCalls[1].url.searchParams.get("fields"), SITE.fields.join(","));
+  assert.ok(!response.text.includes("MUST_NOT_BE_RETURNED"));
+});
+
+test("WITH author selections normalize the first value after validating every selection and boundary", async (t) => {
+  const cases = [
+    { author: ["著者"], expected: "著者" },
+    { author: ["最初の著者", "次の著者"], expected: "最初の著者" },
+    { author: Array.from({ length: 64 }, (_, index) => `著者${index}`), expected: "著者0" },
+    { author: ["x".repeat(1000)], expected: "x".repeat(1000) },
+    { author: ["first", "x".repeat(1000)], expected: "first" },
+    { author: [""], expected: "" },
+  ];
+  for (const [index, example] of cases.entries()) {
+    await t.test(String(index), async (subtest) => {
+      const { call } = await authorFixture(subtest, example.author);
+      const response = await call("/api/preview", { body: JSON.stringify({ ...input, endpoint: "with" }) });
+      assert.equal(response.status, 200); privateHeaders(response);
+      assert.equal(JSON.parse(response.text).content.author, example.expected);
+    });
+  }
+});
+
+test("WITH author selections reject malformed elements, nesting and excessive counts or lengths", async (t) => {
+  const cases = [[null], [1], [true], [["nested"]], ["valid", {}], ["valid", null],
+    ["x".repeat(1001)], ["valid", "x".repeat(1001)], Array.from({ length: 65 }, () => "author"),
+    { invalid: "object" }, false, 1];
+  for (const [index, author] of cases.entries()) {
+    await t.test(String(index), async (subtest) => {
+      const { call } = await authorFixture(subtest, author);
+      const response = await call("/api/preview", { body: JSON.stringify({ ...input, endpoint: "with" }) });
+      assert.equal(response.status, 502); privateHeaders(response);
+      assert.deepEqual(JSON.parse(response.text), { error: "Preview content is unavailable." });
+    });
+  }
+});
+
+test("legacy WITH and NEWS author strings retain their existing shapes", async (t) => {
+  for (const selectedEndpoint of ["with", "blogs"]) {
+    await t.test(selectedEndpoint, async (subtest) => {
+      const { call } = await authorFixture(subtest, "Legacy author", {
+        category: { id: "category_1", name: "Category" }, publishedAt: "2026-10-02T00:00:00.000Z",
+      });
+      const response = await call("/api/preview", { body: JSON.stringify({ ...input, endpoint: selectedEndpoint }) });
+      assert.equal(response.status, 200); privateHeaders(response);
+      assert.equal(JSON.parse(response.text).content.author, "Legacy author");
+      assert.equal(JSON.parse(response.text).content.publishedAt, "2026-10-02T00:00:00.000Z");
+      assert.ok(!response.text.includes("MUST_NOT_BE_RETURNED"));
+    });
+  }
+});
+
+test("NEWS authors continue to reject arrays", async (t) => {
+  for (const [index, author] of [[], ["author"], [{ id: "author_1", name: "Author" }]].entries()) {
+    await t.test(String(index), async (subtest) => {
+      const { call } = await authorFixture(subtest, author, { category: { id: "category_1", name: "Category" } });
+      const response = await call("/api/preview", { body: JSON.stringify({ ...input, endpoint: "blogs" }) });
+      assert.equal(response.status, 502); privateHeaders(response);
+      assert.deepEqual(JSON.parse(response.text), { error: "Preview content is unavailable." });
+    });
+  }
+});
+
 async function categoryFixture(t, category) {
   return fixture(t, { upstream: (_req, res) => {
     res.setHeader("Content-Type", "application/json");
