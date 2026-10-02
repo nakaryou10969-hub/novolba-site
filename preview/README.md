@@ -44,6 +44,7 @@ fragment内の置換は実microCMSで確認が必要です。保存済みの新�
 - Deploy draftKey preview to Lambdaはworkflow_dispatchのみ。既存AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY/MICROCMS_SERVICE_DOMAIN/MICROCMS_API_KEYを不透明なCI Secretsとして利用する。追加パスワードSecrets不要。
 - PREVIEW_AWS_ACCOUNT_IDをrepository variableに設定する。対象accountをSTSで検証してから変更し、対象stackのタグ・名前を確認する。
 - 配備認証には対象CloudFormation/Lambda/IAM role/pass-role/logの権限が必要。不足する場合は対象を限定して所有者に確認する。キーの新規作成・値の取得をしない。
+- 実行ロール名はFunctionNameに-executionを付ける。microcms-preview-logs-boundaryを事前作成し、専用ログへの書き込みだけを権限上限とする。CIはこの境界が付く2ロールのみ作成・管理でき、境界の変更・除去はできない。
 - us-east-1、Node.js22、x86_64、512MB、上限30秒。公式Lambda Web Adapterを使用。ログ保存14日・WARN。アカウント同時実行上限10を既存関数と共有する。予約枠・quota変更・VPC/NAT・常時起動・Provisioned Concurrency・有料Secrets Manager・独自KMS鍵を追加しない。
 - 秘密値はCloudFormation NoEchoパラメータへstdinで渡す。argv・一時ファイル・CLI出力に表示しない。describeはOutputs/Tags/Statusだけ。
 - まずFunction URLの公開呼出し権限を無効にして配備する。非公開のLambda invokeでshellの200とキー無しPOSTの400、no-store、認証ダイアログ無しを確認してから、承認された公開権限を有効にする。
