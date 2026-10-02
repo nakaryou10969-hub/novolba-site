@@ -130,6 +130,47 @@ test("existing deployment disables public permissions before revision-guarded co
   assert.deepEqual(writes(aws.calls).map((c) => c.args[1]), ["update-stack", "update-function-code", "update-function-configuration", "update-stack"]);
   assert.equal(isPublic(writes(aws.calls)[0]), false);
 });
+test("existing deployment rereads the function revision after infrastructure preparation", async (t) => {
+  const aws = fakeAws({ initialStack: stack(), initialFunction: fn(), mutate: (call, state) => {
+    if (call.args[1] === "update-stack" && !isPublic(call)) state.function.RevisionId = "revision-after-preparation";
+  } });
+  await deployPreview({ env: ENV, platform: "linux", waitForRole: async () => {}, root: await fixture(t), runAws: aws.run, log() {} });
+  const update = aws.calls.find((call) => call.args[1] === "update-function-code");
+  assert.equal(JSON.parse(update.input).RevisionId, "revision-after-preparation");
+  assert.equal(aws.calls.filter((call) => call.args[1] === "update-function-code").length, 1);
+  const preparation = aws.calls.findIndex((call) => call.args[1] === "update-stack" && !isPublic(call));
+  const code = aws.calls.indexOf(update);
+  assert.ok(aws.calls.slice(preparation + 1, code).some((call) => call.args[1] === "get-function"));
+});
+test("missing initial code hash is refused before infrastructure writes", async (t) => {
+  const aws = fakeAws({ initialStack: stack(), initialFunction: { ...fn(), CodeSha256: undefined } });
+  await assert.rejects(deployPreview({ env: ENV, platform: "linux", waitForRole: async () => {}, root: await fixture(t), runAws: aws.run, log() {} }), /code hash is missing/);
+  assert.equal(writes(aws.calls).length, 0);
+});
+test("existing deployment still rereads the function when prepared infrastructure has no updates", async (t) => {
+  const aws = fakeAws({ initialStack: stack(), initialFunction: fn(),
+    mutate: (call) => call.args[1] === "update-stack" && !isPublic(call) ? { override: true, value: { noUpdates: true } } : undefined });
+  await deployPreview({ env: ENV, platform: "linux", waitForRole: async () => {}, root: await fixture(t), runAws: aws.run, log() {} });
+  const code = aws.calls.findIndex((call) => call.args[1] === "update-function-code");
+  assert.equal(aws.calls.slice(0, code).filter((call) => call.args[1] === "get-function").length, 2);
+  assert.equal(aws.calls.filter((call) => call.args[1] === "update-function-code").length, 1);
+});
+test("function deletion, ownership changes, unhealthy updates or parallel code changes after preparation stop before Lambda writes", async (t) => {
+  for (const [label, replacement] of [
+    ["missing", null], ["ownership", { ...fn(), Tags: { ...TAGS, ManagedBy: "other-owner" } }],
+    ["pending", { ...fn(), State: "Pending" }], ["updating", { ...fn(), LastUpdateStatus: "InProgress" }],
+    ["failed", { ...fn(), LastUpdateStatus: "Failed" }], ["code", { ...fn(), CodeSha256: "parallel-code-hash" }],
+  ]) {
+    await t.test(label, async (subtest) => {
+      let reads = 0;
+      const aws = fakeAws({ initialStack: stack(), initialFunction: fn(),
+        mutate: (call) => call.args[1] === "get-function" && ++reads > 1 ? { override: true, value: replacement } : undefined });
+      await assert.rejects(deployPreview({ env: ENV, platform: "linux", waitForRole: async () => {}, root: await fixture(subtest), runAws: aws.run, log() {} }));
+      assert.equal(aws.calls.some((call) => call.args[0] === "lambda" && /^(create|update)-/.test(call.args[1])), false);
+      assert.equal(aws.calls.some(isPublic), false);
+    });
+  }
+});
 test("wrong account, stack ownership, function ownership and unstable function are refused before writes", async (t) => {
   const root = await fixture(t);
   const foreignStack = stack(); foreignStack.Tags[0].Value = "other-owner";
