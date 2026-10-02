@@ -1,4 +1,4 @@
-name: Deploy authenticated preview to Lambda
+name: Deploy draftKey preview to Lambda
 
 on:
   workflow_dispatch:
@@ -27,7 +27,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Test authenticated preview
+      - name: Test draftKey preview
         run: |
           npm run test:preview
           npm run test:preview:lambda
@@ -49,6 +49,4 @@ jobs:
           PREVIEW_FUNCTION_NAME: novolba-microcms-preview
           MICROCMS_SERVICE_DOMAIN: ${{ secrets.MICROCMS_SERVICE_DOMAIN }}
           MICROCMS_API_KEY: ${{ secrets.MICROCMS_API_KEY }}
-          PREVIEW_BASIC_USERNAME: ${{ secrets.PREVIEW_BASIC_USERNAME }}
-          PREVIEW_BASIC_PASSWORD: ${{ secrets.PREVIEW_BASIC_PASSWORD }}
         run: node preview/lambda/deploy.mjs
