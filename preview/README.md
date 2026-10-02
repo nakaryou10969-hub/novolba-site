@@ -1,159 +1,51 @@
-# Authenticated microCMS preview runtime
+# draftKeyリンクによるmicroCMSプレビュー
 
-Production remains a Next.js static export. This separate, dependency-free Node
-server serves the `out/preview/index.html` shell and static assets, and retrieves one draft through
-`POST /api/preview`. It does not deploy itself or change the production S3 and
-CloudFront workflow. Run from the repository root using a maintained Node.js 22
-or newer runtime.
+追加のID・パスワードは不要です。microCMSの画面プレビューから渡される、記事ごとのdraftKeyを使います。そのキーを含む元のリンクを持つ人はmicroCMS未ログインでも閲覧できます。
 
-This is a dedicated preview origin. `/preview/`, `/preview` and
-`/preview/index.html` serve the same preview shell. Other HTML pages, including
-published article HTML, return a private JSON 404 even when present in `out/`.
-Public rich text therefore cannot acquire this origin's authenticated shell CSP.
-Existing compiled JS, CSS, images and exported RSC text assets remain available.
-Direct requests to other HTML pages return 404; use the production host for
-normal site navigation. Client navigation through exported RSC assets may work,
-but a direct load or refresh of those public routes remains unavailable here.
+## 必要な設定
+- MICROCMS_SERVICE_DOMAIN: 既存サービスのサブドメイン（スキーム・pathを含めない）。
+- MICROCMS_API_KEY: 対象APIの既存GETキー。CIとNodeサーバー内でのみ利用し、ブラウザへ返さない。
+- PREVIEW_PUBLIC_ORIGIN: 外部HTTPS origin。path・query・fragment・末尾slashを含めない。
+- PREVIEW_HOST / PREVIEW_PORT: 既定127.0.0.1 / 3001。Lambdaは同じ値。
+- Basic認証やPREVIEW_BASIC_USERNAME/PASSWORDは使用しません。dotenvを自動読取せず、NEXT_PUBLIC_にキーを設定しません。
 
-## Required configuration
+## 取得・保護の条件
+- プレビューshellと必要assetsは認証なしで配信する。shell自体は記事本文を含まない。他のHTMLは404。
+- 記事はPOST /api/previewのみで取得する。入力はendpoint・contentId・draftKeyの3つの文字列のみ。非空draftKeyが必須。
+- endpointはレビュー済みのサイト別allowlistに限定する。リクエスト側でサービス、URL、redirect、追加queryを指定できない。
+- Origin・Hostは正規originに一致し、Content-Typeはapplication/json、X-Preview-Requestは1が必須。Authorizationヘッダは閲覧許可に使用しない。
+- まず同一記事にランダムな不一致draftKeyを付け、fields=idの最小GETが400/404で拒否されることを確認する。本文を読まず破棄する。拒否が確認できなければ502で停止する。
+- その後、指定draftKeyを含む単一記事GETを行う。取得失敗時にキー無しGETや公開版へフォールバックしない。APIキーの「下書き全取得」が必要な構成にはしない。
+- 1プレビューAPIにつきmicroCMS GETは通常2回。合計10秒、本文上限2MiB、リクエスト上限4KiB。画像はmicroCMSから直接配信する。
+- 全route・全statusはno-store/no-referrer/noindex。サニタイズとCSPを保持する。
+- draftKeyはfragmentで受け、通信前にURLから消去する。queryでのdraftKeyを拒否し、キーと記事本文をcookie・browser storage・ログへ保存しない。ページ再読込はmicroCMSからプレビューを開き直す。
+- 元のキー付きリンクを共有した相手も閲覧できるため、共有先を確認する。microCMSログイン状態を外部で検証する方式ではない。
+- upstream URL・本文・APIキー・draftKeyをログに出さない。HTTP tracingやupstream URLログも無効化する。APIエラーは内容を転送しない。
+- peer別の制限は全体240req/分・プレビューAPI60req/分。X-Forwarded-Forを信頼しない。Lambdaでは各実行環境別となり、月間料金上限ではない。
 
-Inject these variables through the approved runtime's secret/environment
-mechanism. The server intentionally does not load `.env.local` automatically.
-Never use a `NEXT_PUBLIC_` variable for any credential, commit secret files,
-include credentials in URLs, or paste secrets into logs or review documents.
-
-| Variable | Requirement |
-| --- | --- |
-| `MICROCMS_SERVICE_DOMAIN` | Existing service's subdomain only, without scheme/path; server constructs the fixed `https://<service>.microcms.io` origin. |
-| `MICROCMS_API_KEY` | Existing approved key with GET access to `with` and `blogs`; runtime only, never returned to the browser. |
-| `PREVIEW_BASIC_USERNAME` | Approved preview access account; 1–128 characters, no colon or control characters. |
-| `PREVIEW_BASIC_PASSWORD` | Approved preview credential; 16–512 characters, no control characters. |
-| `PREVIEW_PUBLIC_ORIGIN` | Exact external HTTPS origin, e.g. `https://preview.example.test`; no trailing slash, path, query, fragment or credentials. |
-| `PREVIEW_HOST` | Optional; default `127.0.0.1`. `0.0.0.0` is for an isolated container/private ingress only. |
-| `PREVIEW_PORT` | Optional; default `3001`, integer 1–65535. |
-
-Build the ordinary static site with its existing build configuration, inject
-the preview runtime variables, and run `npm run preview:serve`. All required
-variables and the `out/` directory must be valid or startup fails closed.
-For loopback testing only, `PREVIEW_PUBLIC_ORIGIN=http://127.0.0.1:3001` is allowed
-with a loopback bind. Tests use fake keys and never contact real microCMS.
-
-An existing GET key plus the individual draft's `draftKey` is sufficient for
-this request pattern according to the [microCMS content API documentation](https://document.microcms.io/content-api/get-content).
-This implementation does not create an API key or enable broad draft retrieval.
-
-## Hosting prerequisites
-
-Choose and approve a separate preview hostname/runtime before hosting. S3 static
-hosting alone cannot run this server. A trusted TLS reverse proxy must preserve
-the external `Host` header exactly as the configured origin's host and forward
-`Authorization`, `Origin` and `X-Preview-Request`. Expose only HTTPS at that proxy;
-keep the Node HTTP port private. Configure its health probe to use an approved
-authenticated request. There is intentionally no unauthenticated health route.
-
-Disable proxy/CDN caching on **every** preview route and every status, including
-static assets and errors, and retain the server's no-store and privacy headers.
-Do not log Authorization headers, request bodies or full upstream request URLs.
-The upstream draft request contains the token in its query string, so upstream
-HTTP tracing and egress URL logging must also be disabled/redacted. Keep build
-output immutable and owned by the deployment user; never put source files,
-credentials or symlinks in `out/`. The runtime checks resolved paths, but a
-concurrent privileged filesystem writer could race file checks and opening.
-
-Rate limits are in-memory and keyed by socket peer: 240 total requests/minute,
-30 failed authentication attempts/minute, and 60 authenticated preview API
-requests/minute. `X-Forwarded-For` is deliberately ignored. Users behind the same
-proxy therefore share one bucket; multiple runtime replicas have independent
-buckets. Apply per-client and fleet-wide limits at the trusted ingress as needed.
-No AWS services, permissions, secrets, DNS records or permanent accounts are
-created by this code. Runtime/TLS/DNS/cost choices remain approval items.
-
-## microCMS screen preview configuration
-
-After approval and hosting, open the existing service's `with` or `blogs` API
-settings, choose screen preview, and use the appropriate destination URL with
-the approved preview hostname. NEWS uses the plural endpoint `blogs`; WITH and
-MEDIA share `with`:
+## microCMSの画面プレビューURL
+配備・承認後、API設定→画面プレビューに以下を設定します。placeholderはそれぞれ1回だけ使用します。
 
 ```text
 WITH: https://<preview-host>/preview/?endpoint=with&view=with&contentId={CONTENT_ID}#draftKey={DRAFT_KEY}
-NEWS: https://<preview-host>/preview/?endpoint=blogs&view=news&contentId={CONTENT_ID}#draftKey={DRAFT_KEY}
 MEDIA: https://<preview-host>/preview/?endpoint=with&view=media&contentId={CONTENT_ID}#draftKey={DRAFT_KEY}
+NEWS: https://<preview-host>/preview/?endpoint=blogs&view=news&contentId={CONTENT_ID}#draftKey={DRAFT_KEY}
 ```
+with APIにはWITH/MEDIAの一方を設定し、必要時に許可されたviewを切り替えてもう一方を確認できます。
 
-One destination is configured per API. Choose WITH or MEDIA for the `with` API's
-primary preview; changing the approved `view` manually can inspect its other
-layout. Use each placeholder once. The [official screen preview guide](https://document.microcms.io/manual/screen-preview)
-documents these replacements. Replacement within a URL fragment must still be
-verified in the actual microCMS service; that service was not accessed here.
-Keep the token in the fragment. The frontend rejects `draftKey` in the query,
-holds it in page memory for requests, and clears the visible preview URL before
-fetching. Leaving or reloading the page clears that page's retained token.
+fragment内の置換は実microCMSで確認が必要です。保存済みの新規下書きと、公開済み記事の保存済み改稿を確認します。未保存の編集内容の表示は保証しません。404はキー/記事が利用不可、502はAPI設定・不一致キー検査・データ/通信失敗、504はtimeoutです。元のエラー詳細は表示しません。
 
-Sign into the browser's native Basic authentication dialog with the approved
-preview account, save a draft, and test both an unpublished article and edits to
-an already published article. Compare title, date, image, rich text and links
-with the editor. `401` means preview authentication is required; `404` can mean
-the content/token is unavailable; `502` can indicate API access, invalid upstream
-data or network failure; `504` means the upstream timeout was reached. Errors
-intentionally contain no upstream URL, key, token or original error body.
+公式: [画面プレビュー](https://document.microcms.io/manual/screen-preview)、[単一記事API](https://document.microcms.io/content-api/get-content)。
 
-The application does not store credentials in cookies or browser storage.
-Browsers can cache Basic authentication credentials for the browser session,
-and this implementation has no logout endpoint. Use a separate/private browser
-session and close that session after reviewing. Clearing the preview URL also
-means reloading requires opening screen preview again from microCMS.
-
-## API and security contract
-
-- The only accepted endpoints are the reviewed server-side `with` and `blogs`
-  allowlist entries. `view` is a frontend layout selector, never an upstream input.
-  Request input cannot choose a service domain, protocol, upstream URL or query.
-- Authenticated `POST /api/preview` requires the exact configured `Origin`,
-  `Content-Type: application/json` (optional UTF-8 charset), and
-  `X-Preview-Request: 1`. It accepts exactly three string fields:
-  `{ "endpoint": "with", "contentId": "...", "draftKey": "..." }` (or `blogs`).
-  Unknown fields, duplicates including escaped key equivalents, nested objects,
-  query parameters and unsupported content encodings are rejected.
-- `contentId` is restricted to ASCII letters, digits, `_` and `-`, 1–128
-  characters. This is a local implementation bound, not a claim about the entire
-  microCMS specification. `draftKey` is an opaque, untrimmed string of 1–512 UTF-16
-  code units; C0/C1 controls and malformed surrogate sequences are forbidden.
-- Request bodies are limited to 4 KiB. Draft response bodies are limited to
-  2 MiB including streamed bodies, with a 10-second upstream timeout and no
-  redirects or retry. The request explicitly disables upstream caching.
-- Responses contain `{ "content": { ... } }` with the requested ID and only
-  reviewed display fields from `site-config.mjs`. Unknown content/asset fields
-  are removed and known field types are checked. `publishedAt` may be absent
-  for unpublished articles; absent body content is returned as an empty string.
-- All responses use private/no-store, no-referrer, noindex and nosniff headers.
-  Static HTML uses a CSP with hashes for exported Next inline boot scripts,
-  and reviewed layout scripts in the standalone preview shell only,
-  same-origin scripts/API access, HTTPS images/media and Google font sources.
-  Inline styles are permitted for existing designs. Frames/objects are blocked;
-  CMS iframe embeds therefore require a separately reviewed policy change.
-  HTML sanitization is also applied by the preview frontend before display.
-- Static serving only uses the fixed `out/` root, reviewed asset extensions and
-  resolved paths. Dotfiles, source-map extensions, source code extensions,
-  traversal, Windows special paths and escaping symlinks/junctions are rejected.
-  After resolving a requested file, HTML is additionally restricted to the
-  canonical `out/preview/index.html` file; public article documents are denied.
-- Request/response contents and unexpected errors are never logged by this
-  runtime. Startup messages contain no supplied configuration values.
-
-## Verification
-
-Run `node --test preview/server.test.mjs` for the independent runtime suite, or
-`npm run test:preview` for the combined runtime/frontend suite. The runtime suite
-starts a local HTTP mock microCMS server and exercises unpublished and published
-drafts, field selection, authentication, Origin/Host/JSON validation, duplicate
-fields, input bounds, cache/privacy headers, inline-script CSP, path traversal,
-public article HTML isolation, preview-shell aliases,
-Windows junction/symlink escape, upstream errors/redirects/timeouts/size limits,
-and authentication/API rate limits. No real microCMS or AWS access is performed.
-Actual service credentials, draft substitution, TLS/proxy behavior and hosted
-preview operation still require authorized environment verification.
-
-Any `build:preview:mock` output is test fixture data only. It is suitable for
-local visual QA and must never be deployed to the production or hosted preview
-environment. Hosting must use a fresh ordinary build with approved real data.
+## ビルドとLambda配備
+- npm run test:preview / npm run test:preview:lambda: 秘密情報・実CMSを使わないテスト。
+- npm run build:preview:lambda: 実画面部品からプレビューだけを独立stagingへ静的生成。キー・記事・mockデータ不要。本番app・Next設定・out・S3/CloudFront配備workflowは変更しない。
+- npm run package:preview:lambda: Node HTTPサーバーと専用shell/assetsだけをZIP化。source map・dotenv・node_modules・他記事HTML・mock成果物・symlinkを除外。run.shは755/LF。ZIP50MiB・展開200MiB・asset4MiB以下。
+- Deploy draftKey preview to Lambdaはworkflow_dispatchのみ。既存AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY/MICROCMS_SERVICE_DOMAIN/MICROCMS_API_KEYを不透明なCI Secretsとして利用する。追加パスワードSecrets不要。
+- PREVIEW_AWS_ACCOUNT_IDをrepository variableに設定する。対象accountをSTSで検証してから変更し、対象stackのタグ・名前を確認する。
+- 配備認証には対象CloudFormation/Lambda/IAM role/pass-role/logの権限が必要。不足する場合は対象を限定して所有者に確認する。キーの新規作成・値の取得をしない。
+- us-east-1、Node.js22、x86_64、512MB、上限30秒。公式Lambda Web Adapterを使用。ログ保存14日・WARN。アカウント同時実行上限10を既存関数と共有する。予約枠・quota変更・VPC/NAT・常時起動・Provisioned Concurrency・有料Secrets Manager・独自KMS鍵を追加しない。
+- 秘密値はCloudFormation NoEchoパラメータへstdinで渡す。argv・一時ファイル・CLI出力に表示しない。describeはOutputs/Tags/Statusだけ。
+- まずFunction URLの公開呼出し権限を無効にして配備する。非公開のLambda invokeでshellの200とキー無しPOSTの400、no-store、認証ダイアログ無しを確認してから、承認された公開権限を有効にする。
+- URLのAWS認証はNONE。記事の閲覧条件はdraftKey。キーがないアクセスもLambdaの利用量になる。Function URL自体の追加固定料金はないが、無料枠を超えれば従量課金される。
+- AWS配備・IAM/公開権限・実Linux AWS CLI・実CMS置換とキー検証はローカルテストとは別。配備前に対象を示した実行確認を行う。

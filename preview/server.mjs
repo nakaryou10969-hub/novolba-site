@@ -1,4 +1,4 @@
-import { createHash, timingSafeEqual } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 import { createServer } from "node:http";
 import { open, realpath, stat } from "node:fs/promises";
 import path from "node:path";
@@ -40,8 +40,6 @@ export function readConfig(env = process.env, root = path.resolve("out")) {
     throw new Error("MICROCMS_SERVICE_DOMAIN is missing or invalid.");
   }
   const apiKey = requireSecret(env.MICROCMS_API_KEY, "MICROCMS_API_KEY", 1, 1024);
-  const username = requireSecret(env.PREVIEW_BASIC_USERNAME, "PREVIEW_BASIC_USERNAME", 1, 128, true);
-  const password = requireSecret(env.PREVIEW_BASIC_PASSWORD, "PREVIEW_BASIC_PASSWORD", 16, 512);
   const host = env.PREVIEW_HOST || "127.0.0.1";
   if (!["127.0.0.1", "::1", "localhost", "0.0.0.0"].includes(host)) {
     throw new Error("PREVIEW_HOST is invalid.");
@@ -58,20 +56,8 @@ export function readConfig(env = process.env, root = path.resolve("out")) {
         ["localhost", "127.0.0.1", "[::1]"].includes(publicUrl.hostname) && host !== "0.0.0.0"))) {
     throw new Error("PREVIEW_PUBLIC_ORIGIN must be an HTTPS origin (loopback HTTP is allowed locally).");
   }
-  return Object.freeze({ serviceDomain, apiKey, username, password, host, port: Number(portText),
+  return Object.freeze({ serviceDomain, apiKey, host, port: Number(portText),
     publicOrigin: publicUrl.origin, publicHost: publicUrl.host, root: path.resolve(root) });
-}
-
-function digest(value) { return createHash("sha256").update(value).digest(); }
-
-function authenticated(header, expected) {
-  if (typeof header !== "string" || !/^Basic [A-Za-z0-9+/]+={0,2}$/i.test(header)) return false;
-  const encoded = header.slice(6);
-  const bytes = Buffer.from(encoded, "base64");
-  if (bytes.toString("base64") !== encoded || bytes.length > 2600) return false;
-  let decoded;
-  try { decoded = new TextDecoder("utf-8", { fatal: true }).decode(bytes); } catch { return false; }
-  return timingSafeEqual(digest(decoded), expected);
 }
 
 function securityHeaders(res, httpsOrigin) {
@@ -256,6 +242,17 @@ async function fetchDraft(config, site, input, fetchImpl, timeoutMs, res) {
   const cancel = () => { if (!res.writableEnded) controller.abort(); };
   res.on("close", cancel);
   try {
+    // Verify that this article is actually gated by draftKey. Never return a
+    // body if an API permission or fallback also accepts a nonmatching key.
+    const probeUrl = new URL(url);
+    let probeKey;
+    do { probeKey = randomBytes(32).toString("base64url"); } while (probeKey === input.draftKey);
+    probeUrl.searchParams.set("draftKey", probeKey);
+    probeUrl.searchParams.set("fields", "id");
+    const denied = await fetchImpl(probeUrl, { method: "GET", cache: "no-store", redirect: "error", signal: controller.signal,
+      headers: { "X-MICROCMS-API-KEY": config.apiKey, Accept: "application/json", "Cache-Control": "no-store" } });
+    await denied.body?.cancel();
+    if (![400, 404].includes(denied.status)) throw new HttpError(502, "Preview content is unavailable.");
     const upstream = await fetchImpl(url, { method: "GET", cache: "no-store", redirect: "error", signal: controller.signal,
       headers: { "X-MICROCMS-API-KEY": config.apiKey, Accept: "application/json", "Cache-Control": "no-store" } });
     if (!upstream.ok) {
@@ -302,7 +299,7 @@ async function serveStatic(req, res, root, previewHtml) {
     target = await realpath(target);
     if (!inside(root, target)) throw new Error("escape");
     // Public article HTML can contain existing, unsanitized CMS rich text. Do
-    // not grant that HTML the preview origin's Basic credentials or shell CSP.
+    // not grant that HTML the preview origin's trusted shell CSP.
     // Only the independently built preview shell may be a document here.
     if (path.extname(target).toLowerCase() === ".html" && target !== previewHtml) throw new Error("not-preview-shell");
   } catch { throw new HttpError(404, "Page not found."); }
@@ -335,7 +332,6 @@ export async function createPreviewServer({ config, site = SITE, fetchImpl = glo
   if (previewHtml !== expectedPreviewHtml || !inside(root, previewHtml) || !(await stat(previewHtml)).isFile()) {
     throw new Error("Preview shell is unavailable. Build the preview route first.");
   }
-  const expected = digest(`${config.username}:${config.password}`);
   const limiter = new RateLimiter(now);
   const server = createServer({ maxHeaderSize: 16 * 1024 }, async (req, res) => {
     securityHeaders(res, config.publicOrigin.startsWith("https:"));
@@ -350,11 +346,6 @@ export async function createPreviewServer({ config, site = SITE, fetchImpl = glo
       if (req.headers.host?.toLowerCase() !== config.publicHost) throw new HttpError(421, "Invalid request host.");
       const peer = req.socket.remoteAddress || "unknown"; // Do not trust X-Forwarded-For.
       if (!limiter.take(`all:${peer}`, 240)) { res.setHeader("Retry-After", "60"); throw new HttpError(429, "Too many preview requests."); }
-      if (!authenticated(req.headers.authorization, expected)) {
-        if (!limiter.take(`auth:${peer}`, 30)) { res.setHeader("Retry-After", "60"); throw new HttpError(429, "Too many preview requests."); }
-        res.setHeader("WWW-Authenticate", 'Basic realm="Site preview", charset="UTF-8"');
-        throw new HttpError(401, "Preview authentication is required.");
-      }
       if (typeof req.url !== "string" || !req.url.startsWith("/") || req.url.startsWith("//") || req.url.includes("#") || CONTROL.test(req.url)) throw new HttpError(400, "Invalid path.");
       if (req.url.split("?")[0] === "/api/preview") {
         if (req.method !== "POST") { res.setHeader("Allow", "POST"); throw new HttpError(405, "Method not allowed."); }

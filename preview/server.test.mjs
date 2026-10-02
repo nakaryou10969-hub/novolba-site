@@ -11,10 +11,8 @@ import { SITE } from "./site-config.mjs";
 const endpoint = SITE.endpoints[0];
 const env = {
   MICROCMS_SERVICE_DOMAIN: "test-service", MICROCMS_API_KEY: "test-only-api-key",
-  PREVIEW_BASIC_USERNAME: "editor", PREVIEW_BASIC_PASSWORD: "test-only-password-123",
   PREVIEW_PUBLIC_ORIGIN: "https://preview.example.test", PREVIEW_PORT: "3001",
 };
-const authorization = `Basic ${Buffer.from(`${env.PREVIEW_BASIC_USERNAME}:${env.PREVIEW_BASIC_PASSWORD}`).toString("base64")}`;
 const input = { endpoint, contentId: "article_1", draftKey: "test-draft-one" };
 
 async function listen(server) {
@@ -43,7 +41,13 @@ async function fixture(t, options = {}) {
   const upstream = createServer((req, res) => {
     const url = new URL(req.url, "http://mock.invalid");
     upstreamCalls.push({ url, headers: req.headers });
+    if (url.searchParams.get("fields") === "id" && !options.acceptInvalidKey) {
+      res.statusCode = 404; res.end(); return;
+    }
     if (options.upstream) return options.upstream(req, res, url);
+    if (!["test-draft-one", "test-edited-published"].includes(url.searchParams.get("draftKey"))) {
+      res.statusCode = 404; res.end(); return;
+    }
     const published = url.searchParams.get("draftKey") === "test-edited-published";
     res.setHeader("Content-Type", "application/json");
     res.end(JSON.stringify({ id: "article_1", title: published ? "Edited published draft" : "Unpublished draft",
@@ -69,7 +73,7 @@ async function fixture(t, options = {}) {
   const call = (route = "/api/preview", extra = {}) => new Promise((resolve, reject) => {
     const isApi = route.startsWith("/api/preview");
     const body = extra.body ?? (isApi ? JSON.stringify(input) : undefined);
-    const headers = { Host: "preview.example.test", Authorization: authorization,
+    const headers = { Host: "preview.example.test",
       ...(isApi ? { Origin: env.PREVIEW_PUBLIC_ORIGIN, "Content-Type": "application/json", "X-Preview-Request": "1" } : {}),
       ...extra.headers };
     for (const key of Object.keys(headers)) if (headers[key] === undefined) delete headers[key];
@@ -96,15 +100,13 @@ function privateHeaders(response) {
 }
 
 test("configuration fails closed and never includes provided secrets in validation errors", () => {
-  for (const key of ["MICROCMS_SERVICE_DOMAIN", "MICROCMS_API_KEY", "PREVIEW_BASIC_USERNAME", "PREVIEW_BASIC_PASSWORD", "PREVIEW_PUBLIC_ORIGIN"]) {
+  for (const key of ["MICROCMS_SERVICE_DOMAIN", "MICROCMS_API_KEY", "PREVIEW_PUBLIC_ORIGIN"]) {
     assert.throws(() => readConfig({ ...env, [key]: "" }), /missing or invalid/);
   }
   for (const value of ["http://preview.example.test", "https://user:password@preview.example.test", "https://preview.example.test/path", "https://preview.example.test/?draftKey=x", "https://preview.example.test#x"]) {
     assert.throws(() => readConfig({ ...env, PREVIEW_PUBLIC_ORIGIN: value }), /HTTPS origin/);
   }
   assert.throws(() => readConfig({ ...env, MICROCMS_SERVICE_DOMAIN: "evil.test/path" }), /MICROCMS_SERVICE_DOMAIN/);
-  assert.throws(() => readConfig({ ...env, PREVIEW_BASIC_PASSWORD: "short" }), /PREVIEW_BASIC_PASSWORD/);
-  assert.throws(() => readConfig({ ...env, PREVIEW_BASIC_USERNAME: "editor:admin" }), /PREVIEW_BASIC_USERNAME/);
   assert.throws(() => readConfig({ ...env, PREVIEW_PORT: "3001invalid" }), /PREVIEW_PORT/);
   assert.throws(() => readConfig({ ...env, PREVIEW_HOST: "0.0.0.0", PREVIEW_PUBLIC_ORIGIN: "http://localhost:3001" }), /HTTPS origin/);
   const local = readConfig({ ...env, PREVIEW_PUBLIC_ORIGIN: "http://127.0.0.1:3001" });
@@ -127,16 +129,31 @@ test("request parser rejects unknown, duplicate, nested, malformed and invalid t
   for (const allowed of SITE.endpoints) assert.equal(parsePreviewInput(JSON.stringify({ ...input, endpoint: allowed })).endpoint, allowed);
 });
 
-test("all static pages and API responses require Basic authentication before upstream access", async (t) => {
+test("shell and assets need no additional login, while missing or wrong draft keys return no content", async (t) => {
   const { call, upstreamCalls } = await fixture(t);
-  for (const route of ["/preview/", "/asset.css", "/api/preview"]) {
-    for (const header of [undefined, "Bearer fake", "Basic !!!!", `Basic ${Buffer.from("editor:wrong-password").toString("base64")}`]) {
-      const response = await call(route, { headers: { Authorization: header } });
-      assert.equal(response.status, 401);
-      assert.match(response.headers["www-authenticate"], /Basic/); privateHeaders(response);
-    }
+  for (const route of ["/preview/", "/asset.css"]) {
+    const response = await call(route);
+    assert.equal(response.status, 200); assert.equal(response.headers["www-authenticate"], undefined); privateHeaders(response);
   }
   assert.equal(upstreamCalls.length, 0);
+  for (const body of ["{}", JSON.stringify({ endpoint, contentId: input.contentId }), JSON.stringify({ ...input, draftKey: "" })]) {
+    const response = await call("/api/preview", { body });
+    assert.equal(response.status, 400); assert.ok(!response.text.includes("Draft body")); privateHeaders(response);
+  }
+  assert.equal(upstreamCalls.length, 0);
+  const wrong = await call("/api/preview", { body: JSON.stringify({ ...input, draftKey: "wrong-article-key" }) });
+  assert.equal(wrong.status, 404); assert.ok(!wrong.text.includes("Draft body")); privateHeaders(wrong);
+});
+
+test("CMS accepting a nonmatching key fails closed without returning any article or reading the real-key body", async (t) => {
+  const { call, upstreamCalls } = await fixture(t, { acceptInvalidKey: true,
+    upstream: (_req, res) => { res.setHeader("Content-Type", "application/json"); res.end(JSON.stringify({ id: input.contentId, title: "Private fallback", content: "MUST_NOT_BE_RETURNED" })); } });
+  const response = await call();
+  assert.equal(response.status, 502); privateHeaders(response);
+  assert.equal(upstreamCalls.length, 1);
+  assert.equal(upstreamCalls[0].url.searchParams.get("fields"), "id");
+  assert.notEqual(upstreamCalls[0].url.searchParams.get("draftKey"), input.draftKey);
+  assert.ok(!response.text.includes("MUST_NOT_BE_RETURNED"));
 });
 
 test("unpublished content and edits to published content use draftKey without caching or secret fields", async (t) => {
@@ -151,13 +168,15 @@ test("unpublished content and edits to published content use draftKey without ca
   const edited = await call("/api/preview", { body: JSON.stringify({ ...input, draftKey: "test-edited-published" }) });
   assert.equal(edited.status, 200); privateHeaders(edited);
   assert.equal(JSON.parse(edited.text).content.title, "Edited published draft");
-  assert.equal(upstreamCalls.length, 2);
-  assert.equal(upstreamCalls[0].url.pathname, `/api/v1/${endpoint}/article_1`);
-  assert.equal(upstreamCalls[0].url.searchParams.get("draftKey"), "test-draft-one");
-  assert.equal(upstreamCalls[1].url.searchParams.get("draftKey"), "test-edited-published");
-  assert.equal(upstreamCalls[0].headers["x-microcms-api-key"], env.MICROCMS_API_KEY);
-  assert.equal(upstreamCalls[0].headers["cache-control"], "no-store");
-  assert.equal(upstreamCalls[0].url.searchParams.get("fields"), SITE.fields.join(","));
+  assert.equal(upstreamCalls.length, 4);
+  assert.equal(upstreamCalls[0].url.searchParams.get("fields"), "id");
+  assert.notEqual(upstreamCalls[0].url.searchParams.get("draftKey"), input.draftKey);
+  assert.equal(upstreamCalls[1].url.pathname, `/api/v1/${endpoint}/article_1`);
+  assert.equal(upstreamCalls[1].url.searchParams.get("draftKey"), "test-draft-one");
+  assert.equal(upstreamCalls[3].url.searchParams.get("draftKey"), "test-edited-published");
+  assert.equal(upstreamCalls[1].headers["x-microcms-api-key"], env.MICROCMS_API_KEY);
+  assert.equal(upstreamCalls[1].headers["cache-control"], "no-store");
+  assert.equal(upstreamCalls[1].url.searchParams.get("fields"), SITE.fields.join(","));
   assert.ok(!unpublished.text.includes(env.MICROCMS_API_KEY));
   assert.ok(!unpublished.text.includes(input.draftKey));
 });
@@ -170,7 +189,7 @@ test("each explicitly allowlisted endpoint works and other endpoints never reach
   for (const denied of ["services", "blog/other", "with?url=evil", ...(SITE.endpoints.includes("blog") ? ["blogs", "with"] : ["blog"])]) {
     assert.equal((await call("/api/preview", { body: JSON.stringify({ ...input, endpoint: denied }) })).status, 400);
   }
-  assert.equal(upstreamCalls.length, SITE.endpoints.length);
+  assert.equal(upstreamCalls.length, SITE.endpoints.length * 2);
 });
 
 test("Origin, host, custom header, method and JSON content type are enforced", async (t) => {
@@ -191,9 +210,9 @@ test("Origin, host, custom header, method and JSON content type are enforced", a
   assert.equal(upstreamCalls.length, 0);
 });
 
-test("duplicate sensitive headers are rejected before authentication or upstream access", async (t) => {
+test("duplicate sensitive headers are rejected before upstream access", async (t) => {
   const { call, upstreamCalls } = await fixture(t);
-  for (const [name, value] of [["Authorization", authorization], ["Origin", env.PREVIEW_PUBLIC_ORIGIN],
+  for (const [name, value] of [["Authorization", "unused-header"], ["Origin", env.PREVIEW_PUBLIC_ORIGIN],
     ["Content-Type", "application/json"], ["X-Preview-Request", "1"]]) {
     const response = await call("/api/preview", { headers: { [name]: [value, value] } });
     assert.equal(response.status, 400); privateHeaders(response);
@@ -228,7 +247,7 @@ test("static output uses hash CSP for Next inline boot scripts and private heade
   assert.equal(head.status, 200); assert.equal(head.text, ""); privateHeaders(head);
 });
 
-test("public CMS article HTML is unavailable on the authenticated preview origin", async (t) => {
+test("public CMS article HTML is unavailable on the dedicated preview origin", async (t) => {
   const { call, cmsScript } = await fixture(t);
   const cmsHash = createHash("sha256").update(cmsScript).digest("base64");
   for (const route of ["/", "/index.html", "/404.html", "/articles/published/", "/articles/published", "/articles/published/index.html"]) {
@@ -293,7 +312,7 @@ test("upstream redirects are never followed", async (t) => {
   } });
   const response = await call();
   assert.equal(response.status, 502); privateHeaders(response);
-  assert.equal(upstreamCalls.length, 1);
+  assert.equal(upstreamCalls.length, 2);
 });
 
 test("upstream timeout aborts the draft request", async (t) => {
@@ -333,20 +352,10 @@ test("streamed upstream bodies are limited even without Content-Length", async (
   const response = await call(); assert.equal(response.status, 502); privateHeaders(response);
 });
 
-test("failed authentication is rate limited using the socket peer, ignoring spoofed forwarding headers", async (t) => {
-  const { call, upstreamCalls } = await fixture(t);
-  for (let i = 0; i < 31; i += 1) {
-    const response = await call("/api/preview", { headers: { Authorization: undefined, "X-Forwarded-For": `192.0.2.${i}` } });
-    assert.equal(response.status, i < 30 ? 401 : 429); privateHeaders(response);
-    if (i === 30) assert.equal(response.headers["retry-after"], "60");
-  }
-  assert.equal(upstreamCalls.length, 0);
-});
-
-test("authenticated API rate limit prevents additional upstream reads", async (t) => {
+test("preview API rate limit prevents additional upstream reads", async (t) => {
   const { call, upstreamCalls } = await fixture(t);
   for (let i = 0; i < 61; i += 1) {
     const response = await call(); assert.equal(response.status, i < 60 ? 200 : 429); privateHeaders(response);
   }
-  assert.equal(upstreamCalls.length, 60);
+  assert.equal(upstreamCalls.length, 120);
 });
