@@ -11,6 +11,17 @@ const ROOT = path.resolve(fileURLToPath(new URL("../..", import.meta.url)));
 const APPLICATION_SECRETS = ["MICROCMS_API_KEY", "PREVIEW_BASIC_USERNAME", "PREVIEW_BASIC_PASSWORD"];
 const MANAGED_BY = "microcms-preview-lambda";
 class SafeError extends Error {}
+export function classifyAwsFailure(text) {
+  // Only fixed labels leave this boundary; never return CLI text or captures.
+  if (/AccessDenied|not authorized to perform/.test(text)) return "access-denied";
+  if (/Unable to load paramfile|Error parsing parameter.*cli-input-json/.test(text)) return "cli-input-file";
+  if (/Invalid JSON/.test(text)) return "cli-input-json";
+  if (/Parameter validation failed/.test(text)) return "cli-parameter-validation";
+  if (/Unknown options/.test(text)) return "cli-options";
+  if (/ValidationError|InvalidParameterValueException/.test(text)) return "aws-validation";
+  if (/Could not connect to the endpoint|Connect timeout|Read timeout/.test(text)) return "network";
+  return "unclassified";
+}
 
 // This entrypoint is intended for a manually approved Linux CI job. Secrets enter
 // CloudFormation via stdin only; no temporary parameter file or secret argv exists.
@@ -57,7 +68,7 @@ export function awsRunner(env, spawnChild = spawn) {
       if (code !== 0) {
         if (allowMissing && /ValidationError/.test(errorText) && /does not exist/.test(errorText)) return resolve(null);
         if (allowNoUpdates && /No updates are to be performed/.test(errorText)) return resolve({ noUpdates: true });
-        return reject(new SafeError(`AWS ${args[0]} ${args[1]} failed. Inspect the approved AWS console; CLI details were suppressed.`));
+        return reject(new SafeError(`AWS ${args[0]} ${args[1]} failed (${classifyAwsFailure(errorText)}). Inspect the approved AWS console; CLI details were suppressed.`));
       }
       try {
         const text = Buffer.concat(stdout).toString("utf8").trim();
