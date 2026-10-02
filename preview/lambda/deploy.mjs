@@ -88,6 +88,7 @@ export async function deployPreview({ env = process.env, platform = process.plat
     const getFunction = () => runAws(["lambda", "get-function", "--function-name", name], { allowMissing: true });
     const existing = await describe(); validateStack(existing, name, role);
     let fn = await getFunction(); validateFunction(fn, name, role);
+    if (fn && (typeof fn.CodeSha256 !== "string" || !fn.CodeSha256)) throw new SafeError("Existing preview Lambda code hash is missing. No changes were made.");
     if (fn && !existing) throw new SafeError("Preview Lambda exists without its managed stack. Inspect actual state before changing anything.");
     const previousUrl = outputValue(existing, "FunctionUrl");
     if (previousUrl && !fn) throw new SafeError("Preview stack URL exists but its Lambda is missing. Inspect actual state before changing anything.");
@@ -111,6 +112,11 @@ export async function deployPreview({ env = process.env, platform = process.plat
     const creating = !fn;
     if (!existing && creating) await waitForRole();
     if (fn) {
+      const previousCodeHash = fn.CodeSha256;
+      fn = await getFunction();
+      if (!fn) throw new SafeError("Expected preview Lambda is missing after infrastructure preparation. No code update was attempted.");
+      validateFunction(fn, name, role);
+      if (fn.CodeSha256 !== previousCodeHash) throw new SafeError("Preview Lambda code changed during infrastructure preparation. Inspect its actual state before any retry.");
       await runAws(["lambda", "update-function-code", "--function-name", name], { zipPath: packagePath, input: JSON.stringify({ RevisionId: fn.RevisionId }) });
     } else {
       await runAws(["lambda", "create-function"], { zipPath: packagePath, input: JSON.stringify({
