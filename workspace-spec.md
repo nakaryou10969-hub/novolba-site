@@ -44,3 +44,16 @@ main 0bb96517e798c070384bda65767957af48ced772 の分離コピーへ with と blo
 - 両サイトの既存GitHub Secretsは必要な名前の存在のみ確認。値は取得していない。Basic認証2種類の追加は本人の入力待ち。
 - AWS配備、実LinuxでのAWS CLI処理、実microCMS記事・draftKey置換は未検証。GitHubの作業用ブランチへChromeで反映済み。対象14ファイルの内容一致を匿名git読取で確認した。
 - Chromeのus-east-1 Lambdaダッシュボードで、アカウント全体10・未予約10の同時実行上限を確認。各5枠の予約はAWS条件を満たさないため設定しない。上限変更は行わず、既存関数と共有する。
+
+
+## 2026-10-02 追加パスワードを使わないプレビューへの変更
+ユーザーは、microCMSログイン状態を外部で検証せず、draftKey付きリンクを持つ人が閲覧できる方式を理解し、実装を承認した。この節が以前のBasic認証要件に優先する。
+- Basic認証、追加ID・パスワード、PREVIEW_BASIC_USERNAME/PASSWORDの必須設定を撤去する。画面shell/assetsは認証なしで開く。
+- 記事取得はPOST /api/previewへ許可endpoint・contentId・非空draftKeyが揃った場合だけ行う。APIキーは既存CI Secretsからサーバー内で使用する。
+- 誤ったキーを受け付けるCMS設定や公開記事へのフォールバックを避けるため、同一記事にランダムな不一致キーを付けた最小GETが拒否されることを確認してから実キーで取得する。拒否が確認できない場合は本文を返さない。
+- no-store/no-referrer/noindex、URL fragment消去、HTMLサニタイズ、Host/Origin制限、サイズ・時間・回数制限を保持する。認証ヘッダでプレビューを許可する経路は作らない。
+- 配備前の非公開Lambda検査は、shellの200、キー無しPOSTの400、キャッシュ禁止と認証ダイアログ無しを確認してから公開権限を有効にする。
+- KSC PR #3 / NovolBa PR #2を修正する。本番記事・本番配備設定は変更しない。
+- AWS IAMとFunction URL公開の具体的な実行確認は配備直前に行う。実CMSのdraftKey置換と不正キー拒否、新規下書き・公開済み改稿の確認は別途必要。
+
+追加パスワード撤去後の検証: プレビュー・Lambda合計59件成功。変更コードESLintとgit diff --check成功。ZIP 341,787 bytes、CRC/run.sh755・LF/プレビューHTML限定を再確認。実AWS・実CMSは未配備・未検証。
