@@ -6,7 +6,7 @@ import os from "node:os";
 import path from "node:path";
 import { PassThrough } from "node:stream";
 import test from "node:test";
-import { awsRunner, deployPreview } from "./deploy.mjs";
+import { awsRunner, deployPreview, classifyAwsFailure } from "./deploy.mjs";
 import { SITE } from "../site-config.mjs";
 
 const TEMPLATE = JSON.parse(await readFile(new URL("./template.json", import.meta.url), "utf8"));
@@ -150,4 +150,22 @@ test("no Basic secret is needed and a broken keyless rejection never publishes t
   await assert.rejects(deployPreview({ root, platform: "linux", env, runAws: run, log: () => {} }), /remains disabled/);
   const changes = bad.calls.filter((call) => ["create-stack", "update-stack"].includes(call.args[1]));
   assert.equal(changes.some((call) => JSON.parse(call.input).Parameters.some((item) => item.ParameterKey === "EnablePublicAccess" && item.ParameterValue === "true")), false);
+});
+
+test("AWS failure classification returns fixed labels and never CLI input or secret text", () => {
+  const secret = "fixture-secret-never-print";
+  const cases = [
+    ["AccessDenied " + secret, "access-denied"],
+    ["Error parsing parameter --cli-input-json: " + secret, "cli-input-file"],
+    ["Parameter validation failed: " + secret, "cli-parameter-validation"],
+    ["Invalid JSON " + secret, "cli-input-json"],
+    ["ValidationError " + secret, "aws-validation"],
+    ["Unknown options " + secret, "cli-options"],
+    ["Could not connect to the endpoint " + secret, "network"],
+    ["Other unexpected details " + secret, "unclassified"]
+  ];
+  for (const [input, expected] of cases) {
+    assert.equal(classifyAwsFailure(input), expected);
+    assert.equal(classifyAwsFailure(input).includes(secret), false);
+  }
 });
