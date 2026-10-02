@@ -11,11 +11,42 @@ const ROOT = path.resolve(fileURLToPath(new URL("../..", import.meta.url)));
 const APPLICATION_SECRETS = ["MICROCMS_API_KEY", "PREVIEW_BASIC_USERNAME", "PREVIEW_BASIC_PASSWORD"];
 const MANAGED_BY = "microcms-preview-lambda";
 class SafeError extends Error {}
+const AWS_MEMORY_BRIDGE = String.raw`import os, subprocess, sys
+fds = []
+try:
+    input_fd = os.memfd_create("preview-input", os.MFD_CLOEXEC)
+    output_fd = os.memfd_create("preview-output", os.MFD_CLOEXEC)
+    fds.extend([input_fd, output_fd])
+    with os.fdopen(os.dup(input_fd), "wb") as stream:
+        stream.write(sys.stdin.buffer.read())
+    os.lseek(input_fd, 0, os.SEEK_SET)
+    args = [
+        "file:///proc/self/fd/" + str(input_fd) if value == "file:///dev/stdin" else
+        "fileb:///proc/self/fd/" + str(input_fd) if value == "fileb:///dev/stdin" else
+        "/proc/self/fd/" + str(output_fd) if value == "/dev/stdout" else value
+        for value in sys.argv[1:]
+    ]
+    result = subprocess.run(["aws", *args], pass_fds=tuple(fds), stdin=subprocess.DEVNULL, capture_output=True)
+    if result.returncode == 0:
+        os.lseek(output_fd, 0, os.SEEK_SET)
+        with os.fdopen(os.dup(output_fd), "rb") as stream:
+            sys.stdout.buffer.write(stream.read())
+        sys.stdout.buffer.write(result.stdout)
+    sys.stderr.buffer.write(result.stderr)
+    sys.exit(result.returncode)
+except Exception:
+    sys.stderr.write("Preview memory bridge failed. Details suppressed.\n")
+    sys.exit(1)
+finally:
+    for fd in fds:
+        os.close(fd)
+`;
+
 export function classifyAwsFailure(text) {
   // Only fixed labels leave this boundary; never return CLI text or captures.
   if (/AccessDenied|not authorized to perform/.test(text)) return "access-denied";
-  if (/Unable to load paramfile|Error parsing parameter.*cli-input-json/.test(text)) return "cli-input-file";
   if (/Invalid JSON/.test(text)) return "cli-input-json";
+  if (/Unable to load paramfile|Error parsing parameter.*cli-input-json/.test(text)) return "cli-input-file";
   if (/Parameter validation failed/.test(text)) return "cli-parameter-validation";
   if (/Unknown options/.test(text)) return "cli-options";
   if (/ValidationError|InvalidParameterValueException/.test(text)) return "aws-validation";
@@ -48,10 +79,9 @@ export function awsRunner(env, spawnChild = spawn) {
   return (args, { input, payloadOutput = false, allowMissing = false, allowNoUpdates = false } = {}) => new Promise((resolve, reject) => {
     const childEnv = { ...env, AWS_PAGER: "", AWS_CLI_AUTO_PROMPT: "off" };
     for (const key of APPLICATION_SECRETS) delete childEnv[key];
-    // Node's IPC descriptors can be sockets, which Python cannot open using
-    // /dev/stdin or /dev/stdout. Bash creates ordinary OS pipes for the AWS CLI.
-    // The shell script is fixed; every dynamic argument is a positional argument.
-    const child = spawnChild("bash", ["-o", "pipefail", "-c", 'cat | aws "$@" | cat', "preview-aws", ...args, "--region", "us-east-1", "--no-cli-pager", "--output", "json"], {
+    // Seekable anonymous memory files avoid socket/pipe incompatibility in the CLI.
+    // Only the fixed bridge and nonsecret positional arguments enter argv.
+    const child = spawnChild("python3", ["-c", AWS_MEMORY_BRIDGE, ...args, "--region", "us-east-1", "--no-cli-pager", "--output", "json"], {
       env: childEnv, stdio: ["pipe", "pipe", "pipe"]
     });
     const stdout = []; const stderr = []; let size = 0;
@@ -61,7 +91,7 @@ export function awsRunner(env, spawnChild = spawn) {
       chunks.push(bytes);
     };
     child.stdout.on("data", capture(stdout)); child.stderr.on("data", capture(stderr));
-    child.on("error", () => reject(new SafeError("AWS CLI could not start. Bash and AWS CLI v2 are required in the approved Linux CI environment.")));
+    child.on("error", () => reject(new SafeError("AWS CLI could not start. Python 3 with Linux memfd and AWS CLI v2 are required in the approved Linux CI environment.")));
     child.stdin.on("error", () => {});
     child.on("close", (code) => {
       const errorText = Buffer.concat(stderr).toString("utf8");
