@@ -213,7 +213,11 @@ function selectContent(raw, input, fields) {
     result.tag = raw.tag;
   }
   if (fields.includes("category") && raw.category != null) {
-    if (typeof raw.category === "string") result.category = raw.category;
+    if (input.endpoint === "with" && Array.isArray(raw.category)) {
+      // Select fields are arrays even with single selection; this view displays the first selection.
+      if (raw.category.length > 64 || !raw.category.every((item) => typeof item === "string" && item.length <= 200)) return fail();
+      if (raw.category.length) result.category = raw.category[0];
+    } else if (typeof raw.category === "string") result.category = raw.category;
     else if (typeof raw.category === "object" && !Array.isArray(raw.category) &&
       typeof raw.category.id === "string" && typeof raw.category.name === "string") {
       result.category = { id: raw.category.id, name: raw.category.name };
