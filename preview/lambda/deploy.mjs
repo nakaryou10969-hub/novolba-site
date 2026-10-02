@@ -93,7 +93,7 @@ export async function deployPreview({ env = process.env, platform = process.plat
   if (!/^\d{12}$/.test(env.EXPECTED_AWS_ACCOUNT_ID || "")) throw new SafeError("EXPECTED_AWS_ACCOUNT_ID is required.");
   if (env.AWS_REGION !== "us-east-1" || (env.AWS_DEFAULT_REGION && env.AWS_DEFAULT_REGION !== "us-east-1")) throw new SafeError("Deployment region must be us-east-1.");
   try { readConfig({ ...env, PREVIEW_PUBLIC_ORIGIN: "https://unconfigured.invalid", PREVIEW_HOST: "127.0.0.1", PREVIEW_PORT: "3001" }); }
-  catch { throw new SafeError("Runtime configuration is missing or invalid. Enter the approved microCMS and Basic authentication values in CI secrets."); }
+  catch { throw new SafeError("Runtime configuration is missing or invalid. Enter the approved microCMS values in CI secrets."); }
   const packagePath = path.resolve(root, env.PREVIEW_PACKAGE_PATH || ".preview-lambda-build/preview.zip");
   const manifest = JSON.parse(await readFile(`${packagePath}.manifest.json`, "utf8"));
   const info = await stat(packagePath);
@@ -110,7 +110,6 @@ export async function deployPreview({ env = process.env, platform = process.plat
   const tags = [{ Key: "ManagedBy", Value: MANAGED_BY }, { Key: "PreviewSite", Value: SITE.name }];
   const parameters = (origin, enabled) => [
     ["FunctionName", name], ["ServiceDomain", env.MICROCMS_SERVICE_DOMAIN], ["MicrocmsApiKey", env.MICROCMS_API_KEY],
-    ["BasicUsername", env.PREVIEW_BASIC_USERNAME], ["BasicPassword", env.PREVIEW_BASIC_PASSWORD],
     ["PublicOrigin", origin], ["EnablePublicAccess", String(enabled)]
   ].map(([ParameterKey, ParameterValue]) => ({ ParameterKey, ParameterValue }));
   const apply = async (origin, enabled, create = false) => {
@@ -138,15 +137,30 @@ export async function deployPreview({ env = process.env, platform = process.plat
       requestId: "preview-deploy-check", routeKey: "$default", stage: "$default", time: "01/Jan/2000:00:00:00 +0000", timeEpoch: 946684800000 },
     isBase64Encoded: false
   };
-  const check = await runAws(["lambda", "invoke", "--function-name", name, "--cli-binary-format", "raw-in-base64-out", "--payload", "fileb:///dev/stdin", "/dev/stdout", "--query", "{StatusCode:StatusCode,FunctionError:FunctionError}"], {
-    input: JSON.stringify(probe), payloadOutput: true
+  const invoke = (event) => runAws(["lambda", "invoke", "--function-name", name, "--cli-binary-format", "raw-in-base64-out", "--payload", "fileb:///dev/stdin", "/dev/stdout", "--query", "{StatusCode:StatusCode,FunctionError:FunctionError}"], {
+    input: JSON.stringify(event), payloadOutput: true
   });
-  const headers = Object.fromEntries(Object.entries(check.payload?.headers || {}).map(([key, value]) => [key.toLowerCase(), value]));
-  if (check.metadata?.StatusCode !== 200 || check.metadata.FunctionError || check.payload?.statusCode !== 401 ||
-      !/^Basic /i.test(headers["www-authenticate"] || "") || !/\bno-store\b/i.test(headers["cache-control"] || "")) {
-    throw new SafeError("Private pre-publication authentication check failed. Public invocation remains disabled.");
+  const check = async (event, status) => {
+    const result = await invoke(event);
+    const headers = Object.fromEntries(Object.entries(result.payload?.headers || {}).map(([key, value]) => [key.toLowerCase(), value]));
+    if (result.metadata?.StatusCode !== 200 || result.metadata.FunctionError || result.payload?.statusCode !== status ||
+        headers["www-authenticate"] || !/\bno-store\b/i.test(headers["cache-control"] || "")) {
+      throw new SafeError("Private pre-publication preview check failed. Public invocation remains disabled.");
+    }
+    return result.payload;
+  };
+  const shell = await check(probe, 200);
+  if (!/^text\/html(?:\s*;|$)/i.test(shell.headers?.["content-type"] || shell.headers?.["Content-Type"] || "")) {
+    throw new SafeError("Preview shell check failed. Public invocation remains disabled.");
   }
-  log("Authentication check passed. Enabling the approved Function URL permissions.");
+  const keyless = await check({ ...probe, rawPath: "/api/preview",
+    headers: { host, origin, "content-type": "application/json", "x-preview-request": "1" }, body: "{}",
+    requestContext: { ...probe.requestContext, http: { ...probe.requestContext.http, method: "POST", path: "/api/preview" } }
+  }, 400);
+  let errorBody;
+  try { errorBody = JSON.parse(keyless.isBase64Encoded ? Buffer.from(keyless.body, "base64").toString("utf8") : keyless.body); } catch {}
+  if (errorBody?.error !== "Invalid preview request.") throw new SafeError("Keyless article check failed. Public invocation remains disabled.");
+  log("Preview shell and keyless rejection checks passed. Enabling the approved Function URL permissions.");
   await apply(origin, true);
   log(`Preview deployed at ${origin}/preview/. microCMS draft substitution and real article checks remain separate steps.`);
   return { origin, functionName: name, stackName };
