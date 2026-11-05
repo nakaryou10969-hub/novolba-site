@@ -127,3 +127,9 @@ CloudFormationコンソールのテンプレートアップロードはS3保存�
 - 実施結果: 承認済み本文をNext.js子ページへ移植、共有カードでトップと一覧を4サービス化、関連metadataを整合。WebP12点合計880,806bytes。
 - 検証結果: モックCMSによる静的build・型検査・変更TS/TSXのESLint・差分検査成功。カード14条件＋子ページ6条件、本文一致、画像、FAQ、モバイルメニュー、クライアント遷移後のCSS非漏出を確認。PC/スマホを目視確認。既存ページ由来の未使用画像preload警告は今回のページ実行エラーと区別する。
 - 外部反映: 本番未反映。現在のGitHub認証 daisuke-saito1020 は対象repoの書き込み権限がなく、push dry-runが403。作業ブランチはローカルに保存し、適用用パッチも用意する。
+
+### 2026-11-05 トップのカード表記
+- トップの買取大助カード名に `Service` を付ける。サービス正式名称と子ページh1は買取大助を維持する。
+- GitHubはユーザー指定のsupport@novolba.com側を使う。今回は認証アカウントの確認まででpush/PR/本番反映を行わない。
+- 確認結果: GitHubコネクター、gh CLI、Windows Git Credential Managerの登録名はいずれもdaisuke-saito1020。support側のCLI登録はなし。ユーザー指定のsupport@novolba.comと既存記録のnakaryou10969-hubを今後の対象とし、別アカウントでの403をsupport側の権限不足と解釈しない。ブラウザーのGitHubアカウント表示はツールエラーで未確認。認証設定の切替・登録・GitHub送信なし。
+- 表記修正結果: トップのカードのみ買取大助 Serviceへ変更。静的build・変更コードLintと生成HTML確認成功。一覧・子ページの正式名称は買取大助を維持。

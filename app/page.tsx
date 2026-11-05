@@ -204,7 +204,7 @@ export default async function Home() {
           <div className="mt-3 mx-auto w-12 h-0.5" style={{ backgroundColor: "#3dbdac" }} />
         </div>
 
-        <ServiceCards />
+        <ServiceCards titleOverrides={{ "kaitori-oodasukari": "買取大助 Service" }} />
       </section>
 
       {/* ===== News / Blog ===== */}

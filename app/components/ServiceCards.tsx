@@ -4,9 +4,13 @@ import { services } from "../../libs/services";
 
 type ServiceCardsProps = {
   headingLevel?: 2 | 3;
+  titleOverrides?: Record<string, string>;
 };
 
-export default function ServiceCards({ headingLevel = 3 }: ServiceCardsProps) {
+export default function ServiceCards({
+  headingLevel = 3,
+  titleOverrides = {},
+}: ServiceCardsProps) {
   const CardHeading = headingLevel === 2 ? "h2" : "h3";
 
   return (
@@ -28,7 +32,7 @@ export default function ServiceCards({ headingLevel = 3 }: ServiceCardsProps) {
 
           <div className="flex flex-1 flex-col gap-3 px-6 py-6 [line-break:strict] [overflow-wrap:anywhere]">
             <CardHeading className="text-center text-base font-bold text-gray-800">
-              {service.title}
+              {titleOverrides[service.id] ?? service.title}
             </CardHeading>
             <p className="text-center text-sm leading-relaxed text-gray-500">
               {service.description}
