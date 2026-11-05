@@ -133,3 +133,11 @@ CloudFormationコンソールのテンプレートアップロードはS3保存�
 - GitHubはユーザー指定のsupport@novolba.com側を使う。今回は認証アカウントの確認まででpush/PR/本番反映を行わない。
 - 確認結果: GitHubコネクター、gh CLI、Windows Git Credential Managerの登録名はいずれもdaisuke-saito1020。support側のCLI登録はなし。ユーザー指定のsupport@novolba.comと既存記録のnakaryou10969-hubを今後の対象とし、別アカウントでの403をsupport側の権限不足と解釈しない。ブラウザーのGitHubアカウント表示はツールエラーで未確認。認証設定の切替・登録・GitHub送信なし。
 - 表記修正結果: トップのカードのみ買取大助 Serviceへ変更。静的build・変更コードLintと生成HTML確認成功。一覧・子ページの正式名称は買取大助を維持。
+
+### 2026-11-05 support側認証を整備
+- support@novolba.com側nakaryou10969-hubのCLI認証追加/切替と対象repoの権限確認をユーザーが依頼。既存別アカウントは削除しない。認証秘密の取得・表示・保存なし、コード送信・PR・本番反映なし。
+- 認証完了: GitHub公式CLIの現在ユーザーnakaryou10969-hub、対象repoのpush/admin権限trueをAPIで確認。既存daisuke認証も保持。ローカルcredential.usernameをnakaryou10969-hubへ固定済み。コード送信・PR・本番反映なし。
+
+### 2026-11-05 本番反映承認
+- ユーザーが本番実装を明示依頼。今回の承認済みコードのGitHub反映・main統合・既存S3/CloudFront配備を許可範囲へ加える。最新mainと認証を確認し、実Secretsによる既存workflowを使う。ローカルモックout/のアップロード、AWS/CMS設定変更は行わない。
+- 完了条件: workflow成功と公開3ページの4カード/新URL/素材/導線、PC/スマホの表示を検証する。
