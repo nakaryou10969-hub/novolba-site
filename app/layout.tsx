@@ -12,8 +12,8 @@ export const metadata: Metadata = {
     template: "%s | NovolBa",
   },
   description:
-    "スタートアップに特化したオフィスサービス。家具ホーダイ・BASIC OFFICE・ノボルバディの3サービスを展開。初期費用ゼロ、月額定額制で理想のオフィスを実現します。",
-  keywords: ["NovolBa", "スタートアップ", "オフィス", "家具サブスク", "家具ホーダイ", "BASIC OFFICE", "オフィス移転"],
+    "スタートアップに特化したオフィスサービス。家具ホーダイ・BASIC OFFICE・ノボルバディ・買取大助の4サービスを展開。初期費用ゼロ、月額定額制で理想のオフィスを実現します。",
+  keywords: ["NovolBa", "スタートアップ", "オフィス", "家具サブスク", "家具ホーダイ", "BASIC OFFICE", "買取大助", "オフィス移転"],
   authors: [{ name: "株式会社NovolBa" }],
   openGraph: {
     type: "website",
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     siteName: "NovolBa",
     title: "NovolBa | 挑戦するスタートアップの昇る場",
     description:
-      "スタートアップに特化したオフィスサービス。家具ホーダイ・BASIC OFFICE・ノボルバディの3サービスを展開。",
+      "スタートアップに特化したオフィスサービス。家具ホーダイ・BASIC OFFICE・ノボルバディ・買取大助の4サービスを展開。",
     images: [
       {
         url: "/og-image.png",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "NovolBa | 挑戦するスタートアップの昇る場",
     description:
-      "スタートアップに特化したオフィスサービス。家具ホーダイ・BASIC OFFICE・ノボルバディの3サービスを展開。",
+      "スタートアップに特化したオフィスサービス。家具ホーダイ・BASIC OFFICE・ノボルバディ・買取大助の4サービスを展開。",
     images: ["/og-image.png"],
   },
   icons: {

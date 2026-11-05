@@ -117,3 +117,27 @@ CloudFormationコンソールのテンプレートアップロードはS3保存�
 全取得項目と実スキーマに沿ったWITH結合fixtureでcategory=[]/author=[]/pickup=false/eyecatch=null/本文/slug/標準日時をまとめて検証する。修正前502を手元で再現、修正後テスト・独立レビュー・リモート照合後に配備し、実下書き本文表示を確認するまで完了としない。APIスキーマの入力/変更保存・キー取得は行わない。
 
 検証結果: 全スキーマ結合fixtureで修正前502を1回再現し、修正後プレビューテスト98/98成功。空/単一/複数著者、64件/1000字境界、全要素型・異常末尾、NEWS配列拒否・文字列互換を確認。独立レビューで指摘なし。実行時差分はWITH author処理5行のみ、対象はserver.mjs/server.test.mjs/workspace-spec.mdの3ファイル。配備処理・取得項目・本番側コードは変更しない。skip ciで本番push配備を避け、照合後に既存手動プレビュー配備を実行し、microCMSから開いた保存済み下書きを検証する。
+
+## 2026-11-05 買取大助の本番組込準備
+- 目的: トップとサービス一覧を4サービスへ更新し、承認済み買取大助ページを `/service/kaitori-oodasukari/` に組み込む。
+- カード: 最大幅960px、800px以上2列×2段、狭幅1列・カード最大幅464pxで中央配置。既存3件の文言とリンクを保持し、4件目を追加する。画像を大きくしすぎず、ボタンは詳細ページと `/inquiry/`。
+- 正本: 親ワークスペースの `sites/novolba-office-purchase-review/dist/` の本文・画像・図・レイアウト。共通Header/FooterはRootLayoutを使用し、子ページのCSSは限定スコープにする。プレビュー限定noindexは本番ページへ引き継がない。
+- 範囲: `codex/kaitori-oodasukari` で実装・ローカル検証・レビュー準備。mainへのpush/merge、本番配備、AWS/CMS設定変更は含まない。既存の認証・記事・プレビュー機能を維持する。
+- 完了条件: ビルドと型検査、変更コードLint、320/390/768/800/960/1440pxの表示・幅・画像・導線、本文保持、FAQ・共通ナビを確認。CMSモックによるビルドは本番公開可能な成果物と区別する。
+- 実施結果: 承認済み本文をNext.js子ページへ移植、共有カードでトップと一覧を4サービス化、関連metadataを整合。WebP12点合計880,806bytes。
+- 検証結果: モックCMSによる静的build・型検査・変更TS/TSXのESLint・差分検査成功。カード14条件＋子ページ6条件、本文一致、画像、FAQ、モバイルメニュー、クライアント遷移後のCSS非漏出を確認。PC/スマホを目視確認。既存ページ由来の未使用画像preload警告は今回のページ実行エラーと区別する。
+- 外部反映: 本番未反映。現在のGitHub認証 daisuke-saito1020 は対象repoの書き込み権限がなく、push dry-runが403。作業ブランチはローカルに保存し、適用用パッチも用意する。
+
+### 2026-11-05 トップのカード表記
+- トップの買取大助カード名に `Service` を付ける。サービス正式名称と子ページh1は買取大助を維持する。
+- GitHubはユーザー指定のsupport@novolba.com側を使う。今回は認証アカウントの確認まででpush/PR/本番反映を行わない。
+- 確認結果: GitHubコネクター、gh CLI、Windows Git Credential Managerの登録名はいずれもdaisuke-saito1020。support側のCLI登録はなし。ユーザー指定のsupport@novolba.comと既存記録のnakaryou10969-hubを今後の対象とし、別アカウントでの403をsupport側の権限不足と解釈しない。ブラウザーのGitHubアカウント表示はツールエラーで未確認。認証設定の切替・登録・GitHub送信なし。
+- 表記修正結果: トップのカードのみ買取大助 Serviceへ変更。静的build・変更コードLintと生成HTML確認成功。一覧・子ページの正式名称は買取大助を維持。
+
+### 2026-11-05 support側認証を整備
+- support@novolba.com側nakaryou10969-hubのCLI認証追加/切替と対象repoの権限確認をユーザーが依頼。既存別アカウントは削除しない。認証秘密の取得・表示・保存なし、コード送信・PR・本番反映なし。
+- 認証完了: GitHub公式CLIの現在ユーザーnakaryou10969-hub、対象repoのpush/admin権限trueをAPIで確認。既存daisuke認証も保持。ローカルcredential.usernameをnakaryou10969-hubへ固定済み。コード送信・PR・本番反映なし。
+
+### 2026-11-05 本番反映承認
+- ユーザーが本番実装を明示依頼。今回の承認済みコードのGitHub反映・main統合・既存S3/CloudFront配備を許可範囲へ加える。最新mainと認証を確認し、実Secretsによる既存workflowを使う。ローカルモックout/のアップロード、AWS/CMS設定変更は行わない。
+- 完了条件: workflow成功と公開3ページの4カード/新URL/素材/導線、PC/スマホの表示を検証する。
