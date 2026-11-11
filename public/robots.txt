@@ -3,6 +3,5 @@ Allow: /
 
 # 管理系・API系パスのクロール防止
 Disallow: /api/
-Disallow: /_next/
 
 Sitemap: https://novolba.com/sitemap.xml
