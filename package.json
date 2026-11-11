@@ -16,6 +16,7 @@
     "test:preview": "node --test preview/*.test.mjs"
   },
   "dependencies": {
+    "@next/third-parties": "16.2.4",
     "dompurify": "^3.4.16",
     "microcms-js-sdk": "^3.4.0",
     "next": "16.2.4",
