@@ -45,8 +45,8 @@ export default function KaitoriDaisukePage() {
       <ol className="nv-crumb"><li><Link href="/">TOP</Link></li><li><Link href="/service/">サービス</Link></li><li>買取大助</li></ol>
       <div className="fv__grid">
         <div>
-          <h1>買取大助</h1>
-          <p className="fv__lead">オフィス移転で残していく家具の買取から、廃棄処分、退去時の原状回復まで。引き払いに必要なことを、NovolBaが丸ごと引き受けます。</p>
+          <h1><ruby>買取大助<rt>かいとりだいすけ</rt></ruby></h1>
+          <p className="fv__lead">オフィス移転で残していく家具の買取から、廃棄処分、退去時の原状回復まで。事務所移転時の面倒ごとをまるごとNovolBaが引き受ける、<strong className="nv-marker fv__key">事務所退去の大助かりサービス</strong>です。</p>
         </div>
         <figure className="ba">
           <div className="slot is-filled"><img src="/images/kaitori-daisuke/fv-before-after.webp" alt="移転前の家具が並ぶオフィスと、家具がなくなり原状回復した退去後の同じオフィス" width="1200" height="800" loading="eager" decoding="async" fetchPriority="high" /></div>

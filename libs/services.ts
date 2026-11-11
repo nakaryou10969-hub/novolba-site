@@ -1,24 +1,9 @@
-import type { StaticImageData } from "next/image";
 import serviceKaguImage from "../public/service-kagu.jpg";
 import serviceBasicImage from "../public/service-basic.jpg";
 import serviceBuddyImage from "../public/service-buddy.jpg";
 
 // トップとサービス一覧で、表示内容・リンク先を共通化する。
-type Service = {
-  id: string;
-  title: string;
-  titleRuby?: { base: string; reading: string };
-  description: string;
-  descriptionHighlight?: string;
-  bullets: string[];
-  imageSrc: string | StaticImageData;
-  imageAlt: string;
-  detailHref: string;
-  actionLabel: string;
-  actionHref: string;
-};
-
-export const services: Service[] = [
+export const services = [
   {
     id: "kagu-hodai",
     title: "家具ホーダイ!! Service",
@@ -70,12 +55,7 @@ export const services: Service[] = [
   {
     id: "kaitori-daisuke",
     title: "買取大助",
-    // 見出し中の「買取大助」にフリガナを振る（ServiceCards で <ruby> にする）。
-    titleRuby: { base: "買取大助", reading: "かいとりだいすけ" },
-    description:
-      "オフィス移転で残していく家具の買取から、廃棄処分、退去時の原状回復まで。事務所移転時の面倒ごとをまるごとNovolBaが引き受ける、事務所退去の大助かりサービスです。",
-    // 説明文の中で強調する語句（description の一部と完全一致させる）。
-    descriptionHighlight: "事務所退去の大助かりサービス",
+    description: "オフィス家具の買取から、廃棄・原状回復まで",
     bullets: [
       "オフィス家具のまとめて買取",
       "不要家具の廃棄処分",
