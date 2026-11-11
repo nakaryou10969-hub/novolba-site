@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import SiteAnalytics from "./components/SiteAnalytics";
 
 const siteUrl = "https://novolba-site-zkzn.vercel.app";
 
@@ -61,6 +62,7 @@ export default function RootLayout({
         <div className="flex-1 pt-20">{children}</div>
         <Footer />
       </body>
+      <SiteAnalytics />
     </html>
   );
 }

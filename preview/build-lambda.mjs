@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 export const STAGING_DIRECTORY = ".preview-lambda-build";
 const COMMON_SOURCES = [
   "app/layout.tsx", "app/globals.css", "app/preview/page.tsx", "app/preview/PreviewClient.tsx",
-  "app/components/Header.tsx", "app/components/Footer.tsx",
+  "app/components/Header.tsx", "app/components/Footer.tsx", "app/components/SiteAnalytics.tsx",
   "package.json", "package-lock.json", "tsconfig.json", "postcss.config.mjs", "next.config.ts",
 ];
 const PLANS = Object.freeze({
@@ -102,6 +102,10 @@ export async function verifyLambdaBuildOutput(output) {
   const shell = await readFile(path.join(root, "preview", "index.html"), "utf8");
   if (!shell.includes("記事プレビュー") || /preview-mock-build|fixture-key|mock-preview/i.test(shell)) {
     throw new Error("Preview shell was not built from the approved source.");
+  }
+  // Draft URLs carry draftKey values; analytics must never load in the preview shell.
+  if (/googletagmanager|gtag\/js/i.test(shell)) {
+    throw new Error("Preview shell must not load analytics.");
   }
   return { htmlPaths };
 }
