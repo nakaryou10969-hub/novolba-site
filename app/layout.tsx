@@ -48,6 +48,10 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  // Google Search Console ownership (URL prefix property https://novolba.com/). Keep this tag.
+  verification: {
+    google: "STAMJqTmqUPxHUfUdKe0xQL30isyuA7rL1uMVOT2xdI",
+  },
 };
 
 export default function RootLayout({
