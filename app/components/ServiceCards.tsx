@@ -2,6 +2,41 @@ import Image from "next/image";
 import Link from "next/link";
 import { services } from "../../libs/services";
 
+type TitleRuby = { base: string; reading: string };
+
+// 見出し中の対象語だけを <ruby> にし、読みを小さく上に添える。
+function renderTitle(title: string, ruby?: TitleRuby) {
+  if (!ruby) return title;
+  const index = title.indexOf(ruby.base);
+  if (index < 0) return title;
+  return (
+    <>
+      {title.slice(0, index)}
+      <ruby className="[ruby-align:center]">
+        {ruby.base}
+        <rt className="pb-0.5 text-[0.625rem] font-normal leading-none tracking-[-0.04em] text-[#666666]">
+          {ruby.reading}
+        </rt>
+      </ruby>
+      {title.slice(index + ruby.base.length)}
+    </>
+  );
+}
+
+// 説明文の強調語句を太字・文字用グリーンにする。幅が足りれば語句を1行にまとめる。
+function renderDescription(description: string, highlight?: string) {
+  if (!highlight) return description;
+  const index = description.indexOf(highlight);
+  if (index < 0) return description;
+  return (
+    <>
+      {description.slice(0, index)}
+      <strong className="inline-block text-base font-bold text-[#147D6F]">{highlight}</strong>
+      {description.slice(index + highlight.length)}
+    </>
+  );
+}
+
 type ServiceCardsProps = {
   headingLevel?: 2 | 3;
   titleOverrides?: Record<string, string>;
@@ -17,7 +52,7 @@ export default function ServiceCards({
     <div className="mx-auto grid w-full max-w-[960px] grid-cols-1 gap-8 min-[800px]:grid-cols-2">
       {services.map((service) => {
         // この長いページへの入口は、前ページのスクロール位置を引き継がない文書遷移にする。
-        const DetailLink = service.id === "kaitori-oodasukari" ? "a" : Link;
+        const DetailLink = service.id === "kaitori-daisuke" ? "a" : Link;
         return (
           <article
             key={service.id}
@@ -35,10 +70,10 @@ export default function ServiceCards({
 
             <div className="flex flex-1 flex-col gap-3 px-6 py-6 [line-break:strict] [overflow-wrap:anywhere]">
               <CardHeading className="text-center text-base font-bold text-gray-800">
-                {titleOverrides[service.id] ?? service.title}
+                {renderTitle(titleOverrides[service.id] ?? service.title, service.titleRuby)}
               </CardHeading>
               <p className="text-center text-sm leading-relaxed text-gray-500">
-                {service.description}
+                {renderDescription(service.description, service.descriptionHighlight)}
               </p>
               <ul className="mt-2 flex flex-col gap-2">
                 {service.bullets.map((bullet) => (
