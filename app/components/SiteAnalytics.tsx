@@ -4,8 +4,8 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import { usePathname } from "next/navigation";
 
 // GA4 measurement ID for novolba.com. It is a public value that ships in every page.
-// While it is empty, no analytics tag is rendered anywhere.
-export const GA_MEASUREMENT_ID: string = "";
+// If it is emptied, no analytics tag is rendered anywhere.
+export const GA_MEASUREMENT_ID: string = "G-09BPB66TYQ";
 
 // The article preview carries draftKey values in its URL; it must never be measured.
 export function isMeasuredPath(pathname: string | null): boolean {
