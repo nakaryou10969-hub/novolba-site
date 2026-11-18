@@ -36,6 +36,8 @@ const { parsePreviewLocation } = loadTypeScript(path.join(root, "libs", "preview
 const { readPreviewContent, sanitizePreviewHtml, safePreviewImageUrl } = loadTypeScript(path.join(root, "libs", "previewContent.ts"));
 const { renderArticleContent } = loadTypeScript(path.join(root, "libs", "renderArticleContent.ts"));
 const { formatArticleDate } = loadTypeScript(path.join(root, "libs", "articlePresentation.ts"));
+const { buildArticleMetadata, toArticleExcerpt, DEFAULT_OG_IMAGE } = loadTypeScript(path.join(root, "libs", "siteMetadata.ts"));
+const { getMediaArticlePath, getNewsArticlePath } = loadTypeScript(path.join(root, "libs", "articlePath.ts"));
 const draftKey = "mock_draft_key-1234567890";
 const validSearch = "?endpoint=with&contentId=unpublished_123&view=with";
 const validHash = `#draftKey=${draftKey}`;
@@ -203,6 +205,59 @@ test("rejects malformed API records and drops unsafe optional fields", () => {
   assert.equal(withDraft.article.eyecatch, undefined);
   const newsDraft = readPreviewContent({ ...unpublished, category: { id: "../bad", name: "Unsafe ID" } }, "blogs");
   assert.equal(newsDraft.article.category, undefined);
+});
+
+test("article metadata uses the eyecatch, a body excerpt and the canonical /media/ URL", () => {
+  const article = {
+    id: "ehpg3y-w1d",
+    slug: "event20260807_01",
+    title: "KANDA Open Day 第4回レポート【前編】",
+    content: '<h2>はじめに</h2><p>2026年8月7日（金）、<strong>ちよだ</strong>プラットフォームスクウェアにて開催しました。</p><figure><img src="https://novolba.com/microcms-assets/assets/x/body.png"><figcaption>会場の様子</figcaption></figure>',
+    eyecatch: { url: "https://novolba.com/microcms-assets/assets/x/banner.png", width: 2500, height: 1400 },
+    publishedAt: "2026-08-20T01:00:00.000Z",
+    revisedAt: "2026-08-21T01:00:00.000Z",
+  };
+  const metadata = buildArticleMetadata(article, getMediaArticlePath(article));
+  const image = { url: article.eyecatch.url, width: 2500, height: 1400, alt: article.title };
+  assert.equal(metadata.title, article.title);
+  assert.equal(metadata.description, "2026年8月7日（金）、ちよだプラットフォームスクウェアにて開催しました。");
+  assert.equal(metadata.alternates.canonical, "https://novolba.com/media/event20260807_01/");
+  assert.equal(metadata.openGraph.url, "https://novolba.com/media/event20260807_01/");
+  assert.equal(metadata.openGraph.type, "article");
+  assert.equal(metadata.openGraph.title, article.title);
+  assert.equal(metadata.openGraph.description, metadata.description);
+  assert.deepEqual(metadata.openGraph.images, [image]);
+  assert.equal(metadata.openGraph.publishedTime, article.publishedAt);
+  assert.equal(metadata.openGraph.modifiedTime, article.revisedAt);
+  assert.equal(metadata.twitter.card, "summary_large_image");
+  assert.equal(metadata.twitter.title, article.title);
+  assert.deepEqual(metadata.twitter.images, [image]);
+});
+
+test("article metadata falls back to the first body image, then the default image", () => {
+  const bodyImage = { title: "本文画像の記事", content: '<p>本文</p><img src="https://novolba.com/microcms-assets/assets/x/first.png?w=2000&amp;h=1125" alt="">', eyecatch: null };
+  assert.deepEqual(buildArticleMetadata(bodyImage, "/news/a/").openGraph.images, [{ url: "https://novolba.com/microcms-assets/assets/x/first.png", alt: "本文画像の記事" }]);
+  const noImage = buildArticleMetadata({ title: "画像なしの記事", content: "<p>本文だけ</p>" }, "/news/b/");
+  assert.deepEqual(noImage.openGraph.images, [DEFAULT_OG_IMAGE]);
+  assert.deepEqual(noImage.twitter.images, [DEFAULT_OG_IMAGE]);
+});
+
+test("article canonical URLs use the sitemap encoding and the slug, not the ID", () => {
+  const japaneseSlug = { id: "bwoqc9a7qw", slug: "vol-037-%e3%80%90%e5%89%8d%e7%b7%a8%e3%80%91", title: "Vol.037", content: "<h2>見出しだけ</h2>" };
+  const metadata = buildArticleMetadata(japaneseSlug, getMediaArticlePath(japaneseSlug));
+  assert.equal(metadata.alternates.canonical, "https://novolba.com/media/vol-037-%E3%80%90%E5%89%8D%E7%B7%A8%E3%80%91/");
+  assert.equal(metadata.description, "Vol.037");
+  const idOnly = { id: "abc123", title: "ID only", content: "<p>本文</p>" };
+  assert.equal(buildArticleMetadata(idOnly, getNewsArticlePath(idOnly)).openGraph.url, "https://novolba.com/news/abc123/");
+});
+
+test("article excerpts skip headings, captions and shortcode blocks and stop at 100 characters", () => {
+  const html = '[[toc]]<h2>見出し</h2><p>一文目&amp;二文目&nbsp;です。</p>[[gallery columns="2"]]<p>https://example.test/a.png|キャプション</p>[[/gallery]]<p>[[button href="https://example.test/"]]申し込む[[/button]]</p><p>最後&#x3002;</p>';
+  assert.equal(toArticleExcerpt(html), "一文目&二文目 です。 最後。");
+  const long = toArticleExcerpt(`<p>${"あ".repeat(150)}</p>`);
+  assert.equal(Array.from(long).length, 101);
+  assert.ok(long.endsWith("…"));
+  assert.equal(toArticleExcerpt(null), "");
 });
 
 test("mock build serves current site queries and blocks every non-fixture fetch", () => {

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "ノボルバディ Service | NovolBa",
+  title: "ノボルバディ Service",
   description: "挑戦するスタートアップの「場創り」の右腕に。移転・構築・運用改善の一括サポート。",
 };
 

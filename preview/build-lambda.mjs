@@ -23,6 +23,7 @@ const PLANS = Object.freeze({
       "app/components/WithArticleView.tsx", "app/components/NewsArticleView.tsx", "app/media/constants.ts",
       "libs/client.ts", "libs/microcmsAssets.ts", "libs/articlePresentation.ts", "libs/extractFirstImage.ts", "libs/articlePath.ts",
       "libs/renderArticleContent.ts", "libs/restoredArticleImages.ts", "libs/previewRequest.ts", "libs/previewContent.ts",
+      "libs/siteMetadata.ts",
     ],
     assets: ["logo.png", "NovolBa_logo_sq_wt-2.webp"],
   },

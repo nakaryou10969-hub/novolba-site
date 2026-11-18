@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { client, type WithArticle } from "../../../libs/client";
-import { getArticleStaticParamIds, toArticleRouteKeyCandidates } from "../../../libs/articlePath";
+import { getArticleStaticParamIds, getMediaArticlePath, toArticleRouteKeyCandidates } from "../../../libs/articlePath";
+import { buildArticleMetadata } from "../../../libs/siteMetadata";
 import WithArticleView from "../../components/WithArticleView";
 
 type Props = {
@@ -49,12 +50,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const article = await getArticleByIdOrSlug(id);
   if (article) {
-    return {
-      title: `${article.title} | WITH by NovolBa`,
-      description: article.title,
-    };
+    // The ID URL and the /with/ copies show the same article; all point at /media/{slug}/.
+    return buildArticleMetadata(article, getMediaArticlePath(article));
   }
-  return { title: "記事が見つかりません | NovolBa" };
+  return { title: "記事が見つかりません" };
 }
 
 export default async function MediaArticlePage({ params }: Props) {

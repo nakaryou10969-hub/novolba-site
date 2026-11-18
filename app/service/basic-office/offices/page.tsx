@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "NovolBa OFFICE 拠点情報 | NovolBa",
+  title: "NovolBa OFFICE 拠点情報",
   description: "スタートアップのフェーズに合わせた家具・WiFi付きサブスクオフィス。渋谷・新宿・五反田・東日本橋エリアを中心に展開。",
 };
 

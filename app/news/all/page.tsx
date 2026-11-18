@@ -6,7 +6,7 @@ import { extractFirstImage } from "../../../libs/extractFirstImage";
 import { getNewsArticlePath } from "../../../libs/articlePath";
 
 export const metadata: Metadata = {
-  title: "NEWS 記事一覧 | NovolBa",
+  title: "NEWS 記事一覧",
   description: "NovolBaのニュース・お知らせ・イベント情報の記事一覧です。",
 };
 

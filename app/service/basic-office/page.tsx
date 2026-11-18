@@ -3,7 +3,7 @@ import Link from "next/link";
 import FaqList, { basicOfficeFaqs } from "../../components/FaqList";
 
 export const metadata: Metadata = {
-  title: "BASIC OFFICE Service | NovolBa",
+  title: "BASIC OFFICE Service",
   description: "5〜30人用の一社占有家具付きオフィス。渋谷・新宿・五反田・東日本橋エリアを中心に展開。",
 };
 

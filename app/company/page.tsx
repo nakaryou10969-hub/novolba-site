@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "COMPANY | NovolBa",
+  title: "COMPANY",
   description: "株式会社NovolBaの会社概要。代表取締役・事業内容・所在地などをご紹介します。",
 };
 

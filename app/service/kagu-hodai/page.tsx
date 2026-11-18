@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "家具ホーダイ!! Service | NovolBa",
+  title: "家具ホーダイ!! Service",
   description: "入替え可能な中古家具のサブスクリプション。1年目は坪3,000円〜。オカムラのリユース家具を月額で利用できます。",
 };
 

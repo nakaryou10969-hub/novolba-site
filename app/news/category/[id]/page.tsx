@@ -25,9 +25,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       endpoint: "categories",
       contentId: id,
     });
-    return { title: `${cat.name} | NovolBa` };
+    return { title: cat.name };
   } catch {
-    return { title: "カテゴリー | NovolBa" };
+    return { title: "カテゴリー" };
   }
 }
 
