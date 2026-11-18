@@ -9,7 +9,7 @@ import LatestSlider from "./LatestSlider";
 import { CATEGORY_ORDER, CATEGORY_SLUG_MAP, PICKUP_IDS } from "./constants";
 
 export const metadata: Metadata = {
-  title: "MEDIA | NovolBa",
+  title: "MEDIA",
   description: "WITH by NovolBa - Media for startups.",
 };
 

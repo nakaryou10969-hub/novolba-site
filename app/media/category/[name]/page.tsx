@@ -70,9 +70,9 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { name } = await params;
   const categoryName = SLUG_TO_CATEGORY[name];
-  if (!categoryName) return { title: "カテゴリー | WITH by NovolBa" };
+  if (!categoryName) return { title: { absolute: "カテゴリー | WITH by NovolBa" } };
   return {
-    title: `${categoryName} | WITH by NovolBa`,
+    title: { absolute: `${categoryName} | WITH by NovolBa` },
     description: `WITH by NovolBaの「${categoryName}」カテゴリの記事一覧。`,
   };
 }

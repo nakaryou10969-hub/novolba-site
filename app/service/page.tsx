@@ -3,7 +3,7 @@ import Link from "next/link";
 import ServiceCards from "../components/ServiceCards";
 
 export const metadata: Metadata = {
-  title: "SERVICE | NovolBa",
+  title: "SERVICE",
   description: "NovolBaが提供する4つのサービス。家具ホーダイ!! Service、BASIC OFFICE Service、ノボルバディ Service、買取大助をご紹介します。",
 };
 

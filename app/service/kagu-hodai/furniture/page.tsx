@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "家具ホーダイ!! 製品ラインナップ | NovolBa",
+  title: "家具ホーダイ!! 製品ラインナップ",
   description: "NovolBa家具ホーダイ!!の製品ラインナップ。オカムラのリユース家具をリーズナブルな月額制でご提供します。",
 };
 

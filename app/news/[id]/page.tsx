@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { client, type Blog } from "../../../libs/client";
-import { extractFirstImage } from "../../../libs/extractFirstImage";
-import { getArticleStaticParamIds, toArticleRouteKeyCandidates } from "../../../libs/articlePath";
+import { getArticleStaticParamIds, getNewsArticlePath, toArticleRouteKeyCandidates } from "../../../libs/articlePath";
+import { buildArticleMetadata } from "../../../libs/siteMetadata";
 import NewsArticleView from "../../components/NewsArticleView";
 
 type Props = {
@@ -50,21 +50,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const blog = await getBlogByIdOrSlug(id);
   if (blog) {
-    const firstImage = extractFirstImage(blog.content);
-    return {
-      title: `${blog.title} | NEWS | NovolBa`,
-      description: blog.title,
-      openGraph: {
-        title: blog.title,
-        images: blog.eyecatch?.url
-          ? [blog.eyecatch.url]
-          : firstImage
-          ? [firstImage]
-        : [],
-      },
-    };
+    return buildArticleMetadata(blog, getNewsArticlePath(blog));
   }
-  return { title: "記事が見つかりません | NovolBa" };
+  return { title: "記事が見つかりません" };
 }
 
 async function getLatestBlogs(excludeId: string): Promise<Blog[]> {

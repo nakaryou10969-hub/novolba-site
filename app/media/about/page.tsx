@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "WITHとは | NovolBa",
+  title: "WITHとは",
   description: "WITH by NovolBa。スタートアップの挑戦に「光」を当てるメディア。",
 };
 

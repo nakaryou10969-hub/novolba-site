@@ -6,7 +6,7 @@ import { extractFirstImage } from "../../../libs/extractFirstImage";
 import { getMediaArticlePath } from "../../../libs/articlePath";
 
 export const metadata: Metadata = {
-  title: "すべての記事 | WITH by NovolBa",
+  title: { absolute: "すべての記事 | WITH by NovolBa" },
   description: "WITH by NovolBaのすべての記事一覧。インタビュー・対談・イベントレポートなど。",
 };
 
