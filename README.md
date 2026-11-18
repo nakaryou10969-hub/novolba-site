@@ -29,8 +29,10 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+## デプロイ
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+本番の https://novolba.com/ は、GitHub Actions でビルドし、S3 + CloudFront で配信している（Vercel は使っていない）。
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `main` に push する（PR をマージする）と、[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) が動く。静的書き出し（`npm run build`）、microCMS の画像の S3 へのミラー、`out/` の S3 への同期、CloudFront のキャッシュの無効化を順に行う。
+- microCMS の Webhook が `repository_dispatch`（type は `microcms_update`）を送ると、同じワークフローで再デプロイする。
+- 下書きのプレビュー（draftKey 方式）は、AWS Lambda で動かしている。配備するときは [`.github/workflows/deploy-preview.yml`](.github/workflows/deploy-preview.yml) を手動で実行する。詳しくは [`preview/README.md`](preview/README.md) を参照。
